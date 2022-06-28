@@ -11,9 +11,10 @@ class UserController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
+    public function index(){
+        $admin = auth()->user()->name;
+        // dd($admin);
+        return view('admin.index', compact('admin'));
     }
 
     /**
