@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('deadline');
             $table->integer('user_id')->foreignId('user_id')->constrained();
             $table->bigInteger('project_id')->foreignId('project_id')->constrained();
+            $table->tinyInteger('status_id')->foreignId('status_id')->constrained();
             $table->timestamps();
             $table->softDeletes();
         });

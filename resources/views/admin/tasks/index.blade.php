@@ -14,7 +14,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">
-                        <a href= {{ route('tasks.create') }} type="button" class="btn btn-block btn-success btn-flat">Create new project</a>
+                        <a href= {{ route('tasks.create') }} type="button" class="btn btn-block btn-success btn-flat">Add new task</a>
                     </h3>
                         <div class="card-tools">
                             {{ $tasks->links() }}
@@ -44,7 +44,7 @@
                                     <td>{{ $task->deadline }}</td>
                                     <td>{{ $task->project->title }}</td>
                                     <td>{{ $task->user->name }}</td>
-                                    {{-- <td>{{ $project->status }}</td> --}}
+                                    <td>{{ $task->status->name }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Status;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class StatusSeeder extends Seeder
 {
@@ -15,18 +15,7 @@ class StatusSeeder extends Seeder
      */
     public function run()
     {
-        $statuses = [
-            'Completed',
-            'Processing',
-            'Cancelled',
-            'On Hold',
-        ];
-
-        foreach ($statuses as $status)
-        {
-            DB::table('statuses')->insert([
-                'name' => $status,
-            ]);
-        }
+        Status::factory(30)->create();
     }
+
 }

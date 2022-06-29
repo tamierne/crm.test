@@ -22,6 +22,7 @@ class ProjectFactory extends Factory
             'deadline' => $this->faker->dateTimeThisMonth('+2 months'),
             'user_id' => $this->faker->numberBetween(1, 10),
             'client_id' => $this->faker->numberBetween(1, 10),
+            'status_id' => $this->faker->numberBetween(1, 4),
         ];
     }
 }

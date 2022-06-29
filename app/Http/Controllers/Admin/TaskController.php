@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Project;
+use App\Models\User;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
@@ -26,7 +28,9 @@ class TaskController extends BaseController
      */
     public function create()
     {
-        //
+        $usersList = User::all('name');
+        $projectsList = Project::all('title');
+        return view('admin.tasks.create', compact(['usersList', 'projectsList']));
     }
 
     /**

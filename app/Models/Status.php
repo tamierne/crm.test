@@ -11,11 +11,15 @@ class Status extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'name',
+        'name'
+        // 'status_id',
+        // 'statusableId',
+        // 'statusableType',
     ];
 
-    public function statusable()
-    {
-        return $this->morphTo();
-    }
+
+    // public function statusable()
+    // {
+    //     return $this->morphTo();
+    // }
 }

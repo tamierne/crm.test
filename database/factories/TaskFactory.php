@@ -22,6 +22,7 @@ class TaskFactory extends Factory
             'deadline' => $this->faker->dateTimeThisMonth('+25 days'),
             'project_id' => $this->faker->numberBetween(1, 10),
             'user_id' => $this->faker->numberBetween(1, 10),
+            'status_id' => $this->faker->numberBetween(1, 4),
         ];
     }
 }

@@ -51,7 +51,7 @@
                                     <td>{{ $project->deadline }}</td>
                                     <td>{{ $project->client->name }}</td>
                                     <td>{{ $project->user->name }}</td>
-                                    {{-- <td>{{ $project->status }}</td> --}}
+                                    <td>{{ $project->status->name }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
