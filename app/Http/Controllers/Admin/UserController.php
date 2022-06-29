@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends BaseController
@@ -12,9 +13,9 @@ class UserController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function index(){
-        $admin = auth()->user()->name;
-        // dd($admin);
-        return view('admin.index', compact('admin'));
+        return view('admin.users.index', [
+            'users' => User::simplePaginate(10),
+        ]);
     }
 
     /**
@@ -82,4 +83,5 @@ class UserController extends BaseController
     {
         //
     }
+
 }

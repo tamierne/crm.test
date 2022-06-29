@@ -10,20 +10,23 @@ const mix = require('laravel-mix');
  | file for the application as well as bundling up all the JS files.
  |
  */
-
- mix.styles([
-    'resources/admin/css/tailwind.css',
-    'resources/admin/css/all.css',
-    'resources/admin/css/emoji.css',
+mix.styles([
+    'resources/admin/css/adminlte.css',
+    'resources/admin/plugins/fontawesome-free/css/all.min.css'
     ], 'public/assets/admin/css/styles.css');
 
+mix.js('resources/js/app.js', 'public/js')
+    .postCss('resources/css/app.css', 'public/css', [
+        //
+    ]);
+
 mix.scripts([
-    'resources/admin/js/Chart.bundle.js',
-    ],'public/assets/admin/js/scripts.js');
+    'resources/admin/plugins/jquery/jquery.min.js',
+    'resources/admin/plugins/bootstrap/js/bootstrap.bundle.min.js',
+    'resources/admin/js/adminlte.min.js',
+], 'public/assets/admin/js/scripts.js');
 
-mix.js('resources/js/app.js', 'public/js').postCss('resources/css/app.css', 'public/css', [
-    require('tailwindcss'),
-    require('autoprefixer'),
-]);
+mix.copyDirectory('resources/admin/plugins/fontawesome-free/webfonts', 'public/assets/admin/webfonts');
 
-mix.copyDirectory('resources/admin/webfonts', 'public/assets/admin/webfonts');
+mix.copy('resources/admin/css/adminlte.css.map', 'public/assets/admin/css/adminlte.css.map');
+mix.copy('resources/admin/js/adminlte.min.js.map', 'public/assets/admin/js/adminlte.min.js.map');

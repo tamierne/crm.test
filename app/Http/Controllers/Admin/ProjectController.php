@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Project;
+use App\Models\User;
+use App\Models\Client;
 use Illuminate\Http\Request;
 
 class ProjectController extends BaseController
@@ -13,7 +16,9 @@ class ProjectController extends BaseController
      */
     public function index()
     {
-        //
+        return view('admin.projects.index', [
+            'projects' => Project::simplePaginate(10),
+        ]);
     }
 
     /**
@@ -23,7 +28,9 @@ class ProjectController extends BaseController
      */
     public function create()
     {
-        //
+        $usersList = User::all('name');
+        $clientsList = Client::all('name');
+        return view('admin.projects.create', compact(['usersList', 'clientsList']));
     }
 
     /**

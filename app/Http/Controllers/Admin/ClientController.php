@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Client;
 use Illuminate\Http\Request;
 
 class ClientController extends BaseController
@@ -13,7 +14,9 @@ class ClientController extends BaseController
      */
     public function index()
     {
-        //
+        return view('admin.clients.index', [
+            'clients' => Client::simplePaginate(10),
+        ]);
     }
 
     /**

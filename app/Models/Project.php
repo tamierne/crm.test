@@ -12,12 +12,12 @@ class Project extends Model
 
     public function client()
     {
-        return $this->hasOne(Client::class);
+        return $this->belongsTo(Client::class);
     }
 
     public function user()
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class);
     }
 
     public function status()

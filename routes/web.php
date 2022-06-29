@@ -1,7 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\ProjectController;
+
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,15 +22,19 @@ use App\Http\Controllers\Admin\UserController;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 // Route::get('/admin', function () {
 //     return view('admin.index');
 // })->middleware(['auth'])->name('admin.index');
 
 Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
-    Route::get('/', [UserController::class, 'index'])->name('admin.index');
-    // Route::get('logout', [AdminController::class, 'logout'])->name('logout');
+    Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+    Route::resource('clients', ClientController::class);
+    Route::resource('users', UserController::class);
+    Route::resource('projects', ProjectController::class);
     // Route::resources([
     //     'album' => AlbumController::class,
     //     'user' => UserlistController::class,
