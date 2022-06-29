@@ -26,7 +26,7 @@ class ClientController extends BaseController
      */
     public function create()
     {
-        //
+        return view('admin.clients.create');
     }
 
     /**

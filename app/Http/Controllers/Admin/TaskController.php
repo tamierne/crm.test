@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Task;
 use Illuminate\Http\Request;
 
 class TaskController extends BaseController
@@ -13,7 +14,9 @@ class TaskController extends BaseController
      */
     public function index()
     {
-        //
+        return view('admin.tasks.index', [
+            'tasks' => Task::simplePaginate(10),
+        ]);
     }
 
     /**

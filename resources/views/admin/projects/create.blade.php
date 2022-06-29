@@ -18,7 +18,7 @@
             <form class="form-horizontal">
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Title</label>
+                        <label for="title">Title</label>
                         <input type="text" class="form-control" id="title" placeholder="Enter title">
                     </div>
                     <div class="form-group">
@@ -59,7 +59,7 @@
                 </div>
                 <div class="card-footer">
                     <button type="submit" class="btn btn-info">Create</button>
-                    <a href="{{ back() }}" type="submit" class="btn btn-default float-right">Cancel</a>
+                    <a href="{{ url()->previous() }}" type="submit" class="btn btn-default float-right">Cancel</a>
                 </div>
             </form>
             </div>

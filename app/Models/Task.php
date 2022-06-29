@@ -12,12 +12,12 @@ class Task extends Model
 
     public function project()
     {
-        return $this->hasOne(Client::class);
+        return $this->belongsTo(Project::class);
     }
 
     public function user()
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class);
     }
 
     public function status()

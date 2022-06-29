@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
+            $table->string('title');
             $table->text('description');
             $table->date('deadline');
             $table->integer('user_id')->foreignId('user_id')->constrained();

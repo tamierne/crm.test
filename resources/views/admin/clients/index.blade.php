@@ -14,7 +14,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">
-                        <button type="button" class="btn btn-block btn-success btn-flat">Create new client</button>
+                        <a href= {{ route('clients.create') }} type="button" class="btn btn-block btn-success btn-flat">Add new client</a>
                     </h3>
                         <div class="card-tools">
                             {{ $clients->links() }}
