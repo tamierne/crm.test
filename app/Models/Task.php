@@ -10,6 +10,29 @@ class Task extends Model
 {
     use HasFactory, SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'title',
+        'description',
+        'deadline',
+        'user_id',
+        'project_id',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'user_id',
+        'project_id',
+    ];
+
     public function project()
     {
         return $this->belongsTo(Project::class);

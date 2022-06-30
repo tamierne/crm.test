@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
+            CreateSuperAdminSeeder::class,
             UserSeeder::class,
             ClientSeeder::class,
             ProjectSeeder::class,

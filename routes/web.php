@@ -38,6 +38,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
         'users' => UserController::class,
         'projects' => ProjectController::class,
         'tasks' => TaskController::class,
+    ], [
+        'except' => ['show']
     ]);
 });
 

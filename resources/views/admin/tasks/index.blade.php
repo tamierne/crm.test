@@ -32,7 +32,7 @@
                                 <th>Project</th>
                                 <th>Assigned user</th>
                                 <th>Status</th>
-                                {{-- <th>EDIT/DELETE</th> --}}
+                                <th>Available actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -45,6 +45,10 @@
                                     <td>{{ $task->project->title }}</td>
                                     <td>{{ $task->user->name }}</td>
                                     <td>{{ $task->status->name }}</td>
+                                    <td>
+                                        <a href= {{ route('tasks.edit', $task->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
+                                        <a href= {{ route('tasks.destroy', $task->id) }} type="button" class="btn btn-block btn-danger btn-flat">Delete</a>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

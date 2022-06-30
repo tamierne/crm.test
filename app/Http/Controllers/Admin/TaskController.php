@@ -2,13 +2,25 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Project;
-use App\Models\User;
+use App\Http\Requests\Admin\TaskCreateRequest;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use App\Repositories\UserRepository;
+use App\Repositories\ProjectRepository;
+use App\Repositories\StatusRepository;
 
 class TaskController extends BaseController
 {
+    private UserRepository $userRepository;
+    private ProjectRepository $projectRepository;
+    private StatusRepository $statusRepository;
+
+    public function __construct(UserRepository $userRepository, ProjectRepository $projectRepository, StatusRepository $statusRepository)
+    {
+        $this->userRepository = $userRepository;
+        $this->projectRepository = $projectRepository;
+        $this->statusRepository = $statusRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -28,9 +40,10 @@ class TaskController extends BaseController
      */
     public function create()
     {
-        $usersList = User::all('name');
-        $projectsList = Project::all('title');
-        return view('admin.tasks.create', compact(['usersList', 'projectsList']));
+        $statusList = $this->statusRepository->getAllStatuses();
+        $usersList = $this->userRepository->getAllUsers();
+        $projectsList = $this->projectRepository->getAllProjects();
+        return view('admin.tasks.create', compact(['usersList', 'projectsList', 'statusList']));
     }
 
     /**
@@ -39,9 +52,17 @@ class TaskController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TaskCreateRequest $request)
     {
-        //
+        Task::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'deadline' => $request->deadline,
+            'user_id' => $request->user_id,
+            'project_id' => $request->project_id,
+        ]);
+
+        return $this->index();
     }
 
     /**
@@ -61,9 +82,12 @@ class TaskController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Task $task)
     {
-        //
+        $statusList = $this->statusRepository->getAllStatuses();
+        $usersList = $this->userRepository->getAllUsers();
+        $projectsList = $this->projectRepository->getAllProjects();
+        return view('admin.tasks.edit', compact(['usersList', 'projectsList', 'statusList', 'task']));
     }
 
     /**

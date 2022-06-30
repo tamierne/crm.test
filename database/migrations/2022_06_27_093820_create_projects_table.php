@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('title');
+            $table->string('title')->unique();
             $table->text('description');
             $table->date('deadline');
             $table->integer('user_id')->foreignId('user_id')->constrained();
             $table->bigInteger('client_id')->foreignId('client_id')->constrained();
-            $table->tinyInteger('status_id')->foreignId('status_id')->constrained();
+            $table->tinyInteger('status_id')->foreignId('status_id')->constrained()->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -10,6 +10,29 @@ class Project extends Model
 {
     use HasFactory, SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'title',
+        'description',
+        'deadline',
+        'user_id',
+        'client_id',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'user_id',
+        'client_id',
+    ];
+
     public function client()
     {
         return $this->belongsTo(Client::class);
@@ -24,8 +47,5 @@ class Project extends Model
     {
         return $this->belongsTo(Status::class);
     }
-    // public function status()
-    // {
-    //     return $this->morphOne(Status::class, 'statusable');
-    // }
+
 }

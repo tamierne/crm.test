@@ -14,7 +14,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">
-                        <button type="button" class="btn btn-block btn-success btn-flat">Create new user</button>
+                        <a href= {{ route('users.create') }} type="button" class="btn btn-block btn-success btn-flat">Create new user</a>
                     </h3>
                         <div class="card-tools">
                             {{ $users->links() }}

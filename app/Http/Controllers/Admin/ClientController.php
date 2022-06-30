@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\ClientCreateRequest;
 use App\Models\Client;
 use Illuminate\Http\Request;
 
@@ -35,9 +36,15 @@ class ClientController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ClientCreateRequest $request)
     {
-        //
+        Client::create([
+            'name' => $request->name,
+            'VAT' => $request->VAT,
+            'address' => $request->address,
+        ]);
+
+        return $this->index();
     }
 
     /**

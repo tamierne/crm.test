@@ -39,7 +39,7 @@
                                 <th>Client</th>
                                 <th>User</th>
                                 <th>Status</th>
-                                {{-- <th>EDIT/DELETE</th> --}}
+                                <th>Available actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -52,6 +52,10 @@
                                     <td>{{ $project->client->name }}</td>
                                     <td>{{ $project->user->name }}</td>
                                     <td>{{ $project->status->name }}</td>
+                                    <td>
+                                        <a href= {{ route('projects.edit', $project->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
+                                        <a href= {{ route('projects.destroy', $project->id) }} type="button" class="btn btn-block btn-danger btn-flat">Delete</a>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

@@ -13,7 +13,7 @@
         <div class="container-fluid">
             <div class="card card-info">
                 <div class="card-header">
-                    <h3 class="card-title">Create task</h3>
+                    <h3 class="card-title">Edit project</h3>
                 </div>
                 @if ($errors->any())
                 <div class="alert alert-danger">
@@ -24,55 +24,59 @@
                     </ul>
                 </div>
                 @endif
-            <form class="form-horizontal" method="POST" action="{{ route('tasks.store') }}">
+            <form class="form-horizontal" method="PATCH" action="{{ route('projects.update', $project->id) }}">
                 @csrf
                 <div class="card-body">
                     <div class="form-group">
                         <label for="title">Title</label>
-                        <input type="text" class="form-control" id="title" placeholder="Enter title">
+                        <input type="text" class="form-control" name="title" id="title" value="{{ $project->title }}">
                     </div>
                     <div class="form-group">
                         <label for="description">Description</label>
-                        <textarea type="textarea" rows="3" class="form-control" id="description" placeholder="Enter description"></textarea>
+                        <textarea type="textarea" rows="3" class="form-control" name="description" id="description">{{ $project->description }}</textarea>
                     </div>
                     <div class="form-group">
                         <label for="deadline">Deadline</label>
-                        <input type="date" class="form-control" id="deadline" placeholder="Select deadline">
+                        <input type="date" class="form-control" name="deadline" id="deadline" value="{{ $project->deadline }}">
                     </div>
                     <div class="form-group">
                         <label for="AssignedUser">Assigned user</label>
-                        <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                        <select class="form-control select2 select2-hidden-accessible" name="user_id" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
                             @foreach ($usersList as $user)
-                                <option value="{{ $user->id }}">
+                                <option value="{{ $user->id }}"
+                                    @if ($user->id == $project->user_id) selected @endif>
                                         {{ $user->name }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="AssignedClient">Assigned project</label>
-                        <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
-                            @foreach ($projectsList as $project)
-                                <option value="{{ $project->id }}">
-                                        {{ $project->title }}
+                        <label for="AssignedClient">Assigned client</label>
+                        <select class="form-control select2 select2-hidden-accessible" name="client_id" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                            @foreach ($clientsList as $client)
+                                <option value="{{ $client->id }}"
+                                    @if ($client->id == $project->client_id) selected @endif>
+                                        {{ $client->name }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label for="status">Status</label>
                         <select class="form-control select2 select2-hidden-accessible" name="status_id" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
                             @foreach ($statusList as $status)
-                                <option value="{{ $status->id }}">
+                                <option value="{{ $status->id }}"
+                                    @if ($status->id == $project->status_id) selected @endif>
                                         {{ $status->name }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-info">Create</button>
-                        <a href="{{ url()->previous() }}" class="btn btn-default float-right">Cancel</a>
-                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-info">Update</button>
+                    <a href="{{ url()->previous() }}" class="btn btn-default float-right">Cancel</a>
                 </div>
             </form>
             </div>
