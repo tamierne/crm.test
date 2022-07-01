@@ -18,7 +18,7 @@ class TaskController extends BaseController
     private StatusRepository $statusRepository;
     private TaskRepository $taskRepository;
 
-    public function __construct(UserRepository $userRepository, ProjectRepository $projectRepository, StatusRepository $statusRepository, TaskRepository $taskRepository;)
+    public function __construct(UserRepository $userRepository, ProjectRepository $projectRepository, StatusRepository $statusRepository, TaskRepository $taskRepository)
     {
         $this->userRepository = $userRepository;
         $this->projectRepository = $projectRepository;
@@ -32,6 +32,8 @@ class TaskController extends BaseController
      */
     public function index()
     {
+        $this->authorize('task_access');
+
         return view('admin.tasks.index', [
             'tasks' => Task::simplePaginate(10),
         ]);
@@ -44,6 +46,8 @@ class TaskController extends BaseController
      */
     public function create()
     {
+        $this->authorize('task_create');
+
         $statusList = $this->statusRepository->getAllStatuses();
         $usersList = $this->userRepository->getAllUsers();
         $projectsList = $this->projectRepository->getAllProjects();
@@ -82,6 +86,8 @@ class TaskController extends BaseController
      */
     public function edit(Task $task)
     {
+        $this->authorize('task_edit');
+
         $statusList = $this->statusRepository->getAllStatuses();
         $usersList = $this->userRepository->getAllUsers();
         $projectsList = $this->projectRepository->getAllProjects();
@@ -109,6 +115,8 @@ class TaskController extends BaseController
      */
     public function destroy(Task $task)
     {
+        $this->authorize('task_delete');
+
         $task->delete();
         return redirect()->back()->with('message', 'Successfully deleted');
     }

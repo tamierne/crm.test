@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             ProjectSeeder::class,
             TaskSeeder::class,
             StatusListSeeder::class,
-            // StatusSeeder::class,
+            PermissionSeeder::class,
         ]);
 
         // \App\Models\User::factory()->create([

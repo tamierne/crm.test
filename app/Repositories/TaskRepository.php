@@ -10,14 +10,19 @@ use App\Repositories\MainRepository;
 
 class TaskRepository extends MainRepository
 {
-    public function getAllProjects()
+    public function getAllTasks()
     {
         return Task::all(['id', 'title']);
     }
 
-    public function getProjectById($id)
+    public function getTaskById($id)
     {
         return Task::find($id);
+    }
+
+    public function getCurrentUserTasks()
+    {
+        return auth()->user()->tasks;
     }
 
     public function storeTask(TaskCreateRequest $request)

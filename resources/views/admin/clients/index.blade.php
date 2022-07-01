@@ -14,7 +14,9 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">
-                        <a href= {{ route('clients.create') }} type="button" class="btn btn-block btn-success btn-flat">Add new client</a>
+                        @can('client_create')
+                            <a href= {{ route('clients.create') }} type="button" class="btn btn-block btn-success btn-flat">Add new client</a>
+                        @endcan
                     </h3>
                         <div class="card-tools">
                             {{ $clients->links() }}
@@ -41,12 +43,16 @@
                                     <td>{{ $client->VAT }}</td>
                                     <td>{{ $client->address }}</td>
                                     <td>
-                                        <a href= {{ route('clients.edit', $client->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
-                                        <form action="{{ route('clients.destroy', $client->id) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-block btn-danger btn-flat">Delete</button>
-                                        </form>
+                                        @can('client_edit')
+                                            <a href= {{ route('clients.edit', $client->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
+                                        @endcan
+                                        @can('client_delete')
+                                            <form action="{{ route('clients.destroy', $client->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-block btn-danger btn-flat">Delete</button>
+                                            </form>
+                                        @endcan
                                     </td>
                                 </tr>
                             @endforeach

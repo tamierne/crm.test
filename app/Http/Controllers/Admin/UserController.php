@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Gate;
 use App\Http\Requests\Admin\UserCreateRequest;
 use App\Http\Requests\Admin\UserUpdateRequest;
 use App\Models\User;
@@ -22,6 +23,9 @@ class UserController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function index(){
+
+        $this->authorize('user_access');
+
         return view('admin.users.index', [
             'users' => User::simplePaginate(10),
         ]);
@@ -34,6 +38,8 @@ class UserController extends BaseController
      */
     public function create()
     {
+        $this->authorize('user_create');
+
         return view('admin.users.create');
     }
 
@@ -47,7 +53,7 @@ class UserController extends BaseController
     {
         $this->userRepository->storeUser($request);
 
-        return $this->index()->with('message', 'User successfully created!');;
+        return $this->index()->with('message', 'User successfully created!');
     }
 
     /**
@@ -69,6 +75,8 @@ class UserController extends BaseController
      */
     public function edit(User $user)
     {
+        $this->authorize('user_edit');
+
         return view('admin.users.edit', compact(['user']));
     }
 
@@ -93,6 +101,8 @@ class UserController extends BaseController
      */
     public function destroy(User $user)
     {
+        $this->authorize('user_delete');
+
         $user->delete();
         return redirect()->back()->with('message', 'Successfully deleted');
     }

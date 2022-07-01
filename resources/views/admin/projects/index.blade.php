@@ -14,7 +14,9 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">
+                        @can('project_create')
                         <a href= {{ route('projects.create') }} type="button" class="btn btn-block btn-success btn-flat">Create new project</a>
+                        @endcan
                     </h3>
                         <div class="card-tools">
                             {{ $projects->links() }}
@@ -49,12 +51,16 @@
                                     <td>{{ $project->user->name }}</td>
                                     <td>{{ $project->status->name }}</td>
                                     <td>
-                                        <a href= {{ route('projects.edit', $project->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
-                                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-block btn-danger btn-flat">Delete</button>
-                                        </form>
+                                        @can('project_edit')
+                                            <a href= {{ route('projects.edit', $project->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
+                                        @endcan
+                                        @can('project_delete')
+                                            <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-block btn-danger btn-flat">Delete</button>
+                                            </form>
+                                        @endcan
                                     </td>
                                 </tr>
                             @endforeach

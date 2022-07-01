@@ -32,6 +32,8 @@ class ProjectController extends BaseController
      */
     public function index()
     {
+        $this->authorize('project_access');
+
         return view('admin.projects.index', [
             'projects' => Project::simplePaginate(10),
         ]);
@@ -44,6 +46,8 @@ class ProjectController extends BaseController
      */
     public function create()
     {
+        $this->authorize('project_create');
+
         $statusList = $this->statusRepository->getAllStatuses();
         $usersList = $this->userRepository->getAllUsers();
         $clientsList = $this->clientRepository->getAllClients();
@@ -82,6 +86,8 @@ class ProjectController extends BaseController
      */
     public function edit(Project $project)
     {
+        $this->authorize('project_edit');
+
         $statusList = $this->statusRepository->getAllStatuses();
         $usersList = $this->userRepository->getAllUsers();
         $clientsList = $this->clientRepository->getAllClients();
@@ -109,6 +115,8 @@ class ProjectController extends BaseController
      */
     public function destroy(Project $project)
     {
+        $this->authorize('project_delete');
+
         $project->delete();
         return redirect()->back()->with('message', 'Successfully deleted');
     }

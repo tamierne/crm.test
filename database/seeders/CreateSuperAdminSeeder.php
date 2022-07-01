@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -33,5 +34,7 @@ class CreateSuperAdminSeeder extends Seeder
         ]);
 
         $superAdmin->assignRole('super-admin');
+
+        Permission::create(['name' => 'admin_access']);
     }
 }

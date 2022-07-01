@@ -23,6 +23,8 @@ class ClientController extends BaseController
      */
     public function index()
     {
+        $this->authorize('client_access');
+
         $clients = $this->clientRepository->getAllClientsWithPaginate();
         return view('admin.clients.index', compact('clients'));
     }
@@ -34,6 +36,8 @@ class ClientController extends BaseController
      */
     public function create()
     {
+        $this->authorize('client_create');
+
         return view('admin.clients.create');
     }
 
@@ -69,7 +73,7 @@ class ClientController extends BaseController
      */
     public function edit(Client $client)
     {
-        //
+        $this->authorize('client_edit');
     }
 
     /**
@@ -93,6 +97,8 @@ class ClientController extends BaseController
      */
     public function destroy(Client $client)
     {
+        $this->authorize('client_delete');
+
         $client->delete();
         return redirect()->back()->with('message', 'Successfully deleted');
     }

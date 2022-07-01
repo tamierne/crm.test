@@ -21,7 +21,7 @@ class TaskFactory extends Factory
             'description' => $this->faker->realText(200),
             'deadline' => $this->faker->dateTimeThisMonth('+25 days'),
             'project_id' => $this->faker->numberBetween(1, 10),
-            'user_id' => $this->faker->numberBetween(1, 10),
+            'user_id' => $this->faker->numberBetween(1, 13),
             'status_id' => $this->faker->numberBetween(1, 4),
             'created_at' => $this->faker->dateTimeBetween('-2 months', '-1 week'),
             'updated_at' => $this->faker->dateTimeBetween('-1 week', '-1 day'),
