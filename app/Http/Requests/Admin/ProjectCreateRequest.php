@@ -29,7 +29,7 @@ class ProjectCreateRequest extends FormRequest
             'deadline' => 'required|date|after:today',
             'user_id' => 'required|exists:users,id',
             'client_id' => 'required|exists:clients,id',
-            'status_id' => 'required|exists:status,id'
+            'status_id' => 'required|exists:statuses,id',
         ];
     }
 }

@@ -4,23 +4,25 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\ProjectCreateRequest;
 use App\Models\Project;
-use App\Models\Status;
-use Illuminate\Http\Request;
 use App\Repositories\UserRepository;
 use App\Repositories\ClientRepository;
+use App\Repositories\ProjectRepository;
 use App\Repositories\StatusRepository;
+use Illuminate\Http\Request;
 
 class ProjectController extends BaseController
 {
     private UserRepository $userRepository;
     private ClientRepository $clientRepository;
     private StatusRepository $statusRepository;
+    private ProjectRepository $projectRepository;
 
-    public function __construct(UserRepository $userRepository, ClientRepository $clientRepository, StatusRepository $statusRepository)
+    public function __construct(UserRepository $userRepository, ClientRepository $clientRepository, StatusRepository $statusRepository, ProjectRepository $projectRepository)
     {
         $this->userRepository = $userRepository;
         $this->clientRepository = $clientRepository;
         $this->statusRepository = $statusRepository;
+        $this->projectRepository = $projectRepository;
     }
     /**
      * Display a listing of the resource.
@@ -55,13 +57,7 @@ class ProjectController extends BaseController
      */
     public function store(ProjectCreateRequest $request)
     {
-        Project::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'deadline' => $request->deadline,
-            'user_id' => $request->user_id,
-            'client_id' => $request->client_id,
-        ]);
+        $this->projectRepository->storeProject($request);
 
         return $this->index();
     }
@@ -94,13 +90,14 @@ class ProjectController extends BaseController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\Admin\ProjectUpdateRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Project $project, Request $request)
     {
-        //
+        $this->projectRepository->updateProject($request);
+        return redirect()->back();
     }
 
     /**
@@ -109,8 +106,9 @@ class ProjectController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Project $project)
     {
-        //
+        $project->delete();
+        return redirect()->back();
     }
 }

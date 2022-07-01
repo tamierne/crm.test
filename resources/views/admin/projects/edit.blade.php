@@ -24,7 +24,8 @@
                     </ul>
                 </div>
                 @endif
-            <form class="form-horizontal" method="PATCH" action="{{ route('projects.update', $project->id) }}">
+            <form class="form-horizontal" method="POST" action="{{ route('projects.update', $project->id) }}">
+                @method('PATCH')
                 @csrf
                 <div class="card-body">
                     <div class="form-group">

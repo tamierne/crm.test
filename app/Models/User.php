@@ -49,4 +49,14 @@ class User extends Authenticatable
     {
         return Carbon::parse($value)->format('m/d/Y');
     }
+
+    public function project()
+    {
+        return $this->hasMany(Project::class);
+    }
+
+    public function task()
+    {
+        return $this->hasMany(Task::class);
+    }
 }

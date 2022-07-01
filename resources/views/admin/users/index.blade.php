@@ -18,13 +18,6 @@
                     </h3>
                         <div class="card-tools">
                             {{ $users->links() }}
-                                {{-- <ul class="pagination pagination-sm float-right">
-                                    <li class="page-item"><a class="page-link" href="#">«</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">»</a></li>
-                                </ul> --}}
                         </div>
                 </div>
 
@@ -34,9 +27,9 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Email</th>
-                                {{-- <th>Assigned Projects</th>
-                                <th>Tasks</th> --}}
-                                {{-- <th>EDIT/DELETE</th> --}}
+                                <th>Assigned Projects</th>
+                                <th>Tasks</th>
+                                <th>Available actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -44,7 +37,22 @@
                                 <tr>
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
-                                    {{-- <td>{{ $user->address }}</td> --}}
+                                    <td>@foreach ($user->project as $project)
+                                        <a href= {{ route('projects.edit', $project->id) }}>{{ $project->title }}</a><br>
+                                        @endforeach
+                                    </td>
+                                    <td>@foreach ($user->task as $task)
+                                        <a href= {{ route('tasks.edit', $task->id) }}>{{ $task->title }}</a><br>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        <a href= {{ route('users.edit', $user->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
+                                        <form action="{{ route('users.destroy', $user->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-block btn-danger btn-flat">Delete</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

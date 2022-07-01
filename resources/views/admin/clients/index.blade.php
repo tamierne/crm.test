@@ -35,7 +35,7 @@
                                 <th>Company</th>
                                 <th>VAT</th>
                                 <th>Address</th>
-                                {{-- <th>EDIT/DELETE</th> --}}
+                                <th>Available actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -44,6 +44,14 @@
                                     <td>{{ $client->name }}</td>
                                     <td>{{ $client->VAT }}</td>
                                     <td>{{ $client->address }}</td>
+                                    <td>
+                                        <a href= {{ route('clients.edit', $client->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
+                                        <form action="{{ route('clients.destroy', $client->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-block btn-danger btn-flat">Delete</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

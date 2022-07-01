@@ -54,7 +54,11 @@
                                     <td>{{ $project->status->name }}</td>
                                     <td>
                                         <a href= {{ route('projects.edit', $project->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
-                                        <a href= {{ route('projects.destroy', $project->id) }} type="button" class="btn btn-block btn-danger btn-flat">Delete</a>
+                                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-block btn-danger btn-flat">Delete</button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
