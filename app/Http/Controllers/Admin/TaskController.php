@@ -9,18 +9,21 @@ use Illuminate\Http\Request;
 use App\Repositories\UserRepository;
 use App\Repositories\ProjectRepository;
 use App\Repositories\StatusRepository;
+use App\Repositories\TaskRepository;
 
 class TaskController extends BaseController
 {
     private UserRepository $userRepository;
     private ProjectRepository $projectRepository;
     private StatusRepository $statusRepository;
+    private TaskRepository $taskRepository;
 
-    public function __construct(UserRepository $userRepository, ProjectRepository $projectRepository, StatusRepository $statusRepository)
+    public function __construct(UserRepository $userRepository, ProjectRepository $projectRepository, StatusRepository $statusRepository, TaskRepository $taskRepository;)
     {
         $this->userRepository = $userRepository;
         $this->projectRepository = $projectRepository;
         $this->statusRepository = $statusRepository;
+        $this->taskRepository = $taskRepository;
     }
     /**
      * Display a listing of the resource.
@@ -55,15 +58,9 @@ class TaskController extends BaseController
      */
     public function store(TaskCreateRequest $request)
     {
-        Task::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'deadline' => $request->deadline,
-            'user_id' => $request->user_id,
-            'project_id' => $request->project_id,
-        ]);
+        $this->taskRepository->storeTask($request);
 
-        return $this->index();
+        return $this->index()->with('message', 'Task successfully created!');
     }
 
     /**

@@ -47,7 +47,7 @@ class UserController extends BaseController
     {
         $this->userRepository->storeUser($request);
 
-        return $this->index()->with('message', 'Successfully created!');;
+        return $this->index()->with('message', 'User successfully created!');;
     }
 
     /**

@@ -45,13 +45,9 @@ class ClientController extends BaseController
      */
     public function store(ClientCreateRequest $request)
     {
-        Client::create([
-            'name' => $request->name,
-            'VAT' => $request->VAT,
-            'address' => $request->address,
-        ]);
+        $this->clientRepository->storeClient($request);
 
-        return $this->index();
+        return $this->index()->with('message', 'Client successfully created!');
     }
 
     /**
@@ -71,7 +67,7 @@ class ClientController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Client $client)
     {
         //
     }

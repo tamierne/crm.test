@@ -60,7 +60,7 @@ class ProjectController extends BaseController
     {
         $this->projectRepository->storeProject($request);
 
-        return $this->index();
+        return $this->index()->with('message', 'Project successfully created!');
     }
 
     /**
@@ -98,7 +98,7 @@ class ProjectController extends BaseController
     public function update(ProjectUpdateRequest $request, Project $project)
     {
         $project->update($request->validated());
-        return redirect()->back()->with('message', 'Successfully saved!');
+        return redirect()->back()->with('message', 'Successfully updated!');
     }
 
     /**

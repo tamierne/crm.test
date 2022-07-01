@@ -29,7 +29,7 @@ class TaskCreateRequest extends FormRequest
             'deadline' => 'required|date|after:today',
             'user_id' => 'required|exists:users,id',
             'project_id' => 'required|exists:projects,id',
-            'status_id' => 'required|exists:statuses,id'
+            'status_id' => 'required|exists:statuses,id',
         ];
     }
 }
