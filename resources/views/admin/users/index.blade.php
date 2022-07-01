@@ -16,9 +16,12 @@
                     <h3 class="card-title">
                         <a href= {{ route('users.create') }} type="button" class="btn btn-block btn-success btn-flat">Create new user</a>
                     </h3>
-                        <div class="card-tools">
-                            {{ $users->links() }}
-                        </div>
+                    <div class="card-tools">
+                        {{ $users->links() }}
+                    </div>
+
+                @include('admin.layouts.includes.messages')
+
                 </div>
 
                 <div class="card-body p-0">
@@ -37,11 +40,11 @@
                                 <tr>
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
-                                    <td>@foreach ($user->project as $project)
+                                    <td>@foreach ($user->projects as $project)
                                         <a href= {{ route('projects.edit', $project->id) }}>{{ $project->title }}</a><br>
                                         @endforeach
                                     </td>
-                                    <td>@foreach ($user->task as $task)
+                                    <td>@foreach ($user->tasks as $task)
                                         <a href= {{ route('tasks.edit', $task->id) }}>{{ $task->title }}</a><br>
                                         @endforeach
                                     </td>

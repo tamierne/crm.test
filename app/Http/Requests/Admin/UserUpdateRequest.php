@@ -25,9 +25,9 @@ class UserUpdateRequest extends FormRequest
     {
         return [
             'name' => 'required|string:30',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string:20|min:10',
-            'confirm-password' => 'required|same:password',
+            // 'email' => 'required|email|unique:users',
+            // 'password' => 'required|string:20|min:10',
+            // 'confirm-password' => 'required|same:password',
         ];
     }
 }

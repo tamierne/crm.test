@@ -19,6 +19,9 @@
                         <div class="card-tools">
                             {{ $tasks->links() }}
                         </div>
+
+                @include('admin.layouts.includes.messages')
+
                 </div>
 
                 <div class="card-body p-0">
@@ -47,7 +50,7 @@
                                     <td>{{ $task->status->name }}</td>
                                     <td>
                                         <a href= {{ route('tasks.edit', $task->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
-                                        <form action="{{ route('tasks.destroy', $project->id) }}" method="POST">
+                                        <form action="{{ route('tasks.destroy', $task->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-block btn-danger btn-flat">Delete</button>

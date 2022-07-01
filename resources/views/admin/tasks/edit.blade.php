@@ -15,17 +15,12 @@
                 <div class="card-header">
                     <h3 class="card-title">Edit task</h3>
                 </div>
-                @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
-            <form class="form-horizontal" method="PATCH" action="{{ route('tasks.update', $task->id) }}">
+
+                @include('admin.layouts.includes.messages')
+
+            <form class="form-horizontal" method="POST" action="{{ route('tasks.update', $task->id) }}">
                 @csrf
+                @method('PATCH')
                 <div class="card-body">
                     <div class="form-group">
                         <label for="title">Title</label>
@@ -66,7 +61,7 @@
                         <select class="form-control select2 select2-hidden-accessible" name="status_id" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
                             @foreach ($statusList as $status)
                                 <option value="{{ $status->id }}"
-                                    @if ($status->id == $project->status_id) selected @endif>
+                                    @if ($status->id == $task->status_id) selected @endif>
                                         {{ $status->name }}
                                 </option>
                             @endforeach

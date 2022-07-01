@@ -3,11 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\ClientCreateRequest;
+use App\Http\Requests\Admin\ClientUpdateRequest;
 use App\Models\Client;
+use App\Repositories\ClientRepository;
 use Illuminate\Http\Request;
 
 class ClientController extends BaseController
 {
+    private ClientRepository $clientRepository;
+
+    public function __construct(ClientRepository $clientRepository)
+    {
+        $this->clientRepository = $clientRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -15,9 +23,8 @@ class ClientController extends BaseController
      */
     public function index()
     {
-        return view('admin.clients.index', [
-            'clients' => Client::simplePaginate(10),
-        ]);
+        $clients = $this->clientRepository->getAllClientsWithPaginate();
+        return view('admin.clients.index', compact('clients'));
     }
 
     /**
@@ -76,9 +83,10 @@ class ClientController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ClientUpdateRequest $request, Client $client)
     {
-        //
+        $client->update($request->validated());
+        return redirect()->back()->with('message', 'Successfully saved!');
     }
 
     /**
@@ -87,8 +95,9 @@ class ClientController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Client $client)
     {
-        //
+        $client->delete();
+        return redirect()->back()->with('message', 'Successfully deleted');
     }
 }

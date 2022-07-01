@@ -12,4 +12,9 @@ class ClientRepository extends MainRepository
     {
         return Client::all(['id', 'name']);
     }
+
+    public function getAllClientsWithPaginate()
+    {
+        return Client::simplePaginate('10');
+    }
 }

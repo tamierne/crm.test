@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\ProjectCreateRequest;
+use App\Http\Requests\Admin\ProjectUpdateRequest;
 use App\Models\Project;
 use App\Repositories\UserRepository;
 use App\Repositories\ClientRepository;
@@ -94,10 +95,10 @@ class ProjectController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Project $project, Request $request)
+    public function update(ProjectUpdateRequest $request, Project $project)
     {
-        $this->projectRepository->updateProject($request);
-        return redirect()->back();
+        $project->update($request->validated());
+        return redirect()->back()->with('message', 'Successfully saved!');
     }
 
     /**
@@ -109,6 +110,6 @@ class ProjectController extends BaseController
     public function destroy(Project $project)
     {
         $project->delete();
-        return redirect()->back();
+        return redirect()->back()->with('message', 'Successfully deleted');
     }
 }

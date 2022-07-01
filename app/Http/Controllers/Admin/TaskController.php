@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\TaskCreateRequest;
+use App\Http\Requests\Admin\TaskUpdateRequest;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use App\Repositories\UserRepository;
@@ -97,9 +98,10 @@ class TaskController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(TaskUpdateRequest $request, Task $task)
     {
-        //
+        $task->update($request->validated());
+        return redirect()->back()->with('message', 'Successfully saved!');
     }
 
     /**
@@ -108,8 +110,9 @@ class TaskController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Task $task)
     {
-        //
+        $task->delete();
+        return redirect()->back()->with('message', 'Successfully deleted');
     }
 }

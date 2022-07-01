@@ -15,15 +15,9 @@
                 <div class="card-header">
                     <h3 class="card-title">Edit project</h3>
                 </div>
-                @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
+
+                @include('admin.layouts.includes.messages')
+
             <form class="form-horizontal" method="POST" action="{{ route('projects.update', $project->id) }}">
                 @method('PATCH')
                 @csrf
