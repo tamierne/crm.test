@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\TaskUpdateRequest;
 use App\Models\Task;
 use Illuminate\Database\Eloquent\Collection;
 use App\Repositories\MainRepository;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class TaskRepository extends MainRepository
 {
@@ -22,7 +23,7 @@ class TaskRepository extends MainRepository
 
     public function getAllTasksWithPaginate()
     {
-        return Task::simplePaginate('10');
+        return Task::simplePaginate(10);
     }
 
     public function getCurrentUserTasks()
@@ -32,8 +33,7 @@ class TaskRepository extends MainRepository
 
     public function getAllTasksByStatusPaginated($status)
     {
-        dd($status);
-        return Task::byStatus($status)->get();
+        return Task::byStatus($status)->simplePaginate(10);
     }
 
     public function storeTask(TaskCreateRequest $request)

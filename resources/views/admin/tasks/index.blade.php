@@ -27,7 +27,7 @@
                                 </div>
                             @foreach ($statusList as $status)
                                 <div class="col">
-                                    <a href= {{ route('tasks.index', ['status' => $status->id]) }} type="button" class="btn btn-block btn-info btn-flat">View all {{ $status->name }} tasks</a>
+                                    <a href= {{ route('tasks.index', ['status' => $status->name]) }} type="button" class="btn btn-block btn-info btn-flat">View all {{ $status->name }} tasks</a>
                                 </div>
                             @endforeach
                         </div>

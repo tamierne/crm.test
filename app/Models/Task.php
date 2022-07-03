@@ -55,10 +55,9 @@ class Task extends Model
         return $this->belongsTo(Status::class);
     }
 
-    public function scopeByStatus($query)
+    public function scopeByStatus($query, $status)
     {
-        dd($query);
-        // $query->whereHas('status', fn(Builder $builder) => $builder->id);
+        $query->whereHas('status', fn($query) => $query->where('name', $status));
     }
     // public function status()
     // {
