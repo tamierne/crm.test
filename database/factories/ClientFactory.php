@@ -20,6 +20,8 @@ class ClientFactory extends Factory
             'name' => $this->faker->company(),
             'VAT' => $this->faker->randomNumber(8, false),
             'address' => $this->faker->address(),
+            'created_at' => $this->faker->dateTimeBetween('-5 months', '-1 week'),
+            'updated_at' => $this->faker->dateTimeBetween('-2 months', '-1 day'),
         ];
     }
 }

@@ -17,6 +17,11 @@
                         @can('client_create')
                             <a href= {{ route('clients.create') }} type="button" class="btn btn-block btn-success btn-flat">Add new client</a>
                         @endcan
+                        @if(request()->get('status') == 'active')
+                            <a href= {{ route('clients.index') }} type="button" class="btn btn-block btn-info btn-flat">View all clients</a>
+                        @else
+                            <a href= {{ route('clients.index', ['status' => 'active']) }} type="button" class="btn btn-block btn-info btn-flat">View active clients</a>
+                        @endif
                     </h3>
                         <div class="card-tools">
                             {{ $clients->links() }}
@@ -33,6 +38,7 @@
                                 <th>Company</th>
                                 <th>VAT</th>
                                 <th>Address</th>
+                                <th>Projects</th>
                                 <th>Available actions</th>
                             </tr>
                         </thead>
@@ -42,6 +48,10 @@
                                     <td>{{ $client->name }}</td>
                                     <td>{{ $client->VAT }}</td>
                                     <td>{{ $client->address }}</td>
+                                    <td>@foreach ($client->projects as $project)
+                                        <a href= {{ route('projects.edit', $project->id) }}>{{ $project->title }}</a><br>
+                                        @endforeach
+                                    </td>
                                     <td>
                                         @can('client_edit')
                                             <a href= {{ route('clients.edit', $client->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>

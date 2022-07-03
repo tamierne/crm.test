@@ -20,6 +20,16 @@ class ClientRepository extends MainRepository
         return Client::simplePaginate('10');
     }
 
+    public function getActiveClientsWithPaginate()
+    {
+        return Client::activeClients()->simplePaginate('10');
+    }
+
+    public function getActiveClients()
+    {
+        return Client::activeClients()->get();
+    }
+
     public function storeClient(ClientCreateRequest $request)
     {
         Client::create([

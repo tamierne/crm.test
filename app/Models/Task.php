@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 class Task extends Model
 {
@@ -33,6 +35,11 @@ class Task extends Model
         'project_id',
     ];
 
+    public function getDeadlineAttribute($value)
+    {
+        return Carbon::createFromFormat('Y-m-d', $this->attributes['deadline'])->format('m/d/Y');
+    }
+
     public function project()
     {
         return $this->belongsTo(Project::class);
@@ -46,6 +53,12 @@ class Task extends Model
     public function status()
     {
         return $this->belongsTo(Status::class);
+    }
+
+    public function scopeByStatus($query)
+    {
+        dd($query);
+        // $query->whereHas('status', fn(Builder $builder) => $builder->id);
     }
     // public function status()
     // {

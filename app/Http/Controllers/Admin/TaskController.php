@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\TaskIndexRequest;
 use App\Http\Requests\Admin\TaskCreateRequest;
 use App\Http\Requests\Admin\TaskUpdateRequest;
 use App\Models\Task;
@@ -30,13 +31,21 @@ class TaskController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(TaskIndexRequest $request)
     {
         $this->authorize('task_access');
 
-        return view('admin.tasks.index', [
-            'tasks' => Task::simplePaginate(10),
-        ]);
+        $statusList = $this->statusRepository->getAllStatuses();
+
+        $status = $request->get('status');
+
+        if($status == 'all' || empty($status)) {
+            $tasks = $this->taskRepository->getAllTasksWithPaginate();
+        } else {
+            $tasks = $this->taskRepository->getAllTasksByStatusPaginated($status);
+        }
+
+        return view('admin.tasks.index', compact('statusList', 'tasks'));
     }
 
     /**

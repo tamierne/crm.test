@@ -23,8 +23,8 @@ class ProjectFactory extends Factory
             'user_id' => $this->faker->numberBetween(1, 10),
             'client_id' => $this->faker->numberBetween(1, 10),
             'status_id' => $this->faker->numberBetween(1, 4),
-            'created_at' => $this->faker->dateTimeBetween('-3 months', '-1 week'),
-            'updated_at' => $this->faker->dateTimeBetween('-1 week', '-1 day'),
+            'created_at' => $this->faker->dateTimeBetween('-5 months', '-1 week'),
+            'updated_at' => $this->faker->dateTimeBetween('-2 months', '-1 day'),
         ];
     }
 }

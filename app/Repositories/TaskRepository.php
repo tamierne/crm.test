@@ -15,14 +15,25 @@ class TaskRepository extends MainRepository
         return Task::all(['id', 'title']);
     }
 
-    public function getTaskById($id)
+    // public function getTaskById($id)
+    // {
+        // return Task::find($id);
+    // }
+
+    public function getAllTasksWithPaginate()
     {
-        return Task::find($id);
+        return Task::simplePaginate('10');
     }
 
     public function getCurrentUserTasks()
     {
         return auth()->user()->tasks;
+    }
+
+    public function getAllTasksByStatusPaginated($status)
+    {
+        dd($status);
+        return Task::byStatus($status)->get();
     }
 
     public function storeTask(TaskCreateRequest $request)
@@ -37,17 +48,4 @@ class TaskRepository extends MainRepository
         ]);
     }
 
-    // public function updateProject(TaskUpdateRequest $request)
-    // {
-    //     $project = $this->getProjectById($request->id);
-
-    //     $project->title = $request->title;
-    //     $project->description = $request->description;
-    //     $project->deadline = $request->deadline;
-    //     $project->user_id = $request->user_id;
-    //     $project->client_id = $request->client_id;
-    //     $project->status_id = $request->status_id;
-
-    //     if ($project->isDirty()) return dd('DIRTY');
-    // }
 }

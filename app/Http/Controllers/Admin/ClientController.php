@@ -21,11 +21,16 @@ class ClientController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('client_access');
 
-        $clients = $this->clientRepository->getAllClientsWithPaginate();
+        if($request->get('status') == 'active') {
+            $clients = $this->clientRepository->getActiveClientsWithPaginate();
+        } else {
+            $clients = $this->clientRepository->getAllClientsWithPaginate();
+        }
+
         return view('admin.clients.index', compact('clients'));
     }
 

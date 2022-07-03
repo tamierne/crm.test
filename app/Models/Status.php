@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
-class Status extends Model
+class Status extends BaseModel
 {
     use HasFactory, SoftDeletes;
 
@@ -16,7 +16,6 @@ class Status extends Model
         // 'statusableId',
         // 'statusableType',
     ];
-
 
     // public function statusable()
     // {

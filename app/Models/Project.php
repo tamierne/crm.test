@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
-class Project extends Model
+class Project extends BaseModel
 {
     use HasFactory, SoftDeletes;
 
@@ -33,6 +33,11 @@ class Project extends Model
         'client_id',
     ];
 
+    public function getDeadlineAttribute($value)
+    {
+        return Carbon::parse($value)->format('m/d/Y');
+    }
+
     public function client()
     {
         return $this->belongsTo(Client::class);
@@ -46,6 +51,11 @@ class Project extends Model
     public function status()
     {
         return $this->belongsTo(Status::class);
+    }
+
+    public function scopeRecent($query)
+    {
+        return $query->where('updated_at', '>', Carbon::now()->subDays(30));
     }
 
 }

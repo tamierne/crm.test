@@ -21,6 +21,16 @@
                         <div class="card-tools">
                             {{ $tasks->links() }}
                         </div>
+                        <div class="row">
+                                <div class="col">
+                                    <a href= {{ route('tasks.index', ['status' => 'all']) }} type="button" class="btn btn-block btn-info btn-flat">View all tasks</a>
+                                </div>
+                            @foreach ($statusList as $status)
+                                <div class="col">
+                                    <a href= {{ route('tasks.index', ['status' => $status->id]) }} type="button" class="btn btn-block btn-info btn-flat">View all {{ $status->name }} tasks</a>
+                                </div>
+                            @endforeach
+                        </div>
 
                 @include('admin.layouts.includes.messages')
 

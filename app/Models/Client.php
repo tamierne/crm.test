@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 
-class Client extends Model
+class Client extends BaseModel
 {
     use HasFactory, SoftDeletes;
 
@@ -22,8 +21,8 @@ class Client extends Model
         return $this->hasMany(Project::class);
     }
 
-    public function scopeActive($query)
+    public function scopeActiveClients()
     {
-        return $query->where('updated_at', '>', Carbon::now()->subDays(30));
+        return $this->whereHas('projects', fn(Builder $builder) => $builder->recent());
     }
 }

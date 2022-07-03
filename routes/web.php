@@ -20,19 +20,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+// Route::get('/', function () {
+//     return view('welcome');
+// })->name('welcome');
 
-// Route::get('/admin', function () {
-//     return view('admin.index');
-// })->middleware(['auth'])->name('admin.index');
+Route::redirect('/', 'login')->name('welcome');
 
 Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
     Route::get('/', [AdminController::class, 'index'])->name('admin.index');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
+    // Route::get('{model}/{id}/restore')
+    // Route::get('clients/active', [ClientController::class, 'activeIndex'])->name('clients.active');
     Route::resources([
         'clients' => ClientController::class,
         'users' => UserController::class,
