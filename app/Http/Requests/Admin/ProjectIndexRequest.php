@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class TaskIndexRequest extends FormRequest
+class ProjectIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,7 @@ class TaskIndexRequest extends FormRequest
     {
         return [
             'status' => 'exists:statuses,name',
-            // 'filter' => 'exists:tasks,deleted_at',
+            // 'filter' => 'exists:projects,deleted_at',
         ];
     }
 }

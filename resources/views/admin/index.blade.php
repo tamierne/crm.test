@@ -42,9 +42,9 @@
                 </tr>
             </thead>
             <tbody>
-                @if (@empty($tasks))
+                @empty($tasks)
                     You've no active tasks! Enjoy!
-                @else
+                @endempty
                 @foreach ($tasks as $task)
                     <tr>
                         <td>{{ $task->id }}</td>
@@ -55,19 +55,18 @@
                         <td>{{ $task->status->name }}</td>
                         <td>
                             @can('task_edit')
-                                <a href= {{ route('tasks.edit', $task->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
+                                <a href= {{ route('tasks.edit', $task->id) }} type="button" class="btn btn-block btn-success mt-1 btn-flat">Edit</a>
                             @endcan
                             @can('task_delete')
                                 <form action="{{ route('tasks.destroy', $task->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-block btn-danger btn-flat">Delete</button>
+                                    <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Delete</button>
                                 </form>
                             @endcan
                         </td>
                     </tr>
                 @endforeach
-                @endif
             </tbody>
         </table>
     </div>

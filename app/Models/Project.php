@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Askedio\SoftCascade\Traits\SoftCascadeTrait;
 
 class Project extends BaseModel
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, SoftCascadeTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -33,6 +34,8 @@ class Project extends BaseModel
         'client_id',
     ];
 
+    protected $softCascade = ['tasks'];
+
     public function getDeadlineAttribute($value)
     {
         return Carbon::parse($value)->format('m/d/Y');
@@ -40,7 +43,7 @@ class Project extends BaseModel
 
     public function client()
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(Client::class)->withTrashed();
     }
 
     public function user()
@@ -53,9 +56,18 @@ class Project extends BaseModel
         return $this->belongsTo(Status::class);
     }
 
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
     public function scopeRecent($query)
     {
         return $query->where('updated_at', '>', Carbon::now()->subDays(30));
     }
 
+    public function scopeByStatus($query, $status)
+    {
+        $query->whereHas('status', fn($query) => $query->where('name', $status));
+    }
 }

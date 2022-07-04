@@ -23,13 +23,16 @@
                         </div>
                         <div class="row">
                                 <div class="col">
-                                    <a href= {{ route('tasks.index', ['status' => 'all']) }} type="button" class="btn btn-block btn-info btn-flat">View all tasks</a>
+                                    <a href= {{ route('tasks.index') }} type="button" class="btn btn-block btn-info btn-flat">View all tasks</a>
                                 </div>
                             @foreach ($statusList as $status)
                                 <div class="col">
                                     <a href= {{ route('tasks.index', ['status' => $status->name]) }} type="button" class="btn btn-block btn-info btn-flat">View all {{ $status->name }} tasks</a>
                                 </div>
                             @endforeach
+                                <div class="col">
+                                    <a href= {{ route('tasks.index', ['filter' => 'Deleted']) }} type="button" class="btn btn-block btn-info btn-flat">View all deleted tasks</a>
+                                </div>
                         </div>
 
                 @include('admin.layouts.includes.messages')
@@ -64,13 +67,29 @@
                                         @can('task_edit')
                                             <a href= {{ route('tasks.edit', $task->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
                                         @endcan
-                                        @can('task_delete')
-                                            <form action="{{ route('tasks.destroy', $task->id) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-block btn-danger btn-flat">Delete</button>
-                                            </form>
-                                        @endcan
+                                        @if($task->deleted_at)
+                                            @can('task_wipe')
+                                                <form action="{{ route('tasks.wipe', $task->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Wipe</button>
+                                                </form>
+                                            @endcan
+                                            @can('task_restore')
+                                                <form action="{{ route('tasks.restore', $task->id) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-block btn-warning mt-1 btn-flat">Restore</button>
+                                                </form>
+                                            @endcan
+                                        @else
+                                            @can('task_delete')
+                                                <form action="{{ route('tasks.destroy', $task->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Delete</button>
+                                                </form>
+                                            @endcan
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

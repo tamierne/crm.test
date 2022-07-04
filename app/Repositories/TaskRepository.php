@@ -21,7 +21,7 @@ class TaskRepository extends MainRepository
         // return Task::find($id);
     // }
 
-    public function getAllTasksWithPaginate()
+    public function getAllTasksPaginated()
     {
         return Task::simplePaginate(10);
     }
@@ -31,9 +31,14 @@ class TaskRepository extends MainRepository
         return auth()->user()->tasks;
     }
 
+    public function getAllDeletedTasksPaginated()
+    {
+        return Task::onlyTrashed()->simplePaginate(10)->appends(request()->query());
+    }
+
     public function getAllTasksByStatusPaginated($status)
     {
-        return Task::byStatus($status)->simplePaginate(10);
+        return Task::byStatus($status)->simplePaginate(10)->appends(request()->query());
     }
 
     public function storeTask(TaskCreateRequest $request)

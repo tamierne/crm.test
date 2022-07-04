@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\ProjectIndexRequest;
 use App\Http\Requests\Admin\ProjectCreateRequest;
 use App\Http\Requests\Admin\ProjectUpdateRequest;
 use App\Models\Project;
@@ -24,19 +25,32 @@ class ProjectController extends BaseController
         $this->clientRepository = $clientRepository;
         $this->statusRepository = $statusRepository;
         $this->projectRepository = $projectRepository;
+
+        $this->statusList = $statusRepository->getAllStatuses();
+        $this->projectsList = $projectRepository->getAllProjects();
+        $this->usersList = $userRepository->getAllUsers();
     }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(ProjectIndexRequest $request)
     {
         $this->authorize('project_access');
 
-        return view('admin.projects.index', [
-            'projects' => Project::simplePaginate(10),
-        ]);
+        $status = $request->get('status');
+        $filter = $request->get('filter');
+
+        if(empty($status) && empty($filter)) {
+            $projects = $this->projectRepository->getAllProjectsPaginated();
+        } elseif($filter == 'Deleted') {
+            $projects = $this->projectRepository->getAllDeletedProjectsPaginated();
+        } else {
+            $projects = $this->projectRepository->getAllProjectsByStatusPaginated($status);
+        }
+
+        return view('admin.projects.index', ['statusList' => $this->statusList, 'projects' => $projects,]);
     }
 
     /**
@@ -119,5 +133,21 @@ class ProjectController extends BaseController
 
         $project->delete();
         return redirect()->back()->with('message', 'Successfully deleted');
+    }
+
+    public function restore(Project $project)
+    {
+        $this->authorize('project_restore');
+
+        $project->withTrashed()->restore();
+        return redirect()->back()->with('message', 'Successfully restored');
+    }
+
+    public function wipe(Project $project)
+    {
+        $this->authorize('project_wipe');
+
+        $project->withTrashed()->forceDelete();
+        return redirect()->back()->with('message', 'Successfully wiped');
     }
 }

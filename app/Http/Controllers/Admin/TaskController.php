@@ -25,6 +25,10 @@ class TaskController extends BaseController
         $this->projectRepository = $projectRepository;
         $this->statusRepository = $statusRepository;
         $this->taskRepository = $taskRepository;
+
+        $this->statusList = $statusRepository->getAllStatuses();
+        $this->projectsList = $projectRepository->getAllProjects();
+        $this->usersList = $userRepository->getAllUsers();
     }
     /**
      * Display a listing of the resource.
@@ -35,17 +39,18 @@ class TaskController extends BaseController
     {
         $this->authorize('task_access');
 
-        $statusList = $this->statusRepository->getAllStatuses();
-
         $status = $request->get('status');
+        $filter = $request->get('filter');
 
-        if($status == 'all' || empty($status)) {
-            $tasks = $this->taskRepository->getAllTasksWithPaginate();
+        if(empty($status) && empty($filter)) {
+            $tasks = $this->taskRepository->getAllTasksPaginated();
+        } elseif($filter == 'Deleted') {
+            $tasks = $this->taskRepository->getAllDeletedTasksPaginated();
         } else {
             $tasks = $this->taskRepository->getAllTasksByStatusPaginated($status);
         }
 
-        return view('admin.tasks.index', compact('statusList', 'tasks'));
+        return view('admin.tasks.index', ['statusList' => $this->statusList, 'tasks' => $tasks,]);
     }
 
     /**
@@ -57,10 +62,7 @@ class TaskController extends BaseController
     {
         $this->authorize('task_create');
 
-        $statusList = $this->statusRepository->getAllStatuses();
-        $usersList = $this->userRepository->getAllUsers();
-        $projectsList = $this->projectRepository->getAllProjects();
-        return view('admin.tasks.create', compact(['usersList', 'projectsList', 'statusList']));
+        return view('admin.tasks.create', ['statusList' => $this->statusList, 'usersList' => $this->usersList, 'projectsList' => $this->projectsList,]);
     }
 
     /**
@@ -97,10 +99,7 @@ class TaskController extends BaseController
     {
         $this->authorize('task_edit');
 
-        $statusList = $this->statusRepository->getAllStatuses();
-        $usersList = $this->userRepository->getAllUsers();
-        $projectsList = $this->projectRepository->getAllProjects();
-        return view('admin.tasks.edit', compact(['usersList', 'projectsList', 'statusList', 'task']));
+        return view('admin.tasks.edit', ['statusList' => $this->statusList, 'usersList' => $this->usersList, 'projectsList' => $this->projectsList, 'task' => $task]);
     }
 
     /**
@@ -113,6 +112,7 @@ class TaskController extends BaseController
     public function update(TaskUpdateRequest $request, Task $task)
     {
         $task->update($request->validated());
+
         return redirect()->back()->with('message', 'Successfully saved!');
     }
 
@@ -128,5 +128,21 @@ class TaskController extends BaseController
 
         $task->delete();
         return redirect()->back()->with('message', 'Successfully deleted');
+    }
+
+    public function restore(Task $task)
+    {
+        $this->authorize('task_restore');
+
+        $task->onlyTrashed()->restore();
+        return redirect()->back()->with('message', 'Successfully restored');
+    }
+
+    public function wipe(Task $task)
+    {
+        $this->authorize('task_wipe');
+
+        $task->withTrashed()->forceDelete();
+        return redirect()->back()->with('message', 'Successfully wiped');
     }
 }

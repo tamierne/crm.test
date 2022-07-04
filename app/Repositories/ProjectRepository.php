@@ -20,6 +20,21 @@ class ProjectRepository extends MainRepository
         return Project::find($id);
     }
 
+    public function getAllProjectsPaginated()
+    {
+        return Project::simplePaginate(10);
+    }
+
+    public function getAllDeletedProjectsPaginated()
+    {
+        return Project::onlyTrashed()->simplePaginate(10)->appends(request()->query());
+    }
+
+    public function getAllProjectsByStatusPaginated($status)
+    {
+        return Project::byStatus($status)->simplePaginate(10)->appends(request()->query());
+    }
+
     public function storeProject(ProjectCreateRequest $request)
     {
         Project::create([

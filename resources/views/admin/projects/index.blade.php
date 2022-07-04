@@ -21,6 +21,19 @@
                         <div class="card-tools">
                             {{ $projects->links() }}
                         </div>
+                        <div class="row">
+                            <div class="col">
+                                <a href= {{ route('projects.index') }} type="button" class="btn btn-block btn-info btn-flat">View all projects</a>
+                            </div>
+                        @foreach ($statusList as $status)
+                            <div class="col">
+                                <a href= {{ route('projects.index', ['status' => $status->name]) }} type="button" class="btn btn-block btn-info btn-flat">View all {{ $status->name }} projects</a>
+                            </div>
+                        @endforeach
+                            <div class="col">
+                                <a href= {{ route('projects.index', ['filter' => 'Deleted']) }} type="button" class="btn btn-block btn-info btn-flat">View all deleted projects</a>
+                            </div>
+                        </div>
 
                 @include('admin.layouts.includes.messages')
 
@@ -54,13 +67,29 @@
                                         @can('project_edit')
                                             <a href= {{ route('projects.edit', $project->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
                                         @endcan
-                                        @can('project_delete')
-                                            <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-block btn-danger btn-flat">Delete</button>
-                                            </form>
-                                        @endcan
+                                        @if($project->deleted_at)
+                                            @can('project_wipe')
+                                                <form action="{{ route('projects.wipe', $project->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Wipe</button>
+                                                </form>
+                                            @endcan
+                                            @can('project_restore')
+                                                <form action="{{ route('projects.restore', $project->id) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-block btn-warning mt-1 btn-flat">Restore</button>
+                                                </form>
+                                            @endcan
+                                        @else
+                                            @can('project_delete')
+                                                <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Delete</button>
+                                                </form>
+                                            @endcan
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

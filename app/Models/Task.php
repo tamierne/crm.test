@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -42,7 +41,7 @@ class Task extends Model
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Project::class)->withTrashed();
     }
 
     public function user()

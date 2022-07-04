@@ -20,6 +20,11 @@ class BaseModel extends Model
 
     public function getDeletedAtAttribute($value)
     {
-        return Carbon::parse($value)->format('m/d/Y');
+        if($value) {
+            return Carbon::parse($value)->format('m/d/Y');
+        } else {
+            return $value;
+        }
+
     }
 }
