@@ -75,7 +75,7 @@ class TaskController extends BaseController
     {
         $this->taskRepository->storeTask($request);
 
-        return $this->index()->with('message', 'Task successfully created!');
+        return redirect()->back()->with('message', 'Task successfully created!');
     }
 
     /**
@@ -140,11 +140,13 @@ class TaskController extends BaseController
         return redirect()->back()->with('message', 'Successfully restored');
     }
 
-    public function wipe(Task $task)
+    public function wipe($id)
     {
         $this->authorize('task_wipe');
 
-        $task->withTrashed()->forceDelete();
+        $task = $this->taskRepository->getTaskById($id);
+
+        $task->forceDelete();
         return redirect()->back()->with('message', 'Successfully wiped');
     }
 }

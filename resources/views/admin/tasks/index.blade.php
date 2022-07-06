@@ -74,7 +74,6 @@
                                                 @can('task_wipe')
                                                     <form action="{{ route('tasks.wipe', $task->id) }}" method="POST">
                                                         @csrf
-                                                        @method('DELETE')
                                                         <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Wipe</button>
                                                     </form>
                                                 @endcan

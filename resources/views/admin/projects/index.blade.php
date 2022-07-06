@@ -74,7 +74,6 @@
                                                 @can('project_wipe')
                                                     <form action="{{ route('projects.wipe', $project->id) }}" method="POST">
                                                         @csrf
-                                                        @method('DELETE')
                                                         <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Wipe</button>
                                                     </form>
                                                 @endcan
