@@ -95,7 +95,7 @@
                                 <tr>
                                     <td>{{ $task->id }}</td>
                                     <td><a href= {{ route('tasks.edit', $task->id) }}>{{ $task->title }}</a></td>
-                                    <td>{{ $task->description }}</td>
+                                    <td>{{ Str::limit($task->description, 50, '...') }}</td>
                                     <td>{{ $task->deadline }}</td>
                                     <td>{{ $task->user->name }}</td>
                                     <td>{{ $task->status->name }}</td>

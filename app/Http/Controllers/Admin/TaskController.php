@@ -130,11 +130,13 @@ class TaskController extends BaseController
         return redirect()->back()->with('message', 'Successfully deleted');
     }
 
-    public function restore(Task $task)
+    public function restore($id)
     {
         $this->authorize('task_restore');
 
-        $task->onlyTrashed()->restore();
+        $task = $this->taskRepository->getTaskById($id);
+
+        $task->restore();
         return redirect()->back()->with('message', 'Successfully restored');
     }
 

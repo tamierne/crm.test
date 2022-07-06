@@ -29,6 +29,7 @@ class ProjectController extends BaseController
         $this->statusList = $statusRepository->getAllStatuses();
         $this->projectsList = $projectRepository->getAllProjects();
         $this->usersList = $userRepository->getAllUsers();
+        $this->clientsList = $clientRepository->getAllClients();
     }
     /**
      * Display a listing of the resource.
@@ -62,10 +63,7 @@ class ProjectController extends BaseController
     {
         $this->authorize('project_create');
 
-        $statusList = $this->statusRepository->getAllStatuses();
-        $usersList = $this->userRepository->getAllUsers();
-        $clientsList = $this->clientRepository->getAllClients();
-        return view('admin.projects.create', compact(['usersList', 'clientsList', 'statusList']));
+        return view('admin.projects.create', ['usersList' => $this->usersList, 'clientsList' => $this->clientsList, 'statusList' => $this->statusList]);
     }
 
     /**
@@ -105,7 +103,7 @@ class ProjectController extends BaseController
         $statusList = $this->statusRepository->getAllStatuses();
         $usersList = $this->userRepository->getAllUsers();
         $clientsList = $this->clientRepository->getAllClients();
-        return view('admin.projects.edit', compact(['usersList', 'clientsList', 'project', 'statusList']));
+        return view('admin.projects.edit', ['usersList' => $this->usersList, 'clientsList' => $this->clientsList, 'statusList' => $this->statusList, 'project' => $project,]);
     }
 
     /**
@@ -135,17 +133,21 @@ class ProjectController extends BaseController
         return redirect()->back()->with('message', 'Successfully deleted');
     }
 
-    public function restore(Project $project)
+    public function restore($id)
     {
         $this->authorize('project_restore');
 
-        $project->withTrashed()->restore();
+        $project = $this->projectRepository->getProjectById($id);
+
+        $project->restore();
         return redirect()->back()->with('message', 'Successfully restored');
     }
 
-    public function wipe(Project $project)
+    public function wipe($id)
     {
         $this->authorize('project_wipe');
+
+        $project = $this->projectRepository->getProjectById($id);
 
         $project->withTrashed()->forceDelete();
         return redirect()->back()->with('message', 'Successfully wiped');

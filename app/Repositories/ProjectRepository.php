@@ -17,7 +17,7 @@ class ProjectRepository extends MainRepository
 
     public function getProjectById($id)
     {
-        return Project::find($id);
+        return Project::withTrashed()->findOrFail($id);
     }
 
     public function getAllProjectsPaginated()

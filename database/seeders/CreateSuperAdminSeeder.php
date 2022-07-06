@@ -20,7 +20,7 @@ class CreateSuperAdminSeeder extends Seeder
     public function run()
     {
         $superAdmin = User::create([
-            'name' => 'admin',
+            'name' => 'Superadmin',
             'email' => 'admin@admin.com',
             'password' => Hash::make('12345678'),
             'created_at' => Carbon::now(),

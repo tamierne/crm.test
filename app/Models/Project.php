@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Askedio\SoftCascade\Traits\SoftCascadeTrait;
+use Illuminate\Support\Str;
 
 class Project extends BaseModel
 {
@@ -70,4 +71,5 @@ class Project extends BaseModel
     {
         $query->whereHas('status', fn($query) => $query->where('name', $status));
     }
+
 }

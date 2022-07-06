@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class Task extends Model
 {
@@ -36,7 +37,7 @@ class Task extends Model
 
     public function getDeadlineAttribute($value)
     {
-        return Carbon::createFromFormat('Y-m-d', $this->attributes['deadline'])->format('m/d/Y');
+        return Carbon::parse($value)->format('m/d/Y');
     }
 
     public function project()

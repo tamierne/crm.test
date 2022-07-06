@@ -33,14 +33,14 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
 
     // Route::get('{model}/{id}/restore')
     // Route::get('clients/active', [ClientController::class, 'activeIndex'])->name('clients.active');
-    Route::group(['name' => 'projects.', 'controller' => ProjectController::class], function() {
-        Route::post('restore', 'restore')->name('projects.restore');
-        Route::post('wipe', 'wipe')->name('projects.wipe');
+    Route::group(['prefix' => 'projects', 'controller' => ProjectController::class], function() {
+        Route::post('{project}/restore', 'restore')->name('projects.restore');
+        Route::post('{project}/wipe', 'wipe')->name('projects.wipe');
     });
 
-    Route::group(['name' => 'tasks.', 'controller' => TaskController::class], function() {
-        Route::post('restore', 'restore')->name('tasks.restore');
-        Route::post('wipe', 'wipe')->name('tasks.wipe');
+    Route::group(['prefix' => 'tasks', 'controller' => TaskController::class], function() {
+        Route::post('{task}/restore', 'restore')->name('tasks.restore');
+        Route::post('{task}/wipe', 'wipe')->name('tasks.wipe');
     });
 
     Route::resources([

@@ -17,14 +17,18 @@
                         @can('client_create')
                             <a href= {{ route('clients.create') }} type="button" class="btn btn-block btn-success btn-flat">Add new client</a>
                         @endcan
-                        @if(request()->get('status') == 'active')
-                            <a href= {{ route('clients.index') }} type="button" class="btn btn-block btn-info btn-flat">View all clients</a>
-                        @else
-                            <a href= {{ route('clients.index', ['status' => 'active']) }} type="button" class="btn btn-block btn-info btn-flat">View active clients</a>
-                        @endif
                     </h3>
                         <div class="card-tools">
                             {{ $clients->links() }}
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                @if(request()->get('status') == 'active')
+                                    <a href= {{ route('clients.index') }} type="button" class="btn btn-block btn-info btn-flat">View all clients</a>
+                                @else
+                                    <a href= {{ route('clients.index', ['status' => 'active']) }} type="button" class="btn btn-block btn-info btn-flat">View active clients</a>
+                                @endif
+                            </div>
                         </div>
 
                 @include('admin.layouts.includes.messages')

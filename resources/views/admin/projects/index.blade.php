@@ -40,61 +40,65 @@
                 </div>
 
                 <div class="card-body p-0">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>Deadline</th>
-                                <th>Client</th>
-                                <th>User</th>
-                                <th>Status</th>
-                                <th>Available actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($projects as $project)
+                    @if (count($projects) === 0)
+                        <h5 class="card-title m-5">There's no projects</h5>
+                    @else
+                        <table class="table">
+                            <thead>
                                 <tr>
-                                    <td>{{ $project->id }}</td>
-                                    <td>{{ $project->title }}</td>
-                                    <td>{{ $project->description }}</td>
-                                    <td>{{ $project->deadline }}</td>
-                                    <td>{{ $project->client->name }}</td>
-                                    <td>{{ $project->user->name }}</td>
-                                    <td>{{ $project->status->name }}</td>
-                                    <td>
-                                        @can('project_edit')
-                                            <a href= {{ route('projects.edit', $project->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
-                                        @endcan
-                                        @if($project->deleted_at)
-                                            @can('project_wipe')
-                                                <form action="{{ route('projects.wipe', $project->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Wipe</button>
-                                                </form>
-                                            @endcan
-                                            @can('project_restore')
-                                                <form action="{{ route('projects.restore', $project->id) }}" method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-block btn-warning mt-1 btn-flat">Restore</button>
-                                                </form>
-                                            @endcan
-                                        @else
-                                            @can('project_delete')
-                                                <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Delete</button>
-                                                </form>
-                                            @endcan
-                                        @endif
-                                    </td>
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Deadline</th>
+                                    <th>Client</th>
+                                    <th>User</th>
+                                    <th>Status</th>
+                                    <th>Available actions</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($projects as $project)
+                                    <tr>
+                                        <td>{{ $project->id }}</td>
+                                        <td>{{ $project->title }}</td>
+                                        <td>{{ Str::limit($project->description, 50, '...') }}</td>
+                                        <td>{{ $project->deadline }}</td>
+                                        <td>{{ $project->client->name }}</td>
+                                        <td>{{ $project->user->name }}</td>
+                                        <td>{{ $project->status->name }}</td>
+                                        <td>
+                                            @can('project_edit')
+                                                <a href= {{ route('projects.edit', $project->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
+                                            @endcan
+                                            @if($project->deleted_at)
+                                                @can('project_wipe')
+                                                    <form action="{{ route('projects.wipe', $project->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Wipe</button>
+                                                    </form>
+                                                @endcan
+                                                @can('project_restore')
+                                                    <form action="{{ route('projects.restore', $project->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-block btn-warning mt-1 btn-flat">Restore</button>
+                                                    </form>
+                                                @endcan
+                                            @else
+                                                @can('project_delete')
+                                                    <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Delete</button>
+                                                    </form>
+                                                @endcan
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
                 </div>
             </div>
         </div>

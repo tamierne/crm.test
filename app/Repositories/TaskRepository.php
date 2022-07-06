@@ -16,10 +16,10 @@ class TaskRepository extends MainRepository
         return Task::all(['id', 'title']);
     }
 
-    // public function getTaskById($id)
-    // {
-        // return Task::find($id);
-    // }
+    public function getTaskById($id)
+    {
+        return Task::withTrashed()->findOrFail($id);
+    }
 
     public function getAllTasksPaginated()
     {
