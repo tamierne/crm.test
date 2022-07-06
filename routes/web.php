@@ -26,8 +26,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::permanentRedirect('/', 'login')->name('welcome');
 
-Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified']], function() {
     Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+
+    Route::get('/email/verify', function () {
+        return view('auth.verify-email');
+    })->name('verification.notice');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
