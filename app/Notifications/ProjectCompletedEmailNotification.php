@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ProjectUserCompletedEmailNotification extends Notification
+class ProjectCompletedEmailNotification extends Notification
 {
     use Queueable;
 

@@ -3,8 +3,8 @@
 namespace App\Observers;
 
 use App\Models\Task;
-use App\Notifications\TaskUserAssignmentEmailNotification;
-use App\Notifications\TaskUserCompletedEmailNotification;
+use App\Notifications\TaskAssignmentEmailNotification;
+use App\Notifications\TaskCompletedEmailNotification;
 
 class TaskObserver
 {
@@ -16,7 +16,7 @@ class TaskObserver
      */
     public function created(Task $task)
     {
-        $task->user->notify(new TaskUserAssignmentEmailNotification($task));
+        $task->user->notify(new TaskAssignmentEmailNotification($task));
     }
 
     /**
@@ -28,9 +28,9 @@ class TaskObserver
     public function updating(Task $task)
     {
         if ($task->isDirty('status_id') && $task->status_id == 1) {
-            $task->user->notify(new TaskUserCompletedEmailNotification($task));
+            $task->user->notify(new TaskCompletedEmailNotification($task));
         } elseif ($task->isDirty('user_id')) {
-            $task->user->notify(new TaskUserAssignmentEmailNotification($task));
+            $task->user->notify(new TaskAssignmentEmailNotification($task));
         }
     }
 

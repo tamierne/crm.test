@@ -3,8 +3,8 @@
 namespace App\Observers;
 
 use App\Models\Project;
-use App\Notifications\ProjectUserAssignmentEmailNotification;
-use App\Notifications\ProjectUserCompletedEmailNotification;
+use App\Notifications\ProjectAssignmentEmailNotification;
+use App\Notifications\ProjectCompletedEmailNotification;
 
 class ProjectObserver
 {
@@ -16,7 +16,7 @@ class ProjectObserver
      */
     public function created(Project $project)
     {
-        $project->user->notify(new ProjectUserAssignmentEmailNotification($project));
+        $project->user->notify(new ProjectAssignmentEmailNotification($project));
     }
 
     /**
@@ -28,9 +28,9 @@ class ProjectObserver
     public function updating(Project $project)
     {
         if ($project->isDirty('status_id') && $project->status_id == 1) {
-            $project->user->notify(new ProjectUserCompletedEmailNotification($project));
+            $project->user->notify(new ProjectCompletedEmailNotification($project));
         } elseif ($project->isDirty('user_id')) {
-            $project->user->notify(new ProjectUserAssignmentEmailNotification($project));
+            $project->user->notify(new ProjectAssignmentEmailNotification($project));
         }
     }
 

@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class TaskUserAssignmentEmailNotification extends Notification
+class TaskCompletedEmailNotification extends Notification
 {
     use Queueable;
 
@@ -45,7 +45,7 @@ class TaskUserAssignmentEmailNotification extends Notification
     {
         return (new MailMessage)
                     ->line('Hello '.$this->task->user->name.'!')
-                    ->line('You have been assigned on a task '.$this->task->title)
+                    ->line('Your task '.$this->task->title.' was successfully finished!')
                     ->action('View task', route('tasks.edit', $this->task->id))
                     ->line('Thank you for using our application!');
     }
