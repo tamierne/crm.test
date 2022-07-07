@@ -23,6 +23,7 @@ class Project extends BaseModel
         'deadline',
         'user_id',
         'client_id',
+        'status_id',
     ];
 
     /**

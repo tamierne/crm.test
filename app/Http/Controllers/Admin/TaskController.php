@@ -73,9 +73,13 @@ class TaskController extends BaseController
      */
     public function store(TaskCreateRequest $request)
     {
-        $this->taskRepository->storeTask($request);
-
-        return redirect()->back()->with('message', 'Task successfully created!');
+        // if(!$request->validated()){
+        //     dd('here');
+            $this->taskRepository->storeTask($request);
+            return redirect()->back()->with('message', 'Task successfully created!');
+        // } else {
+        //     return redirect()->back()->withInput()->with('error', 'Something went wrong!');
+        // }
     }
 
     /**

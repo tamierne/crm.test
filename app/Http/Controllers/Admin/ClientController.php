@@ -56,7 +56,7 @@ class ClientController extends BaseController
     {
         $this->clientRepository->storeClient($request);
 
-        return $this->index()->with('message', 'Client successfully created!');
+        return redirect()->back()->with('message', 'Client successfully created!');
     }
 
     /**

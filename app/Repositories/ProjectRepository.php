@@ -37,14 +37,7 @@ class ProjectRepository extends MainRepository
 
     public function storeProject(ProjectCreateRequest $request)
     {
-        Project::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'deadline' => $request->deadline,
-            'user_id' => $request->user_id,
-            'client_id' => $request->client_id,
-            'status_id' => $request->status_id,
-        ]);
+        return Project::create($request->validated());
     }
 
     // public function updateProject(ProjectUpdateRequest $request)

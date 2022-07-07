@@ -43,14 +43,7 @@ class TaskRepository extends MainRepository
 
     public function storeTask(TaskCreateRequest $request)
     {
-        Task::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'deadline' => $request->deadline,
-            'user_id' => $request->user_id,
-            'project_id' => $request->project_id,
-            'status_id' => $request->status_id,
-        ]);
+        return Task::create($request->validated());
     }
 
 }

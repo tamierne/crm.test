@@ -32,10 +32,6 @@ class ClientRepository extends MainRepository
 
     public function storeClient(ClientCreateRequest $request)
     {
-        Client::create([
-            'name' => $request->name,
-            'VAT' => $request->VAT,
-            'address' => $request->address,
-        ]);
+        Client::create($request->validated());
     }
 }

@@ -46,15 +46,9 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="AssignedClient">Assigned project</label>
-                        <select class="form-control select2 select2-hidden-accessible" name="project_id" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
-                            @foreach ($projectsList as $project)
-                                <option value="{{ $project->id }}"
-                                    @if ($project->id == $task->project_id) selected @endif>
-                                        {{ $project->title }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <label for="project">Assigned Project</label>
+                        <input type="text" class="form-control" id="project_id" placeholder="{{ $task->project->title }}" disabled>
+                        <input type="hidden" name="project_id"  value="{{ $task->project_id }}">
                     </div>
                     <div class="form-group">
                         <label for="status">Status</label>

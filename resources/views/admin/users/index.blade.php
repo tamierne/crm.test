@@ -52,13 +52,13 @@
                                     </td>
                                     <td>
                                         @can('user_edit')
-                                            <a href= {{ route('users.edit', $user->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
+                                            <a href= {{ route('users.edit', $user->id) }} type="button" class="btn btn-block btn-success mt-1 btn-flat">Edit</a>
                                         @endcan
                                         @can('user_delete')
                                             <form action="{{ route('users.destroy', $user->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-block btn-danger btn-flat">Delete</button>
+                                                <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Delete</button>
                                             </form>
                                         @endcan
                                     </td>
