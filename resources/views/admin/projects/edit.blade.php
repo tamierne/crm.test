@@ -78,51 +78,55 @@
                     <div class="card-header">
                         <h3 class="card-title">Project tasks list</h3>
                     </div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>Deadline</th>
-                                <th>Assigned user</th>
-                                <th>Status</th>
-                                <th>Available actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($project->tasks as $task)
+                    @if (count($project->tasks) == 0)
+                        <h5 class="card-title m-5">There're no tasks in this project</h5>
+                    @else
+                        <table class="table">
+                            <thead>
                                 <tr>
-                                    <td>{{ $task->id }}</td>
-                                    <td><a href= {{ route('tasks.edit', $task->id) }}>{{ $task->title }}</a></td>
-                                    <td>{{ Str::limit($task->description, 50, '...') }}</td>
-                                    <td>{{ $task->deadline }}</td>
-                                    <td>{{ $task->user->name }}</td>
-                                    <td>{{ $task->status->name }}</td>
-                                    <td>
-                                        @can('project_edit')
-                                            <a href= {{ route('tasks.edit', $task->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
-                                        @endcan
-                                        @can('project_delete')
-                                            <form action="{{ route('tasks.destroy', $task->id) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Delete</button>
-                                            </form>
-                                        @endcan
-                                        @if($task->deleted_at)
-                                            @can('project_restore')
-                                                <form action="{{ route('tasks.restore', $task->id) }}" method="POST">
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Deadline</th>
+                                    <th>Assigned user</th>
+                                    <th>Status</th>
+                                    <th>Available actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($project->tasks as $task)
+                                    <tr>
+                                        <td>{{ $task->id }}</td>
+                                        <td><a href= {{ route('tasks.edit', $task->id) }}>{{ $task->title }}</a></td>
+                                        <td>{{ Str::limit($task->description, 50, '...') }}</td>
+                                        <td>{{ $task->deadline }}</td>
+                                        <td>{{ $task->user->name }}</td>
+                                        <td>{{ $task->status->name }}</td>
+                                        <td>
+                                            @can('project_edit')
+                                                <a href= {{ route('tasks.edit', $task->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
+                                            @endcan
+                                            @can('project_delete')
+                                                <form action="{{ route('tasks.destroy', $task->id) }}" method="POST">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-block btn-warning mt-1 btn-flat">Restore</button>
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Delete</button>
                                                 </form>
                                             @endcan
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                            @if($task->deleted_at)
+                                                @can('project_restore')
+                                                    <form action="{{ route('tasks.restore', $task->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-block btn-warning mt-1 btn-flat">Restore</button>
+                                                    </form>
+                                                @endcan
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
                 </div>
             </div>
         </div>

@@ -23,11 +23,15 @@ class UserRepository extends MainRepository
 
     public function storeUser(UserCreateRequest $request)
     {
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+            $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
+        }
     }
 
     // public function updateUser(UserUpdateRequest $request)

@@ -44,11 +44,10 @@ class ProjectCompletedEmailNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('Hello '.$this->project->user->name.'!')
+                    ->line('Hello '.$this->project->client->name.'!')
                     ->line('Your project '.$this->project->title)
-                    ->line('For '.$this->project->client->name)
                     ->line('Was successfully finished!')
-                    ->action('View task', route('projects.edit', $this->project->id))
+                    ->action('View project', route('projects.edit', $this->project->id))
                     ->line('Thank you for using our application!');
     }
 

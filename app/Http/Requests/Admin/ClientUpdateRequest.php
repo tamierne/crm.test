@@ -25,8 +25,9 @@ class ClientUpdateRequest extends FormRequest
     {
         return [
             'name' => 'required|string:30',
-            'VAT' => 'required|numeric:10|unique:clients,VAT',
+            'VAT' => 'required|numeric:10',
             'address' => 'required|string:100|min:10',
+            'avatar' => 'image|max:1024',
         ];
     }
 }

@@ -18,7 +18,7 @@
 
                 @include('admin.layouts.includes.messages')
 
-            <form class="form-horizontal" method="POST" action="{{ route('clients.store') }}">
+            <form class="form-horizontal" method="POST" action="{{ route('clients.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="card-body">
                     <div class="form-group">
@@ -27,11 +27,15 @@
                     </div>
                     <div class="form-group">
                         <label for="VAT">VAT</label>
-                        <input type="text" class="form-control" name="VAT" id="VAT" placeholder="Enter VAT number">
+                        <input type="number" class="form-control" name="VAT" id="VAT" placeholder="Enter VAT number">
                     </div>
                     <div class="form-group">
                         <label for="address">Address</label>
                         <input type="text" class="form-control" name="address" id="address" placeholder="Enter address">
+                    </div>
+                    <div class="form-group">
+                        <label for="avatar">Avatar</label>
+                        <input type="file" class="form-control" name="avatar" id="avatar" placeholder="Add profile photo?">
                     </div>
                 </div>
                 <div class="card-footer">

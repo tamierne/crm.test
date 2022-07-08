@@ -6,6 +6,7 @@ use App\Http\Requests\Admin\ClientCreateRequest;
 use App\Http\Requests\Admin\ClientUpdateRequest;
 use App\Models\Client;
 use App\Repositories\ClientRepository;
+use App\Repositories\ProjectRepository;
 use Illuminate\Http\Request;
 
 class ClientController extends BaseController
@@ -79,6 +80,9 @@ class ClientController extends BaseController
     public function edit(Client $client)
     {
         $this->authorize('client_edit');
+
+        $photos = $client->getMedia('avatar');
+        return view('admin.clients.edit', ['client' => $client, 'photos' => $photos]);
     }
 
     /**
@@ -90,6 +94,10 @@ class ClientController extends BaseController
      */
     public function update(ClientUpdateRequest $request, Client $client)
     {
+        if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+            $client->addMediaFromRequest('avatar')->toMediaCollection('avatar');
+        }
+
         $client->update($request->validated());
         return redirect()->back()->with('message', 'Successfully saved!');
     }

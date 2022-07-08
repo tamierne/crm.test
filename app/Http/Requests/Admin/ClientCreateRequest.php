@@ -27,6 +27,7 @@ class ClientCreateRequest extends FormRequest
             'name' => 'required|string:30',
             'VAT' => 'required|numeric:10|unique:clients,VAT',
             'address' => 'required|string:100|min:10',
+            'avatar' => 'image|max:1024',
         ];
     }
 }

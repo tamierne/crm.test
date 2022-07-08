@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="card-body p-0">
-                    @if (count($projects) === 0)
+                    @if (count($projects) == 0)
                         <h5 class="card-title m-5">There's no projects</h5>
                     @else
                         <table class="table">
@@ -88,7 +88,7 @@
                                                     <form action="{{ route('projects.destroy', $project->id) }}" method="POST">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Delete</button>
+                                                        <button type="submit" @if(count($project->tasks) != 0) onclick="alert('This project has unfinished tasks!')" @endif class="btn btn-block btn-danger mt-1 btn-flat">Delete</button>
                                                     </form>
                                                 @endcan
                                             @endif

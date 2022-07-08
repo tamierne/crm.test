@@ -32,6 +32,10 @@ class ClientRepository extends MainRepository
 
     public function storeClient(ClientCreateRequest $request)
     {
-        Client::create($request->validated());
+        $client = Client::create($request->validated());
+
+        if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+            $client->addMediaFromRequest('avatar')->toMediaCollection('avatar');
+        }
     }
 }

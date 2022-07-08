@@ -13,12 +13,12 @@
         <div class="container-fluid">
             <div class="card card-info">
                 <div class="card-header">
-                    <h3 class="card-title">Create client</h3>
+                    <h3 class="card-title">Edit user's profile</h3>
                 </div>
 
                 @include('admin.layouts.includes.messages')
 
-            <form class="form-horizontal" method="POST" action="{{ route('users.update', $user->id) }}">
+            <form class="form-horizontal" method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data">
                 @csrf
                 @method('PATCH')
                 <div class="card-body">
@@ -29,6 +29,19 @@
                     <div class="form-group">
                         <label for="email">Email</label>
                         <input type="text" class="form-control" name="email" id="email" value="{{ $user->email }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="avatar">User's avatar</label>
+                            <div class="row">
+                                @foreach ($photos as $photo)
+                                    <div class="m-2">
+                                        <a href="{{ $photo->getUrl() }}">
+                                            <img class="img-thumbnail" src="{{ $photo->getUrl('preview') }}" alt="{{ $photo->name }}" width="150px">
+                                        </a>
+                                    </div>
+                                @endforeach
+                            </div>
+                        <input type="file" class="form-control" name="avatar" id="avatar" placeholder="Add profile photo?">
                     </div>
                         {{-- <div class="card-header">
                             <h3 class="card-title">Change password?</h3>
@@ -51,49 +64,53 @@
                 <div class="card-header">
                     <h3 class="card-title">Users tasks list</h3>
                 </div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Deadline</th>
-                            <th>Status</th>
-                            <th>Available actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($user->tasks as $task)
+                @if(count($user->tasks) == 0)
+                    <h3 class="card-title ml-5">This user has no tasks</h3>
+                @else
+                    <table class="table">
+                        <thead>
                             <tr>
-                                <td>{{ $task->id }}</td>
-                                <td><a href= {{ route('tasks.edit', $task->id) }}>{{ $task->title }}</a></td>
-                                <td>{{ Str::limit($task->description, 50, '...') }}</td>
-                                <td>{{ $task->deadline }}</td>
-                                <td>{{ $task->status->name }}</td>
-                                <td>
-                                    @can('project_edit')
-                                        <a href= {{ route('tasks.edit', $task->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
-                                    @endcan
-                                    @can('project_delete')
-                                        <form action="{{ route('tasks.destroy', $task->id) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Delete</button>
-                                        </form>
-                                    @endcan
-                                    @if($task->deleted_at)
-                                        @can('project_restore')
-                                            <form action="{{ route('tasks.restore', $task->id) }}" method="POST">
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Deadline</th>
+                                <th>Status</th>
+                                <th>Available actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($user->tasks as $task)
+                                <tr>
+                                    <td>{{ $task->id }}</td>
+                                    <td><a href= {{ route('tasks.edit', $task->id) }}>{{ $task->title }}</a></td>
+                                    <td>{{ Str::limit($task->description, 50, '...') }}</td>
+                                    <td>{{ $task->deadline }}</td>
+                                    <td>{{ $task->status->name }}</td>
+                                    <td>
+                                        @can('task_edit')
+                                            <a href= {{ route('tasks.edit', $task->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
+                                        @endcan
+                                        @can('task_delete')
+                                            <form action="{{ route('tasks.destroy', $task->id) }}" method="POST">
                                                 @csrf
-                                                <button type="submit" class="btn btn-block btn-warning mt-1 btn-flat">Restore</button>
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Delete</button>
                                             </form>
                                         @endcan
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                                        @if($task->deleted_at)
+                                            @can('task_restore')
+                                                <form action="{{ route('tasks.restore', $task->id) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-block btn-warning mt-1 btn-flat">Restore</button>
+                                                </form>
+                                            @endcan
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
             </div>
             </div>
         </div>

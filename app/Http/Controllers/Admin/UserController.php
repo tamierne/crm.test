@@ -77,7 +77,8 @@ class UserController extends BaseController
     {
         $this->authorize('user_edit');
 
-        return view('admin.users.edit', compact(['user']));
+        $photos = $user->getMedia('avatar');
+        return view('admin.users.edit', ['user' => $user, 'photos' => $photos]);
     }
 
     /**
@@ -89,6 +90,10 @@ class UserController extends BaseController
      */
     public function update(UserUpdateRequest $request, User $user)
     {
+        if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+            $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
+        }
+
         $user->update($request->validated());
         return redirect()->back()->with('message', 'Successfully saved!');
     }

@@ -24,12 +24,12 @@
                         </ul>
                     </div>
                 @endif
-            <form class="form-horizontal" method="POST" action="{{ route('users.store') }}">
+            <form class="form-horizontal" method="POST" action="{{ route('users.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="title">Name</label>
-                        <input type="text" class="form-control" name="name" id="name" placeholder="Enter title">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" name="name" id="name" placeholder="Enter name">
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
@@ -42,6 +42,10 @@
                     <div class="form-group">
                         <label for="confirm-password">Password confirmation</label>
                         <input type="password" class="form-control" name="confirm-password" id="confirm-password" placeholder="Confirm password">
+                    </div>
+                    <div class="form-group">
+                        <label for="avatar">Avatar</label>
+                        <input type="file" class="form-control" name="avatar" id="avatar" placeholder="Add profile photo?">
                     </div>
                     <div class="card-footer">
                         <button type="submit" class="btn btn-info">Create</button>

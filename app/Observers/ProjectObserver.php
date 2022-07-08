@@ -28,7 +28,7 @@ class ProjectObserver
     public function updating(Project $project)
     {
         if ($project->isDirty('status_id') && $project->status_id == 1) {
-            $project->user->notify(new ProjectCompletedEmailNotification($project));
+            $project->client->notify(new ProjectCompletedEmailNotification($project));
         } elseif ($project->isDirty('user_id')) {
             $project->user->notify(new ProjectAssignmentEmailNotification($project));
         }
