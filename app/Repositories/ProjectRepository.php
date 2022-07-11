@@ -10,7 +10,7 @@ use App\Repositories\MainRepository;
 
 class ProjectRepository extends MainRepository
 {
-    public function getAllProjects()
+    public function getAllItems()
     {
         return Project::all(['id', 'title']);
     }
@@ -20,7 +20,7 @@ class ProjectRepository extends MainRepository
         return Project::withTrashed()->findOrFail($id);
     }
 
-    public function getAllProjectsPaginated()
+    public function getAllItemsWithPaginate()
     {
         return Project::simplePaginate(10);
     }

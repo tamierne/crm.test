@@ -11,9 +11,14 @@ use Illuminate\Support\Facades\Hash;
 
 class UserRepository extends MainRepository
 {
-    public function getAllUsers()
+    public function getAllItems()
     {
         return User::all(['id', 'name']);
+    }
+
+    public function getAllItemsWithPaginate()
+    {
+        return User::simplePaginate('10');
     }
 
     public function getUserById($id)

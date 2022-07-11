@@ -10,12 +10,12 @@ use App\Repositories\MainRepository;
 
 class ClientRepository extends MainRepository
 {
-    public function getAllClients()
+    public function getAllItems()
     {
         return Client::all(['id', 'name']);
     }
 
-    public function getAllClientsWithPaginate()
+    public function getAllItemsWithPaginate()
     {
         return Client::simplePaginate('10');
     }

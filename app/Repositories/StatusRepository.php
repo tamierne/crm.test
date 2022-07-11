@@ -8,8 +8,13 @@ use App\Repositories\MainRepository;
 
 class StatusRepository extends MainRepository
 {
-    public function getAllStatuses()
+    public function getAllItems()
     {
         return Status::all(['id', 'name']);
+    }
+
+    public function getAllItemsWithPaginate()
+    {
+        return Status::simplePaginate('4');
     }
 }

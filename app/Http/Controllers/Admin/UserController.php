@@ -27,7 +27,7 @@ class UserController extends BaseController
         $this->authorize('user_access');
 
         return view('admin.users.index', [
-            'users' => User::simplePaginate(10),
+            'users' => $this->userRepository->getAllItemsWithPaginate(),
         ]);
     }
 
@@ -77,8 +77,10 @@ class UserController extends BaseController
     {
         $this->authorize('user_edit');
 
-        $photos = $user->getMedia('avatar');
-        return view('admin.users.edit', ['user' => $user, 'photos' => $photos]);
+        return view('admin.users.edit', [
+            'user' => $user,
+            'photos' => $user->getMedia('avatar'),
+        ]);
     }
 
     /**

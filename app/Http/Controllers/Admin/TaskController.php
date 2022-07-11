@@ -25,11 +25,8 @@ class TaskController extends BaseController
         $this->projectRepository = $projectRepository;
         $this->statusRepository = $statusRepository;
         $this->taskRepository = $taskRepository;
-
-        $this->statusList = $statusRepository->getAllStatuses();
-        $this->projectsList = $projectRepository->getAllProjects();
-        $this->usersList = $userRepository->getAllUsers();
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -43,14 +40,17 @@ class TaskController extends BaseController
         $filter = $request->get('filter');
 
         if(empty($status) && empty($filter)) {
-            $tasks = $this->taskRepository->getAllTasksPaginated();
+            $tasks = $this->taskRepository->getAllItemsWithPaginate();
         } elseif($filter == 'Deleted') {
             $tasks = $this->taskRepository->getAllDeletedTasksPaginated();
         } else {
             $tasks = $this->taskRepository->getAllTasksByStatusPaginated($status);
         }
 
-        return view('admin.tasks.index', ['statusList' => $this->statusList, 'tasks' => $tasks,]);
+        return view('admin.tasks.index', [
+            'statusList' => $this->statusRepository->getAllItems(),
+            'tasks' => $tasks,
+        ]);
     }
 
     /**
@@ -62,7 +62,11 @@ class TaskController extends BaseController
     {
         $this->authorize('task_create');
 
-        return view('admin.tasks.create', ['statusList' => $this->statusList, 'usersList' => $this->usersList, 'projectsList' => $this->projectsList,]);
+        return view('admin.tasks.create', [
+            'statusList' => $this->statusRepository->getAllItems(),
+            'usersList' => $this->userRepository->getAllItems(),
+            'projectsList' => $this->projectRepository->getAllItems(),
+        ]);
     }
 
     /**
@@ -103,7 +107,11 @@ class TaskController extends BaseController
     {
         $this->authorize('task_edit');
 
-        return view('admin.tasks.edit', ['statusList' => $this->statusList, 'usersList' => $this->usersList, 'projectsList' => $this->projectsList, 'task' => $task]);
+        return view('admin.tasks.edit', [
+            'statusList' => $this->statusRepository->getAllItems(),
+            'usersList' => $this->userRepository->getAllItems(),
+            'projectsList' => $this->projectRepository->getAllItems(),
+        ]);
     }
 
     /**

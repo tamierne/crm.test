@@ -11,7 +11,7 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class TaskRepository extends MainRepository
 {
-    public function getAllTasks()
+    public function getAllItems()
     {
         return Task::all(['id', 'title']);
     }
@@ -21,9 +21,9 @@ class TaskRepository extends MainRepository
         return Task::withTrashed()->findOrFail($id);
     }
 
-    public function getAllTasksPaginated()
+    public function getAllItemsWithPaginate()
     {
-        return Task::simplePaginate(10);
+        return Task::simplePaginate('10');
     }
 
     public function getCurrentUserTasks()
