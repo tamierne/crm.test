@@ -29,7 +29,7 @@ class ClientController extends BaseController
         if($request->get('status') == 'active') {
             $clients = $this->clientRepository->getActiveClientsWithPaginate();
         } else {
-            $clients = $this->clientRepository->getAllClientsWithPaginate();
+            $clients = $this->clientRepository->getAllItemsWithPaginate();
         }
 
         return view('admin.clients.index', compact('clients'));

@@ -25,11 +25,6 @@ class ProjectController extends BaseController
         $this->clientRepository = $clientRepository;
         $this->statusRepository = $statusRepository;
         $this->projectRepository = $projectRepository;
-
-        $this->statusList = $statusRepository->getAllStatuses();
-        $this->projectsList = $projectRepository->getAllProjects();
-        $this->usersList = $userRepository->getAllUsers();
-        $this->clientsList = $clientRepository->getAllClients();
     }
     /**
      * Display a listing of the resource.
@@ -44,14 +39,17 @@ class ProjectController extends BaseController
         $filter = $request->get('filter');
 
         if(empty($status) && empty($filter)) {
-            $projects = $this->projectRepository->getAllProjectsPaginated();
+            $projects = $this->projectRepository->getAllItemsWithPaginate();
         } elseif($filter == 'Deleted') {
             $projects = $this->projectRepository->getAllDeletedProjectsPaginated();
         } else {
             $projects = $this->projectRepository->getAllProjectsByStatusPaginated($status);
         }
 
-        return view('admin.projects.index', ['statusList' => $this->statusList, 'projects' => $projects,]);
+        return view('admin.projects.index', [
+            'statusList' => $this->statusRepository->getAllItems(),
+            'projects' => $projects,
+        ]);
     }
 
     /**
@@ -63,7 +61,11 @@ class ProjectController extends BaseController
     {
         $this->authorize('project_create');
 
-        return view('admin.projects.create', ['usersList' => $this->usersList, 'clientsList' => $this->clientsList, 'statusList' => $this->statusList]);
+        return view('admin.projects.create', [
+            'usersList' => $this->userRepository->getAllItems(),
+            'clientsList' => $this->clientRepository->getAllItems(),
+            'statusList' => $this->statusRepository->getAllItems(),
+        ]);
     }
 
     /**
@@ -76,7 +78,7 @@ class ProjectController extends BaseController
     {
         $this->projectRepository->storeProject($request);
 
-        return $this->index()->with('message', 'Project successfully created!');
+        return redirect()->back()->with('message', 'Project successfully created!');
     }
 
     /**
@@ -100,10 +102,12 @@ class ProjectController extends BaseController
     {
         $this->authorize('project_edit');
 
-        $statusList = $this->statusRepository->getAllStatuses();
-        $usersList = $this->userRepository->getAllUsers();
-        $clientsList = $this->clientRepository->getAllClients();
-        return view('admin.projects.edit', ['usersList' => $this->usersList, 'clientsList' => $this->clientsList, 'statusList' => $this->statusList, 'project' => $project,]);
+        return view('admin.projects.edit', [
+            'usersList' => $this->userRepository->getAllItems(),
+            'clientsList' => $this->clientRepository->getAllItems(),
+            'statusList' => $this->statusRepository->getAllItems(),
+            'project' => $project,
+        ]);
     }
 
     /**
