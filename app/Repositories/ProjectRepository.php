@@ -2,9 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\StatusNotFoundException;
 use App\Http\Requests\Admin\ProjectCreateRequest;
 use App\Http\Requests\Admin\ProjectUpdateRequest;
 use App\Models\Project;
+use App\Models\Status;
 use Illuminate\Database\Eloquent\Collection;
 use App\Repositories\MainRepository;
 
@@ -32,6 +34,10 @@ class ProjectRepository extends MainRepository
 
     public function getAllProjectsByStatusPaginated($status)
     {
+        $statusCheck = Status::where('name', $status)->first();
+
+        throw_if(!$statusCheck, StatusNotFoundException::class);
+
         return Project::byStatus($status)->simplePaginate(10)->appends(request()->query());
     }
 
@@ -40,17 +46,4 @@ class ProjectRepository extends MainRepository
         return Project::create($request->validated());
     }
 
-    // public function updateProject(ProjectUpdateRequest $request)
-    // {
-    //     $project = $this->getProjectById($request->id);
-
-    //     $project->title = $request->title;
-    //     $project->description = $request->description;
-    //     $project->deadline = $request->deadline;
-    //     $project->user_id = $request->user_id;
-    //     $project->client_id = $request->client_id;
-    //     $project->status_id = $request->status_id;
-
-    //     if ($project->isDirty()) return dd('DIRTY');
-    // }
 }

@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Http\Resources\ProjectResourse;
 use App\Models\Project;
 use Illuminate\Http\Request;
 
-class ProjectController extends Controller
+class ProjectController extends BaseController
 {
     public function index()
     {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\StatusNotFoundException;
 use App\Http\Requests\Admin\ProjectIndexRequest;
 use App\Http\Requests\Admin\ProjectCreateRequest;
 use App\Http\Requests\Admin\ProjectUpdateRequest;
@@ -38,12 +39,16 @@ class ProjectController extends BaseController
         $status = $request->get('status');
         $filter = $request->get('filter');
 
-        if(empty($status) && empty($filter)) {
-            $projects = $this->projectRepository->getAllItemsWithPaginate();
-        } elseif($filter == 'Deleted') {
-            $projects = $this->projectRepository->getAllDeletedProjectsPaginated();
-        } else {
-            $projects = $this->projectRepository->getAllProjectsByStatusPaginated($status);
+        try {
+            if(empty($status) && empty($filter)) {
+                $projects = $this->projectRepository->getAllItemsWithPaginate();
+            } elseif($filter == 'Deleted') {
+                $projects = $this->projectRepository->getAllDeletedProjectsPaginated();
+            } else {
+                $projects = $this->projectRepository->getAllProjectsByStatusPaginated($status);
+            }
+        } catch(StatusNotFoundException $exception) {
+            abort(403, $exception->getMessage());
         }
 
         return view('admin.projects.index', [

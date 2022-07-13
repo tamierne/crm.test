@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\UserNotFoundException;
 use Gate;
 use App\Http\Requests\Admin\UserCreateRequest;
 use App\Http\Requests\Admin\UserUpdateRequest;
@@ -76,6 +77,8 @@ class UserController extends BaseController
     public function edit(User $user)
     {
         $this->authorize('user_edit');
+
+       // throw new UserNotFoundException();
 
         return view('admin.users.edit', [
             'user' => $user,

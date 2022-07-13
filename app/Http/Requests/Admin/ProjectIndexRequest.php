@@ -24,8 +24,7 @@ class ProjectIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            'status' => 'exists:statuses,name',
-            // 'filter' => 'exists:projects,deleted_at',
+            // 'status' => 'exists:statuses,name',
         ];
     }
 }

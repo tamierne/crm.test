@@ -111,6 +111,7 @@ class TaskController extends BaseController
             'statusList' => $this->statusRepository->getAllItems(),
             'usersList' => $this->userRepository->getAllItems(),
             'projectsList' => $this->projectRepository->getAllItems(),
+            'task' => $task,
         ]);
     }
 

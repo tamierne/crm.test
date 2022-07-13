@@ -25,6 +25,5 @@ class BaseModel extends Model
         } else {
             return $value;
         }
-
     }
 }

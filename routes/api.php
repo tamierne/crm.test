@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout']);
 
 Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::get('/user', function(Request $request) {
@@ -31,6 +30,8 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     ], [
         'only' => ['index', 'show'],
     ]);
+
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
 
 

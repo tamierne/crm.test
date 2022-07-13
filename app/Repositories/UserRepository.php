@@ -38,18 +38,4 @@ class UserRepository extends MainRepository
             $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
         }
     }
-
-    // public function updateUser(UserUpdateRequest $request)
-    // {
-    //     $user = $this->getUserById($request->id);
-
-    //     $user->name = $request->name;
-    //     $user->email = $request->email;
-    //     // $user->deadline = $request->deadline;
-    //     // $user->user_id = $request->user_id;
-    //     // $user->client_id = $request->client_id;
-    //     // $user->status_id = $request->status_id;
-
-    //     if ($user->isDirty()) return dd('DIRTY');
-    // }
 }
