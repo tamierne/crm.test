@@ -408,14 +408,15 @@ class UserControllerTest extends TestCase
 
     public function test_user_can_update_self()
     {
+        $user = User::factory(1)->create()->first();
         $data = [
             'name' => 'dummy',
             'email' => 'dummy@dummy.dummy',
         ];
 
-        $this->actingAs($this->user)->call(
+        $this->actingAs($user)->call(
             'PATCH',
-            "/admin/users/{$this->user->id}",
+            "/admin/users/{$user->id}",
             $data,
         );
 
@@ -439,30 +440,71 @@ class UserControllerTest extends TestCase
         $response->assertRedirect();
     }
 
-    // public function test_user_cant_be_soft_deleted_twice()
-    // {
-    //     $user = User::factory(1)->create()->first();
-
-    //     $user->delete();
-
-    //     $user->delete();
-
-    //     $this->assertSoftDeleted($user);
-    // }
-
-    public function test_user_restore()
+    public function test_user_cant_restore_as_user()
     {
         $user = User::factory(1)->create()->first();
 
         $user->delete();
 
-        $this->actingAs($this->admin)->call(
+        $response = $this->actingAs($this->user)->call(
             'POST',
             "admin/users/{$user->id}/restore",
         );
 
+        $response->assertForbidden();
+
         $this->assertDatabaseMissing('users', [
             'deleted_at' => '1231231313',
         ]);
+    }
+
+    public function test_user_restore_as_admin()
+    {
+        $user = User::factory(1)->create()->first();
+
+        $user->delete();
+
+        $response = $this->actingAs($this->admin)->call(
+            'POST',
+            "admin/users/{$user->id}/restore",
+        );
+
+        $response->assertRedirect();
+
+        $this->assertDatabaseMissing('users', [
+            'deleted_at' => '1231231313',
+        ]);
+    }
+
+    public function test_user_cant_forceDelete_user()
+    {
+        $user = User::factory(1)->create()->first();
+
+        $user->delete();
+
+        $response = $this->actingAs($this->user)->call(
+            'POST',
+            "admin/users/{$user->id}/wipe",
+        );
+
+        $response->assertForbidden();
+
+        $this->assertModelExists($user);
+    }
+
+    public function test_admin_forceDelete_user()
+    {
+        $user = User::factory(1)->create()->first();
+
+        $user->delete();
+
+        $response = $this->actingAs($this->admin)->call(
+            'POST',
+            "admin/users/{$user->id}/wipe",
+        );
+
+        $response->assertRedirect();
+
+        $this->assertModelMissing($user);
     }
 }
