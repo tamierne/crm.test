@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Repositories\MainRepository;
 use App\Http\Requests\Admin\UserCreateRequest;
 use App\Http\Requests\Admin\UserUpdateRequest;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
 
 class UserRepository extends MainRepository
@@ -18,12 +19,12 @@ class UserRepository extends MainRepository
 
     public function getAllItemsWithPaginate()
     {
-        return User::simplePaginate('10');
+        return User::withTrashed()->simplePaginate('10');
     }
 
     public function getUserById($id)
     {
-        return User::find($id);
+        return User::withTrashed()->findOrFail($id);
     }
 
     public function storeUser(UserCreateRequest $request)
@@ -36,6 +37,20 @@ class UserRepository extends MainRepository
 
         if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
             $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
+        }
+
+        event(new Registered($user));
+
+        return redirect()->back();
+    }
+
+    public function deleteUser($id)
+    {
+        if(auth()->user()->id == $id) {
+            return redirect()->back()->with('error', 'You cannot delete yourself');
+        } else {
+            $this->getUserById($id)->delete();
+            return redirect()->back()->with('message', 'Successfully deleted');
         }
     }
 }

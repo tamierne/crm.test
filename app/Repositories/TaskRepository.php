@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Http\Requests\Admin\TaskCreateRequest;
 use App\Http\Requests\Admin\TaskUpdateRequest;
+use App\Models\Status;
 use App\Models\Task;
 use Illuminate\Database\Eloquent\Collection;
 use App\Repositories\MainRepository;
@@ -38,6 +39,10 @@ class TaskRepository extends MainRepository
 
     public function getAllTasksByStatusPaginated($status)
     {
+        $statusCheck = Status::where('name', $status)->first();
+
+        throw_if(!$statusCheck, StatusNotFoundException::class);
+
         return Task::byStatus($status)->simplePaginate(10)->appends(request()->query());
     }
 

@@ -52,6 +52,8 @@ class UserController extends BaseController
      */
     public function store(UserCreateRequest $request)
     {
+        $this->authorize('user_store');
+
         $this->userRepository->storeUser($request);
 
         return $this->index()->with('message', 'User successfully created!');
@@ -76,14 +78,19 @@ class UserController extends BaseController
      */
     public function edit(User $user)
     {
-        $this->authorize('user_edit');
+        if (auth()->user() == $user) {
+            return view('admin.users.edit', [
+                'user' => $user,
+                'photos' => $user->getMedia('avatar'),
+            ]);
+        } else {
+            $this->authorize('user_edit');
 
-       // throw new UserNotFoundException();
-
-        return view('admin.users.edit', [
-            'user' => $user,
-            'photos' => $user->getMedia('avatar'),
-        ]);
+            return view('admin.users.edit', [
+                'user' => $user,
+                'photos' => $user->getMedia('avatar'),
+            ]);
+        }
     }
 
     /**
@@ -95,12 +102,24 @@ class UserController extends BaseController
      */
     public function update(UserUpdateRequest $request, User $user)
     {
-        if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
-            $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
+        if(auth()->user() == $user) {
+            if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+                $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
+            }
+
+            $user->update($request->validated());
+            return redirect()->back()->with('message', 'Successfully saved!');
+        } else {
+            $this->authorize('user_store');
+
+            if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+                $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
+            }
+
+            $user->update($request->validated());
+            return redirect()->back()->with('message', 'Successfully saved!');
         }
 
-        $user->update($request->validated());
-        return redirect()->back()->with('message', 'Successfully saved!');
     }
 
     /**
@@ -109,12 +128,30 @@ class UserController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy($id)
     {
         $this->authorize('user_delete');
 
-        $user->delete();
-        return redirect()->back()->with('message', 'Successfully deleted');
+        return $this->userRepository->deleteUser($id);
     }
 
+    public function restore($id)
+    {
+        $this->authorize('user_restore');
+
+        $user = $this->userRepository->getUserById($id);
+
+        $user->restore();
+        return redirect()->back()->with('message', 'Successfully restored');
+    }
+
+    public function wipe($id)
+    {
+        $this->authorize('user_wipe');
+
+        $user = $this->userRepository->getUserById($id);
+
+        $user->forceDelete();
+        return redirect()->back()->with('message', 'Successfully wiped');
+    }
 }

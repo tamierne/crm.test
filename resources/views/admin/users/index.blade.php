@@ -42,34 +42,55 @@
                             </thead>
                             <tbody>
                                 @foreach ($users as $user)
-                                    <tr>
-                                        <td>{{ $user->name }}
-                                            @if (!@empty($user->getFirstMediaUrl('avatar')))
-                                                <img class="img-thumbnail" src="{{ $user->getFirstMediaUrl('avatar') }}" width="150px">
-                                            @endif
-                                        </td>
-                                        <td>{{ $user->email }}</td>
-                                        <td>@foreach ($user->projects as $project)
-                                            <a href= {{ route('projects.edit', $project->id) }}>{{ $project->title }}</a><br>
-                                            @endforeach
-                                        </td>
-                                        <td>@foreach ($user->tasks as $task)
-                                            <a href= {{ route('tasks.edit', $task->id) }}>{{ $task->title }}</a><br>
-                                            @endforeach
-                                        </td>
-                                        <td>
-                                            @can('user_edit')
-                                                <a href= {{ route('users.edit', $user->id) }} type="button" class="btn btn-block btn-success mt-1 btn-flat">Edit</a>
-                                            @endcan
-                                            @can('user_delete')
-                                                <form action="{{ route('users.destroy', $user->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Delete</button>
-                                                </form>
-                                            @endcan
-                                        </td>
-                                    </tr>
+                                    @if($user->deleted_at)
+                                        <tr style="background-color: #2a2d31">
+                                    @else
+                                        <tr>
+                                    @endif
+                                            <td>{{ $user->name }}
+                                                @if (!@empty($user->getFirstMediaUrl('avatar')))
+                                                    <img class="img-thumbnail" src="{{ $user->getFirstMediaUrl('avatar') }}" width="150px">
+                                                @endif
+                                            </td>
+                                            <td>{{ $user->email }}</td>
+                                            <td>@foreach ($user->projects as $project)
+                                                <a href= {{ route('projects.edit', $project->id) }}>{{ $project->title }}</a><br>
+                                                @endforeach
+                                            </td>
+                                            <td>@foreach ($user->tasks as $task)
+                                                <a href= {{ route('tasks.edit', $task->id) }}>{{ $task->title }}</a><br>
+                                                @endforeach
+                                            </td>
+                                            <td>
+                                                @if(auth()->user()->can('user_edit') || auth()->user()->id == $user->id)
+                                                    <a href= {{ route('users.edit', $user->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
+                                                @endif
+                                                @if (auth()->user()->id !== $user->id)
+                                                    @if($user->deleted_at)
+                                                        @can('task_wipe')
+                                                            <form action="{{ route('users.wipe', $user->id) }}" method="POST">
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Wipe</button>
+                                                            </form>
+                                                        @endcan
+                                                        @can('user_restore')
+                                                            <form action="{{ route('users.restore', $user->id) }}" method="POST">
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-block btn-warning mt-1 btn-flat">Restore</button>
+                                                            </form>
+                                                        @endcan
+                                                    @else
+                                                        @can('user_delete')
+                                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Delete</button>
+                                                            </form>
+                                                        @endcan
+                                                    @endif
+                                                @endif
+                                            </td>
+                                        </tr>
                                 @endforeach
                             </tbody>
                         </table>

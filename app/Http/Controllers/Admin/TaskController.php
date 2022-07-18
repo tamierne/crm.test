@@ -79,8 +79,10 @@ class TaskController extends BaseController
     {
         // if(!$request->validated()){
         //     dd('here');
-            $this->taskRepository->storeTask($request);
-            return redirect()->back()->with('message', 'Task successfully created!');
+        $this->authorize('task_store');
+
+        $this->taskRepository->storeTask($request);
+        return redirect()->back()->with('message', 'Task successfully created!');
         // } else {
         //     return redirect()->back()->withInput()->with('error', 'Something went wrong!');
         // }
@@ -124,6 +126,8 @@ class TaskController extends BaseController
      */
     public function update(TaskUpdateRequest $request, Task $task)
     {
+        $this->authorize('task_store');
+
         $task->update($request->validated());
 
         return redirect()->back()->with('message', 'Successfully saved!');

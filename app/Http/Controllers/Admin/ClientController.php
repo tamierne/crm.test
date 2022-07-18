@@ -55,6 +55,8 @@ class ClientController extends BaseController
      */
     public function store(ClientCreateRequest $request)
     {
+        $this->authorize('client_store');
+
         $this->clientRepository->storeClient($request);
 
         return redirect()->back()->with('message', 'Client successfully created!');
@@ -94,6 +96,8 @@ class ClientController extends BaseController
      */
     public function update(ClientUpdateRequest $request, Client $client)
     {
+        $this->authorize('client_store');
+
         if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
             $client->addMediaFromRequest('avatar')->toMediaCollection('avatar');
         }
