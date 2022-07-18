@@ -110,7 +110,6 @@ class UserControllerTest extends TestCase
 
         $userPermission = [
             'user_access',
-            'user_edit',
             'client_create',
             'client_edit',
             'client_show',
