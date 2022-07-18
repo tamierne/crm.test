@@ -17,4 +17,9 @@ class StatusRepository extends MainRepository
     {
         return Status::simplePaginate('4');
     }
+
+    public function getItemById($id)
+    {
+        return Status::withTrashed()->findOrFail($id);
+    }
 }

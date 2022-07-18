@@ -41,7 +41,7 @@
 
                 <div class="card-body p-0">
                     @if (count($tasks) === 0)
-                        <h5 class="card-title m-5">There's no tasks</h5>
+                        <h5 class="card-title m-5">There're no tasks</h5>
                     @else
                         <table class="table">
                             <thead>

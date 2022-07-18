@@ -86,7 +86,7 @@ class UserControllerTest extends TestCase
          * Create admin account with admin permissions.
          */
 
-        $this->admin = User::factory(1)->create()->first();
+        $this->admin = User::factory()->create();
 
         Role::create([
             'name' => 'super-admin',
@@ -124,7 +124,7 @@ class UserControllerTest extends TestCase
             $userRole->givePermissionTo($permission);
         }
 
-        $this->user = User::factory(1)->create()->first();
+        $this->user = User::factory()->create();
 
         $this->user->assignRole($userRole);
 
@@ -162,7 +162,7 @@ class UserControllerTest extends TestCase
 
     public function test_create_as_super_admin()
     {
-        $response = $this->actingAs($this->admin)->call('GET', '/admin/users/create');
+        $response = $this->actingAs($this->admin)->get('/admin/users/create');
 
         $response->assertOk();
 
@@ -171,7 +171,7 @@ class UserControllerTest extends TestCase
 
     public function test_create_as_user()
     {
-        $response = $this->actingAs($this->user)->call('GET', '/admin/users/create');
+        $response = $this->actingAs($this->user)->get('/admin/users/create');
 
         $response->assertForbidden();
     }
@@ -185,8 +185,7 @@ class UserControllerTest extends TestCase
 
     public function test_store_as_super_admin()
     {
-        $response = $this->actingAs($this->admin)->call(
-            'POST',
+        $response = $this->actingAs($this->admin)->post(
             '/admin/users',
             [
                 'name' => 'randomname',
@@ -215,8 +214,7 @@ class UserControllerTest extends TestCase
 
     public function test_cant_store_duplicated_user_as_super_admin()
     {
-        $this->actingAs($this->admin)->call(
-            'POST',
+        $this->actingAs($this->admin)->post(
             '/admin/users',
             [
                 'name' => 'randomname',
@@ -226,8 +224,7 @@ class UserControllerTest extends TestCase
             ],
         );
 
-        $this->actingAs($this->admin)->call(
-            'POST',
+        $this->actingAs($this->admin)->post(
             '/admin/users',
             [
                 'name' => 'randomname2',
@@ -250,8 +247,7 @@ class UserControllerTest extends TestCase
 
     public function test_store_as_user()
     {
-        $response = $this->actingAs($this->user)->call(
-            'POST',
+        $response = $this->actingAs($this->user)->post(
             '/admin/users',
             [
                 'name' => 'test',
@@ -276,8 +272,7 @@ class UserControllerTest extends TestCase
 
     public function test_store_as_guest()
     {
-        $response = $this->call(
-            'POST',
+        $response = $this->post(
             '/admin/users',
             [
                 'name' => 'test',
@@ -302,8 +297,7 @@ class UserControllerTest extends TestCase
 
     public function test_admin_can_edit_self_as_admin()
     {
-        $response = $this->actingAs($this->admin)->call(
-            'GET',
+        $response = $this->actingAs($this->admin)->get(
             "/admin/users/{$this->admin->id}/edit",
         );
 
@@ -318,8 +312,7 @@ class UserControllerTest extends TestCase
 
     public function test_user_can_be_edit_as_admin()
     {
-        $response = $this->actingAs($this->admin)->call(
-            'GET',
+        $response = $this->actingAs($this->admin)->get(
             "/admin/users/{$this->user->id}/edit",
         );
 
@@ -334,8 +327,7 @@ class UserControllerTest extends TestCase
 
     public function test_user_can_edit_self_as_user()
     {
-        $response = $this->actingAs($this->user)->call(
-            'GET',
+        $response = $this->actingAs($this->user)->get(
             "/admin/users/{$this->user->id}/edit",
         );
 
@@ -350,8 +342,7 @@ class UserControllerTest extends TestCase
 
     public function test_user_cant_edit_another_user_as_user()
     {
-        $response = $this->actingAs($this->user)->call(
-            'GET',
+        $response = $this->actingAs($this->user)->get(
             "/admin/users/{$this->admin->id}/edit",
         );
 
@@ -360,8 +351,7 @@ class UserControllerTest extends TestCase
 
     public function test_user_cant_be_edit_as_guest()
     {
-        $response = $this->call(
-            'GET',
+        $response = $this->get(
             "/admin/users/{$this->admin->id}/edit",
         );
 
@@ -375,16 +365,18 @@ class UserControllerTest extends TestCase
             'email' => 'dummy@dummy.dummy',
         ];
 
-        $this->actingAs($this->admin)->call(
-            'PATCH',
+        $this->actingAs($this->admin)->patch(
             "/admin/users/{$this->user->id}",
             $data,
         );
 
-        $this->assertDatabaseHas('users', [
-            'name' => 'dummy',
-            'email' => 'dummy@dummy.dummy',
-        ]);
+        $this->assertEquals($data['name'], $this->user->name);
+        $this->assertEquals($data['email'], $this->user->email);
+
+        // $this->assertDatabaseHas('users', [
+        //     'name' => 'dummy',
+        //     'email' => 'dummy@dummy.dummy',
+        // ]);
     }
 
     public function test_user_cant_update_another_user_as_user()
@@ -394,8 +386,7 @@ class UserControllerTest extends TestCase
             'email' => 'dummy@dummy.dummy',
         ];
 
-        $this->actingAs($this->user)->call(
-            'PATCH',
+        $this->actingAs($this->user)->patch(
             "/admin/users/{$this->admin->id}",
             $data,
         );
@@ -408,28 +399,25 @@ class UserControllerTest extends TestCase
 
     public function test_user_can_update_self()
     {
-        $user = User::factory(1)->create()->first();
+        $user = User::factory()->create();
+
         $data = [
             'name' => 'dummy',
             'email' => 'dummy@dummy.dummy',
         ];
 
-        $this->actingAs($user)->call(
-            'PATCH',
+        $this->actingAs($user)->patch(
             "/admin/users/{$user->id}",
             $data,
         );
 
-        $this->assertDatabaseHas('users', [
-            'name' => 'dummy',
-            'email' => 'dummy@dummy.dummy',
-        ]);
+        $this->assertEquals($data['name'], $user->name);
+        $this->assertEquals($data['email'], $user->email);
     }
 
     public function test_user_cant_soft_delete_self()
     {
-        $response = $this->actingAs($this->admin)->call(
-            'DELETE',
+        $response = $this->actingAs($this->admin)->delete(
             "/admin/users/{$this->admin->id}",
         );
 
@@ -440,14 +428,26 @@ class UserControllerTest extends TestCase
         $response->assertRedirect();
     }
 
+    public function test_user_cant_soft_delete_user()
+    {
+        $response = $this->actingAs($this->user)->delete(
+            "/admin/users/{$this->admin->id}",
+        );
+
+        $this->assertDatabaseHas('users', [
+            'deleted_at' => '1231231313',
+        ]);
+
+        $response->assertRedirect();
+    }
+
     public function test_user_cant_restore_as_user()
     {
-        $user = User::factory(1)->create()->first();
+        $user = User::factory()->create();
 
         $user->delete();
 
-        $response = $this->actingAs($this->user)->call(
-            'POST',
+        $response = $this->actingAs($this->user)->post(
             "admin/users/{$user->id}/restore",
         );
 
@@ -460,12 +460,11 @@ class UserControllerTest extends TestCase
 
     public function test_user_restore_as_admin()
     {
-        $user = User::factory(1)->create()->first();
+        $user = User::factory()->create();
 
         $user->delete();
 
-        $response = $this->actingAs($this->admin)->call(
-            'POST',
+        $response = $this->actingAs($this->admin)->post(
             "admin/users/{$user->id}/restore",
         );
 
@@ -478,12 +477,11 @@ class UserControllerTest extends TestCase
 
     public function test_user_cant_forceDelete_user()
     {
-        $user = User::factory(1)->create()->first();
+        $user = User::factory()->create();
 
         $user->delete();
 
-        $response = $this->actingAs($this->user)->call(
-            'POST',
+        $response = $this->actingAs($this->user)->post(
             "admin/users/{$user->id}/wipe",
         );
 
@@ -494,12 +492,11 @@ class UserControllerTest extends TestCase
 
     public function test_admin_forceDelete_user()
     {
-        $user = User::factory(1)->create()->first();
+        $user = User::factory()->create();
 
         $user->delete();
 
-        $response = $this->actingAs($this->admin)->call(
-            'POST',
+        $response = $this->actingAs($this->admin)->post(
             "admin/users/{$user->id}/wipe",
         );
 

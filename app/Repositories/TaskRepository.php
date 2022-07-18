@@ -17,7 +17,7 @@ class TaskRepository extends MainRepository
         return Task::all(['id', 'title']);
     }
 
-    public function getTaskById($id)
+    public function getItemById($id)
     {
         return Task::withTrashed()->findOrFail($id);
     }

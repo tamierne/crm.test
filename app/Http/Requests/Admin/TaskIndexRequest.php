@@ -25,7 +25,7 @@ class TaskIndexRequest extends FormRequest
     {
         return [
             'status' => 'exists:statuses,name',
-            // 'filter' => 'exists:tasks,deleted_at',
+            'filter' => 'in:Deleted',
         ];
     }
 }

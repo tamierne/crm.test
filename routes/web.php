@@ -35,6 +35,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified']], functi
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
+    Route::post('clients/{client}/restore', [ClientController::class, 'restore'])->name('clients.restore');
+
     Route::group(['prefix' => 'projects', 'controller' => ProjectController::class], function() {
         Route::post('{project}/restore', 'restore')->name('projects.restore');
         Route::post('{project}/wipe', 'wipe')->name('projects.wipe');

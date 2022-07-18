@@ -17,7 +17,7 @@ class ProjectRepository extends MainRepository
         return Project::all(['id', 'title']);
     }
 
-    public function getProjectById($id)
+    public function getItemById($id)
     {
         return Project::withTrashed()->findOrFail($id);
     }

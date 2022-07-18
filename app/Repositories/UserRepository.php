@@ -22,7 +22,7 @@ class UserRepository extends MainRepository
         return User::withTrashed()->simplePaginate('10');
     }
 
-    public function getUserById($id)
+    public function getItemById($id)
     {
         return User::withTrashed()->findOrFail($id);
     }
@@ -49,7 +49,7 @@ class UserRepository extends MainRepository
         if(auth()->user()->id == $id) {
             return redirect()->back()->with('error', 'You cannot delete yourself');
         } else {
-            $this->getUserById($id)->delete();
+            $this->getItemById($id)->delete();
             return redirect()->back()->with('message', 'Successfully deleted');
         }
     }

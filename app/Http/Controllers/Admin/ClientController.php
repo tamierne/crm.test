@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\ClientIndexRequest;
 use App\Http\Requests\Admin\ClientCreateRequest;
 use App\Http\Requests\Admin\ClientUpdateRequest;
 use App\Models\Client;
@@ -22,7 +23,7 @@ class ClientController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(ClientIndexRequest $request)
     {
         $this->authorize('client_access');
 
@@ -118,5 +119,15 @@ class ClientController extends BaseController
 
         $client->delete();
         return redirect()->back()->with('message', 'Successfully deleted');
+    }
+
+    public function restore($id)
+    {
+        $this->authorize('client_restore');
+
+        $client = $this->clientRepository->getItemById($id);
+
+        $client->restore();
+        return redirect()->back()->with('message', 'Successfully restored');
     }
 }

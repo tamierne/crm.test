@@ -78,7 +78,7 @@ class UserController extends BaseController
      */
     public function edit(User $user)
     {
-        if (auth()->user() == $user) {
+        if (auth()->user()->id == $user->id) {
             return view('admin.users.edit', [
                 'user' => $user,
                 'photos' => $user->getMedia('avatar'),
@@ -102,7 +102,8 @@ class UserController extends BaseController
      */
     public function update(UserUpdateRequest $request, User $user)
     {
-        if(auth()->user() == $user) {
+        if(auth()->user()->id == $user->id) {
+
             if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
                 $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
             }
@@ -139,7 +140,7 @@ class UserController extends BaseController
     {
         $this->authorize('user_restore');
 
-        $user = $this->userRepository->getUserById($id);
+        $user = $this->userRepository->getItemById($id);
 
         $user->restore();
         return redirect()->back()->with('message', 'Successfully restored');
@@ -149,7 +150,7 @@ class UserController extends BaseController
     {
         $this->authorize('user_wipe');
 
-        $user = $this->userRepository->getUserById($id);
+        $user = $this->userRepository->getItemById($id);
 
         $user->forceDelete();
         return redirect()->back()->with('message', 'Successfully wiped');

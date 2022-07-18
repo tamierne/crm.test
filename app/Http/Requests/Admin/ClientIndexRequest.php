@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProjectIndexRequest extends FormRequest
+class ClientIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,7 @@ class ProjectIndexRequest extends FormRequest
     public function rules()
     {
         return [
-            'status' => 'exists:statuses,name',
-            'filter' => 'in:Deleted',
+            'status' => 'in:active'
         ];
     }
 }

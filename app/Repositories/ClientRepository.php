@@ -20,6 +20,11 @@ class ClientRepository extends MainRepository
         return Client::simplePaginate('10');
     }
 
+    public function getItemById($id)
+    {
+        return Client::withTrashed()->findOrFail($id);
+    }
+
     public function getActiveClientsWithPaginate()
     {
         return Client::activeClients()->simplePaginate('10');
