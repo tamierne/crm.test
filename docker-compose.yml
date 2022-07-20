@@ -28,7 +28,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_USER: ${DB_USERNAME}
-      MYSQL_ALLOW_EMPTY_PASSWORD: true
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
 #    volumes:
@@ -47,7 +47,7 @@ services:
       - ./docker-compose/nginx:/etc/nginx/conf.d
     networks:
       - crm
-      
+
 networks:
   crm:
     driver: bridge
