@@ -150,7 +150,7 @@ class ProjectController extends BaseController
     {
         $this->authorize('project_restore');
 
-        $project = $this->projectRepository->getProjectById($id);
+        $project = $this->projectRepository->getItemById($id);
 
         $project->restore();
         return redirect()->back()->with('message', 'Successfully restored');
@@ -160,7 +160,7 @@ class ProjectController extends BaseController
     {
         $this->authorize('project_wipe');
 
-        $project = $this->projectRepository->getProjectById($id);
+        $project = $this->projectRepository->getItemById($id);
 
         $project->withTrashed()->forceDelete();
         return redirect()->back()->with('message', 'Successfully wiped');

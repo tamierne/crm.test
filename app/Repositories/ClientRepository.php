@@ -17,7 +17,12 @@ class ClientRepository extends MainRepository
 
     public function getAllItemsWithPaginate()
     {
-        return Client::simplePaginate('10');
+        return Client::with([
+            'projects:id,title,client_id',
+            'media',
+            ])
+            ->withTrashed()
+            ->simplePaginate('10');
     }
 
     public function getItemById($id)

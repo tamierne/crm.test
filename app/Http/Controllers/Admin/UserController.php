@@ -76,15 +76,20 @@ class UserController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit($id)
     {
-        if (auth()->user()->id == $user->id) {
+        if (auth()->user()->id == $id) {
+
+            $user = $this->userRepository->getItemById($id);
+
             return view('admin.users.edit', [
                 'user' => $user,
                 'photos' => $user->getMedia('avatar'),
             ]);
         } else {
             $this->authorize('user_edit');
+
+            $user = $this->userRepository->getItemById($id);
 
             return view('admin.users.edit', [
                 'user' => $user,

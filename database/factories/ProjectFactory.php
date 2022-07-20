@@ -20,7 +20,7 @@ class ProjectFactory extends Factory
             'title' => $this->faker->sentence(5),
             'description' => $this->faker->realText(200),
             'deadline' => $this->faker->dateTimeThisMonth('+2 months'),
-            'user_id' => $this->faker->numberBetween(1, 13),
+            'user_id' => $this->faker->numberBetween(2, 13),
             'client_id' => $this->faker->numberBetween(1, 15),
             'status_id' => $this->faker->numberBetween(1, 4),
             'created_at' => $this->faker->dateTimeBetween('-5 months', '-1 week'),

@@ -24,7 +24,12 @@ class ProjectRepository extends MainRepository
 
     public function getAllItemsWithPaginate()
     {
-        return Project::simplePaginate(10);
+        return Project::with([
+            'client:id,name',
+            'user:id,name',
+            'status:id,name',
+            ])
+            ->simplePaginate('10');
     }
 
     public function getAllDeletedProjectsPaginated()

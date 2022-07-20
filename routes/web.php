@@ -37,19 +37,19 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified']], functi
 
     Route::post('clients/{client}/restore', [ClientController::class, 'restore'])->name('clients.restore');
 
-    Route::group(['prefix' => 'projects', 'controller' => ProjectController::class], function() {
-        Route::post('{project}/restore', 'restore')->name('projects.restore');
-        Route::post('{project}/wipe', 'wipe')->name('projects.wipe');
+    Route::group(['prefix' => 'projects', 'name' => 'projects.', 'controller' => ProjectController::class], function() {
+        Route::post('{project}/restore', 'restore')->name('restore');
+        Route::post('{project}/wipe', 'wipe')->name('wipe');
     });
 
-    Route::group(['prefix' => 'tasks', 'controller' => TaskController::class], function() {
-        Route::post('{task}/restore', 'restore')->name('tasks.restore');
-        Route::post('{task}/wipe', 'wipe')->name('tasks.wipe');
+    Route::group(['prefix' => 'tasks', 'name' => 'tasks.', 'controller' => TaskController::class], function() {
+        Route::post('{task}/restore', 'restore')->name('restore');
+        Route::post('{task}/wipe', 'wipe')->name('wipe');
     });
 
-    Route::group(['prefix' => 'users', 'controller' => UserController::class], function() {
-        Route::post('{user}/restore', 'restore')->name('users.restore');
-        Route::post('{user}/wipe', 'wipe')->name('users.wipe');
+    Route::group(['prefix' => 'users', 'name' => 'users.', 'controller' => UserController::class], function() {
+        Route::post('{user}/restore', 'restore')->name('restore');
+        Route::post('{user}/wipe', 'wipe')->name('wipe');
     });
 
     Route::resources([

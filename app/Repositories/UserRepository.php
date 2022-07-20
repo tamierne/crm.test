@@ -19,12 +19,24 @@ class UserRepository extends MainRepository
 
     public function getAllItemsWithPaginate()
     {
-        return User::withTrashed()->simplePaginate('10');
+        return User::with([
+            'projects:id,title,user_id',
+            'tasks:id,title,user_id',
+            'media',
+            ])
+            ->withTrashed()
+            ->simplePaginate('10');
     }
 
     public function getItemById($id)
     {
-        return User::withTrashed()->findOrFail($id);
+        return User::with([
+            'tasks:id,title,description,user_id,status_id',
+            'media',
+            'tasks.status:id,name',
+            ])
+            ->withTrashed()
+            ->findOrFail($id);
     }
 
     public function storeUser(UserCreateRequest $request)

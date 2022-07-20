@@ -24,7 +24,12 @@ class TaskRepository extends MainRepository
 
     public function getAllItemsWithPaginate()
     {
-        return Task::simplePaginate('10');
+        return Task::with([
+            'project:id,title',
+            'user:id,name',
+            'status:id,name',
+            ])
+            ->simplePaginate('10');
     }
 
     public function getCurrentUserTasks()
@@ -34,7 +39,7 @@ class TaskRepository extends MainRepository
 
     public function getAllDeletedTasksPaginated()
     {
-        return Task::onlyTrashed()->simplePaginate(10)->appends(request()->query());
+        return Task::onlyTrashed()->with(['project:id,title', 'user:id,name', 'status:id,name'])->simplePaginate(10)->appends(request()->query());
     }
 
     public function getAllTasksByStatusPaginated($status)
@@ -43,7 +48,7 @@ class TaskRepository extends MainRepository
 
         throw_if(!$statusCheck, StatusNotFoundException::class);
 
-        return Task::byStatus($status)->simplePaginate(10)->appends(request()->query());
+        return Task::byStatus($status)->with(['project:id,title', 'user:id,name', 'status:id,name'])->simplePaginate(10)->appends(request()->query());
     }
 
     public function storeTask(TaskCreateRequest $request)
