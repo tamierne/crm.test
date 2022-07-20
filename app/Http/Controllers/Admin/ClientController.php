@@ -25,7 +25,6 @@ class ClientController extends BaseController
      */
     public function index(ClientIndexRequest $request)
     {
-        $this->authorize('client_access');
 
         if($request->get('status') == 'active') {
             $clients = $this->clientRepository->getActiveClientsWithPaginate();
@@ -43,8 +42,6 @@ class ClientController extends BaseController
      */
     public function create()
     {
-        $this->authorize('client_create');
-
         return view('admin.clients.create');
     }
 

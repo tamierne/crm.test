@@ -8,6 +8,8 @@ use App\Models\Task;
 
 class TaskSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
     /**
      * Run the database seeds.
      *
@@ -15,6 +17,6 @@ class TaskSeeder extends Seeder
      */
     public function run()
     {
-        Task::factory(100)->make()->saveQuietly();
+        Task::factory(100)->create();
     }
 }

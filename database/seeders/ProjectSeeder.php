@@ -8,6 +8,8 @@ use App\Models\Project;
 
 class ProjectSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
     /**
      * Run the database seeds.
      *
@@ -15,6 +17,6 @@ class ProjectSeeder extends Seeder
      */
     public function run()
     {
-        Project::factory(25)->make()->saveQuietly();
+        Project::factory(25)->create();
     }
 }

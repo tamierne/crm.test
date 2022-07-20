@@ -8,6 +8,8 @@ use App\Models\User;
 
 class UserSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
     /**
      * Run the database seeds.
      *
@@ -15,6 +17,6 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::factory(10)->create()->saveQuietly();
+        User::factory(10)->create();
     }
 }
