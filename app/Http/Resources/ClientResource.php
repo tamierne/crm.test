@@ -2,10 +2,10 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\ProjectResourse;
+use App\Http\Resources\ProjectResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ClientResourse extends JsonResource
+class ClientResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,7 +20,7 @@ class ClientResourse extends JsonResource
             'name' => $this->name,
             'VAT' => $this->VAT,
             'address' => $this->address,
-            'projects' => $this->projects->isEmpty() ? 'No projects' : ProjectResourse::collection($this->projects),
+            'projects' => $this->projects->isEmpty() ? 'No projects' : ProjectResource::collection($this->projects),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
