@@ -38,7 +38,11 @@ class Project extends BaseModel
 
     protected $softCascade = ['tasks'];
 
-    public function getDeadlineAttribute($value)
+    /**
+     * @param $value
+     * @return string
+     */
+    public function getDeadlineAttribute($value): string
     {
         return Carbon::parse($value)->format('m/d/Y');
     }

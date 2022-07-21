@@ -11,7 +11,9 @@ use App\Repositories\UserRepository;
 use App\Repositories\ClientRepository;
 use App\Repositories\ProjectRepository;
 use App\Repositories\StatusRepository;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ProjectController extends BaseController
 {
@@ -27,14 +29,14 @@ class ProjectController extends BaseController
         $this->statusRepository = $statusRepository;
         $this->projectRepository = $projectRepository;
     }
+
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param ProjectIndexRequest $request
+     * @return View
      */
-    public function index(ProjectIndexRequest $request)
+    public function index(ProjectIndexRequest $request): View
     {
-        $this->authorize('project_access');
 
         $status = $request->get('status');
         $filter = $request->get('filter');
@@ -59,10 +61,10 @@ class ProjectController extends BaseController
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @return View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function create()
+    public function create(): View
     {
         $this->authorize('project_create');
 
@@ -74,15 +76,11 @@ class ProjectController extends BaseController
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param ProjectCreateRequest $request
+     * @return RedirectResponse
      */
-    public function store(ProjectCreateRequest $request)
+    public function store(ProjectCreateRequest $request): RedirectResponse
     {
-        $this->authorize('project_store');
-
         $this->projectRepository->storeProject($request);
 
         return redirect()->back()->with('message', 'Project successfully created!');
@@ -100,12 +98,11 @@ class ProjectController extends BaseController
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Project $project
+     * @return View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit(Project $project)
+    public function edit(Project $project): View
     {
         $this->authorize('project_edit');
 
@@ -118,27 +115,24 @@ class ProjectController extends BaseController
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  App\Http\Requests\Admin\ProjectUpdateRequest  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Update the specified resource in storage
+     * @param ProjectUpdateRequest $request
+     * @param Project $project
+     * @return RedirectResponse
      */
-    public function update(ProjectUpdateRequest $request, Project $project)
+    public function update(ProjectUpdateRequest $request, Project $project): RedirectResponse
     {
-        $this->authorize('project_store');
-
         $project->update($request->validated());
         return redirect()->back()->with('message', 'Successfully updated!');
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Soft delete the specified resource from storage.
+     * @param Project $project
+     * @return RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy(Project $project)
+    public function destroy(Project $project): RedirectResponse
     {
         $this->authorize('project_delete');
 
@@ -146,7 +140,13 @@ class ProjectController extends BaseController
         return redirect()->back()->with('message', 'Successfully deleted');
     }
 
-    public function restore($id)
+    /**
+     * Restore the specified resource
+     * @param $id
+     * @return RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function restore($id): RedirectResponse
     {
         $this->authorize('project_restore');
 
@@ -156,7 +156,13 @@ class ProjectController extends BaseController
         return redirect()->back()->with('message', 'Successfully restored');
     }
 
-    public function wipe($id)
+    /**
+     * Force delete the specified resource
+     * @param $id
+     * @return RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function wipe($id): RedirectResponse
     {
         $this->authorize('project_wipe');
 

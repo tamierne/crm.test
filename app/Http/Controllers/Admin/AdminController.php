@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Repositories\TaskRepository;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class AdminController extends BaseController
 {
@@ -13,7 +14,10 @@ class AdminController extends BaseController
         $this->taskRepository = $taskRepository;
     }
 
-    public function index()
+    /**
+     * @return Illuminate\View\View
+     */
+    public function index(): View
     {
         $tasks = $this->taskRepository->getCurrentUserTasks();
         return view('admin.index', compact('tasks'));

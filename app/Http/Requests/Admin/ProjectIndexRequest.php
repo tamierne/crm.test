@@ -11,8 +11,9 @@ class ProjectIndexRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
+//        return $this->authorize('project_access');
         return true;
     }
 

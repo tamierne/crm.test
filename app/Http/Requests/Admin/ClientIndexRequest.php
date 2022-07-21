@@ -11,9 +11,10 @@ class ClientIndexRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        return $this->authorize('client_access');
+//        return $this->authorize('client_access');
+        return true;
     }
 
     /**

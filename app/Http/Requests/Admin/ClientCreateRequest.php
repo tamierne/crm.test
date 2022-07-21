@@ -11,7 +11,7 @@ class ClientCreateRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return $this->authorize('client_create');
     }

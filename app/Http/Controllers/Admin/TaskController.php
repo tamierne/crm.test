@@ -6,11 +6,13 @@ use App\Http\Requests\Admin\TaskIndexRequest;
 use App\Http\Requests\Admin\TaskCreateRequest;
 use App\Http\Requests\Admin\TaskUpdateRequest;
 use App\Models\Task;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Repositories\UserRepository;
 use App\Repositories\ProjectRepository;
 use App\Repositories\StatusRepository;
 use App\Repositories\TaskRepository;
+use Illuminate\View\View;
 
 class TaskController extends BaseController
 {
@@ -29,13 +31,11 @@ class TaskController extends BaseController
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param TaskIndexRequest $request
+     * @return View
      */
-    public function index(TaskIndexRequest $request)
+    public function index(TaskIndexRequest $request): View
     {
-        $this->authorize('task_access');
-
         $status = $request->get('status');
         $filter = $request->get('filter');
 
@@ -55,10 +55,10 @@ class TaskController extends BaseController
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @return View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function create()
+    public function create(): View
     {
         $this->authorize('task_create');
 
@@ -71,16 +71,11 @@ class TaskController extends BaseController
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param TaskCreateRequest $request
+     * @return RedirectResponse
      */
-    public function store(TaskCreateRequest $request)
+    public function store(TaskCreateRequest $request): RedirectResponse
     {
-        // if(!$request->validated()){
-        //     dd('here');
-        $this->authorize('task_store');
-
         $this->taskRepository->storeTask($request);
         return redirect()->back()->with('message', 'Task successfully created!');
         // } else {
@@ -101,11 +96,11 @@ class TaskController extends BaseController
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Task $task
+     * @return View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit(Task $task)
+    public function edit(Task $task): View
     {
         $this->authorize('task_edit');
 
@@ -119,27 +114,24 @@ class TaskController extends BaseController
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param TaskUpdateRequest $request
+     * @param Task $task
+     * @return RedirectResponse
      */
-    public function update(TaskUpdateRequest $request, Task $task)
+    public function update(TaskUpdateRequest $request, Task $task): RedirectResponse
     {
-        $this->authorize('task_store');
-
         $task->update($request->validated());
 
         return redirect()->back()->with('message', 'Successfully saved!');
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Soft delete the specified resource from storage.
+     * @param Task $task
+     * @return RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy(Task $task)
+    public function destroy(Task $task): RedirectResponse
     {
         $this->authorize('task_delete');
 
@@ -147,21 +139,33 @@ class TaskController extends BaseController
         return redirect()->back()->with('message', 'Successfully deleted');
     }
 
-    public function restore($id)
+    /**
+     * Restore the specified resource
+     * @param $id
+     * @return RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function restore($id): RedirectResponse
     {
         $this->authorize('task_restore');
 
-        $task = $this->taskRepository->getTaskById($id);
+        $task = $this->taskRepository->getItemById($id);
 
         $task->restore();
         return redirect()->back()->with('message', 'Successfully restored');
     }
 
-    public function wipe($id)
+    /**
+     * Force delete the specified resource
+     * @param $id
+     * @return RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function wipe($id): RedirectResponse
     {
         $this->authorize('task_wipe');
 
-        $task = $this->taskRepository->getTaskById($id);
+        $task = $this->taskRepository->getItemById($id);
 
         $task->forceDelete();
         return redirect()->back()->with('message', 'Successfully wiped');

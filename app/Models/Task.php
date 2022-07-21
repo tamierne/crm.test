@@ -36,7 +36,11 @@ class Task extends Model
         'project_id',
     ];
 
-    public function getDeadlineAttribute($value)
+    /**
+     * @param $value
+     * @return string
+     */
+    public function getDeadlineAttribute($value): string
     {
         return Carbon::parse($value)->format('m/d/Y');
     }

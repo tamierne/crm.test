@@ -8,16 +8,24 @@ use App\Repositories\MainRepository;
 use App\Http\Requests\Admin\UserCreateRequest;
 use App\Http\Requests\Admin\UserUpdateRequest;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Hash;
 
 class UserRepository extends MainRepository
 {
-    public function getAllItems()
+    /**
+     * @return Collection
+     */
+    public function getAllItems(): Collection
     {
         return User::all(['id', 'name']);
     }
 
-    public function getAllItemsWithPaginate()
+    /**
+     * @return Paginator
+     */
+    public function getAllItemsWithPaginate(): Paginator
     {
         return User::with([
             'projects:id,title,user_id',
@@ -28,7 +36,11 @@ class UserRepository extends MainRepository
             ->simplePaginate('10');
     }
 
-    public function getItemById($id)
+    /**
+     * @param int $id
+     * @return User
+     */
+    public function getItemById(int $id): User
     {
         return User::with([
             'tasks:id,title,description,user_id,status_id',
@@ -39,7 +51,11 @@ class UserRepository extends MainRepository
             ->findOrFail($id);
     }
 
-    public function storeUser(UserCreateRequest $request)
+    /**
+     * @param UserCreateRequest $request
+     * @return RedirectResponse
+     */
+    public function storeUser(UserCreateRequest $request): RedirectResponse
     {
         $user = User::create([
             'name' => $request->name,
@@ -56,13 +72,16 @@ class UserRepository extends MainRepository
         return redirect()->back();
     }
 
-    public function deleteUser($id)
+    /**
+     * @param int $id
+     * @return RedirectResponse
+     */
+    public function deleteUser(int $id): RedirectResponse
     {
-        if(auth()->user()->id == $id) {
-            return redirect()->back()->with('error', 'You cannot delete yourself');
-        } else {
+        if(auth()->user()->id !== $id) {
             $this->getItemById($id)->delete();
             return redirect()->back()->with('message', 'Successfully deleted');
         }
+        return redirect()->back()->with('error', 'You cannot delete yourself');
     }
 }

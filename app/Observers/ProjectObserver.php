@@ -14,7 +14,7 @@ class ProjectObserver
      * @param  \App\Models\Project  $project
      * @return void
      */
-    public function created(Project $project)
+    public function created(Project $project): void
     {
         $project->user->notify(new ProjectAssignmentEmailNotification($project));
     }
@@ -25,7 +25,7 @@ class ProjectObserver
      * @param  \App\Models\Project  $project
      * @return void
      */
-    public function updating(Project $project)
+    public function updating(Project $project): void
     {
         if ($project->isDirty('status_id') && $project->status_id == 1) {
             $project->client->notify(new ProjectCompletedEmailNotification($project));

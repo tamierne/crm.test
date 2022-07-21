@@ -9,20 +9,31 @@ use App\Models\Project;
 use App\Models\Status;
 use Illuminate\Database\Eloquent\Collection;
 use App\Repositories\MainRepository;
+use Illuminate\Pagination\Paginator;
 
 class ProjectRepository extends MainRepository
 {
-    public function getAllItems()
+    /**
+     * @return Collection
+     */
+    public function getAllItems(): Collection
     {
         return Project::all(['id', 'title']);
     }
 
-    public function getItemById($id)
+    /**
+     * @param $id
+     * @return Project
+     */
+    public function getItemById($id): Project
     {
         return Project::withTrashed()->findOrFail($id);
     }
 
-    public function getAllItemsWithPaginate()
+    /**
+     * @return Paginator
+     */
+    public function getAllItemsWithPaginate(): Paginator
     {
         return Project::with([
             'client:id,name',
@@ -32,12 +43,20 @@ class ProjectRepository extends MainRepository
             ->simplePaginate('10');
     }
 
-    public function getAllDeletedProjectsPaginated()
+    /**
+     * @return Paginator
+     */
+    public function getAllDeletedProjectsPaginated(): Paginator
     {
         return Project::onlyTrashed()->simplePaginate(10)->appends(request()->query());
     }
 
-    public function getAllProjectsByStatusPaginated($status)
+    /**
+     * @param string $status
+     * @return Paginator
+     * @throws \Throwable
+     */
+    public function getAllProjectsByStatusPaginated(string $status): Paginator
     {
         $statusCheck = Status::where('name', $status)->first();
 
@@ -46,7 +65,11 @@ class ProjectRepository extends MainRepository
         return Project::byStatus($status)->simplePaginate(10)->appends(request()->query());
     }
 
-    public function storeProject(ProjectCreateRequest $request)
+    /**
+     * @param ProjectCreateRequest $request
+     * @return Project
+     */
+    public function storeProject(ProjectCreateRequest $request): Project
     {
         return Project::create($request->validated());
     }

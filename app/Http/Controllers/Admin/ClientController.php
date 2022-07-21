@@ -8,7 +8,9 @@ use App\Http\Requests\Admin\ClientUpdateRequest;
 use App\Models\Client;
 use App\Repositories\ClientRepository;
 use App\Repositories\ProjectRepository;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ClientController extends BaseController
 {
@@ -18,12 +20,14 @@ class ClientController extends BaseController
     {
         $this->clientRepository = $clientRepository;
     }
+
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param ClientIndexRequest $request
+     * @return View
      */
-    public function index(ClientIndexRequest $request)
+
+    public function index(ClientIndexRequest $request): View
     {
 
         if($request->get('status') == 'active') {
@@ -37,21 +41,20 @@ class ClientController extends BaseController
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function create()
+    public function create(): View
     {
         return view('admin.clients.create');
     }
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param ClientCreateRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function store(ClientCreateRequest $request)
+    public function store(ClientCreateRequest $request): RedirectResponse
     {
         $this->authorize('client_store');
 
@@ -73,29 +76,31 @@ class ClientController extends BaseController
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Client $client
+     * @return View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit(Client $client)
+    public function edit(Client $client): View
     {
         $this->authorize('client_edit');
 
         $photos = $client->getMedia('avatar');
-        return view('admin.clients.edit', ['client' => $client, 'photos' => $photos]);
+        return view('admin.clients.edit', [
+            'client' => $client,
+            'photos' => $photos
+        ]);
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Update the specified resource in storage
+     * @param ClientUpdateRequest $request
+     * @param Client $client
+     * @return RedirectResponse
+     * @throws \Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist
+     * @throws \Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig
      */
-    public function update(ClientUpdateRequest $request, Client $client)
+    public function update(ClientUpdateRequest $request, Client $client): RedirectResponse
     {
-        $this->authorize('client_store');
-
         if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
             $client->addMediaFromRequest('avatar')->toMediaCollection('avatar');
         }
@@ -105,12 +110,12 @@ class ClientController extends BaseController
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Soft delete the specified resource from storage.
+     * @param Client $client
+     * @return RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy(Client $client)
+    public function destroy(Client $client): RedirectResponse
     {
         $this->authorize('client_delete');
 
@@ -118,7 +123,13 @@ class ClientController extends BaseController
         return redirect()->back()->with('message', 'Successfully deleted');
     }
 
-    public function restore($id)
+    /**
+     * Restore the specified resource
+     * @param $id
+     * @return RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function restore($id): RedirectResponse
     {
         $this->authorize('client_restore');
 

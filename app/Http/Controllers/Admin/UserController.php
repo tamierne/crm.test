@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exceptions\UserNotFoundException;
-use Gate;
+//use App\Exceptions\UserNotFoundException;
+//use Gate;
 use App\Http\Requests\Admin\UserCreateRequest;
 use App\Http\Requests\Admin\UserUpdateRequest;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Repositories\UserRepository;
+use Illuminate\View\View;
 
 class UserController extends BaseController
 {
@@ -18,13 +20,14 @@ class UserController extends BaseController
     {
         $this->userRepository = $userRepository;
     }
+
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @return View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index(){
-
+    public function index(): View
+    {
         $this->authorize('user_access');
 
         return view('admin.users.index', [
@@ -34,10 +37,10 @@ class UserController extends BaseController
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @return View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function create()
+    public function create(): View
     {
         $this->authorize('user_create');
 
@@ -46,17 +49,14 @@ class UserController extends BaseController
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param UserCreateRequest $request
+     * @return RedirectResponse
      */
-    public function store(UserCreateRequest $request)
+    public function store(UserCreateRequest $request): RedirectResponse
     {
-        $this->authorize('user_store');
-
         $this->userRepository->storeUser($request);
 
-        return $this->index()->with('message', 'User successfully created!');
+        return redirect()->back()->with('message', 'User successfully created!');
     }
 
     /**
@@ -65,83 +65,71 @@ class UserController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
-    }
+//    public function show($id)
+//    {
+//        //
+//    }
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit($id)
+    public function edit($id): View
     {
-        if (auth()->user()->id == $id) {
-
-            $user = $this->userRepository->getItemById($id);
-
-            return view('admin.users.edit', [
-                'user' => $user,
-                'photos' => $user->getMedia('avatar'),
-            ]);
-        } else {
+        if (auth()->user()->id != $id) {
             $this->authorize('user_edit');
-
-            $user = $this->userRepository->getItemById($id);
-
-            return view('admin.users.edit', [
-                'user' => $user,
-                'photos' => $user->getMedia('avatar'),
-            ]);
         }
+        $user = $this->userRepository->getItemById($id);
+        return view('admin.users.edit', [
+            'user' => $user,
+            'photos' => $user->getMedia('avatar'),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param UserUpdateRequest $request
+     * @param User $user
+     * @return RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist
+     * @throws \Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig
      */
-    public function update(UserUpdateRequest $request, User $user)
+    public function update(UserUpdateRequest $request, User $user): RedirectResponse
     {
-        if(auth()->user()->id == $user->id) {
-
-            if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
-                $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
-            }
-
-            $user->update($request->validated());
-            return redirect()->back()->with('message', 'Successfully saved!');
-        } else {
+        if(auth()->user()->id != $user->id) {
             $this->authorize('user_store');
-
-            if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
-                $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
-            }
-
-            $user->update($request->validated());
-            return redirect()->back()->with('message', 'Successfully saved!');
         }
+        if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+            $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
+        }
+        $user->update($request->validated());
+        return redirect()->back()->with('message', 'Successfully saved!');
 
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Soft delete the specified resource from storage.
+     * @param $id
+     * @return RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
         $this->authorize('user_delete');
 
         return $this->userRepository->deleteUser($id);
     }
 
-    public function restore($id)
+    /**
+     * Restore the specified resource
+     * @param $id
+     * @return RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function restore($id): RedirectResponse
     {
         $this->authorize('user_restore');
 
@@ -151,7 +139,13 @@ class UserController extends BaseController
         return redirect()->back()->with('message', 'Successfully restored');
     }
 
-    public function wipe($id)
+    /**
+     * Force delete the specified resource
+     * @param $id
+     * @return RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function wipe($id): RedirectResponse
     {
         $this->authorize('user_wipe');
 
