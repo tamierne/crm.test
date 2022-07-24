@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class ProjectIndexRequest extends FormRequest
 {
@@ -13,8 +14,7 @@ class ProjectIndexRequest extends FormRequest
      */
     public function authorize(): bool
     {
-//        return $this->authorize('project_access');
-        return true;
+        return Gate::allows('project_access');
     }
 
     /**

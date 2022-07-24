@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class UserCreateRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class UserCreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->authorize('user_store');
+        return Gate::allows('user_store');
     }
 
     /**

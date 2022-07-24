@@ -20,10 +20,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// })->name('welcome');
-
 Route::permanentRedirect('/', 'login')->name('welcome');
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified']], function() {

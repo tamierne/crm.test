@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\ClientUpdateRequest;
 use App\Models\Client;
 use Illuminate\Database\Eloquent\Collection;
 use App\Repositories\MainRepository;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Pagination\Paginator;
 
 class ClientRepository extends MainRepository
@@ -59,9 +60,9 @@ class ClientRepository extends MainRepository
 
     /**
      * @param ClientCreateRequest $request
-     * @return void
+     * @return RedirectResponse
      */
-    public function storeClient(ClientCreateRequest $request): void
+    public function storeClient(ClientCreateRequest $request): RedirectResponse
     {
         $client = Client::create($request->validated());
 
@@ -69,5 +70,6 @@ class ClientRepository extends MainRepository
             $client->addMediaFromRequest('avatar')->toMediaCollection('avatar');
         }
 
+        return redirect()->back();
     }
 }

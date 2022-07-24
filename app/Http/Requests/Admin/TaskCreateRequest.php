@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class TaskCreateRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class TaskCreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->authorize('task_store');
+        return Gate::allows('task_store');
     }
 
     /**

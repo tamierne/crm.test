@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class TaskIndexRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class TaskIndexRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->authorize('task_access');
+        return Gate::allows('task_access');
     }
 
     /**

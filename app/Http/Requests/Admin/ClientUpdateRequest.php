@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class ClientUpdateRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class ClientUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->authorize('client_store');
+        return Gate::allows('client_store');
     }
 
     /**
