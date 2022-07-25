@@ -6,7 +6,6 @@ use App\Http\Requests\Admin\RoleCreateRequest;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -20,31 +19,39 @@ class RoleRepository extends MainRepository
         return Role::all(['id', 'name'])->whereNotIn('name', ['super-admin']);
     }
 
+    public function getAllPermissions(): Collection
+    {
+        return Permission::all(['id', 'name']);
+    }
+
     public function getAllAvailablePermissions()
     {
         if (auth()->user()->hasRole('super-admin')) {
-            return $this->getAllItems();
+            return $this->getAllPermissions();
         }
         return auth()->user()->getAllPermissions();
     }
 
     /**
      * @param $id
-     * @return Permission
+     * @return Role
      */
-    public function getItemById($id): Permission
+    public function getItemById($id): Role
     {
-        return Permission::withTrashed()->findOrFail($id);
+        return Role::with([
+            'permissions:id,name',
+            ])
+            ->findOrFail($id);
     }
 
-    /**
-     * @return string
-     */
-    public function getPermissionParsedNameAttribute()
-    {
-        return $this->getAllPermissions()
-            ->map(fn($permission) => str_replace('_', ' ', $permission->name,));
-    }
+//    /**
+//     * @return string
+//     */
+//    public function getPermissionParsedNameAttribute()
+//    {
+//        return $this->getAllPermissions()
+//            ->map(fn($permission) => str_replace('_', ' ', $permission->name,));
+//    }
 
     /**
      * @return Paginator
@@ -64,15 +71,13 @@ class RoleRepository extends MainRepository
 
     public function storeRole(RoleCreateRequest $request): RedirectResponse
     {
-        $role = Role::create(['name' => $request->name]);
+        $role = Role::create([
+            'name' => $request->name
+        ]);
+
         $role->syncPermissions($request->permissions);
 
         return redirect()->back();
     }
-
-//    public function assignPermissionsToRole($permissions, $role):
-//        foreach ($permissions as $permission) {
-//
-//        }
 
 }

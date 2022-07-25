@@ -56,7 +56,7 @@
                                                 @endforeach
                                             </td>
                                             <td>
-                                                @if(auth()->user()->can('role_edit') || auth()->user()->id == $user->id)
+                                                @if(auth()->user()->can('role_edit') || auth()->user()->id != $user->id)
                                                     <a href= {{ route('roles.edit', $role->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>
                                                 @endif
                                                 @if (auth()->user()->id !== $user->id)

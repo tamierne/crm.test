@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\RoleCreateRequest;
+use App\Http\Requests\Admin\RoleUpdateRequest;
 use App\Repositories\RoleRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -77,80 +78,31 @@ class RoleController extends BaseController
      */
     public function edit($id): View
     {
-        if (auth()->user()->id != $id) {
-            $this->authorize('user_edit');
-        }
-        $user = $this->userRepository->getItemById($id);
-        return view('admin.users.edit', [
-            'user' => $user,
-            'photos' => $user->getMedia('avatar'),
+        $this->authorize('role_edit');
+
+        $role = $this->roleRepository->getItemById($id);
+
+        $availablePermissions = $this->roleRepository->getAllAvailablePermissions();
+
+        return view('admin.roles.edit', [
+            'permissions' => $availablePermissions,
+            'role' => $role,
         ]);
     }
 
     /**
-     * Update the specified resource in storage.
-     * @param UserUpdateRequest $request
-     * @param User $user
+     * @param RoleUpdateRequest $request
+     * @param $id
      * @return RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     * @throws \Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist
-     * @throws \Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig
      */
-    public function update(UserUpdateRequest $request, User $user): RedirectResponse
+    public function update(RoleUpdateRequest $request, $id): RedirectResponse
     {
-        if(auth()->user()->id != $user->id) {
-            $this->authorize('user_store');
-        }
-        if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
-            $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
-        }
-        $user->update($request->validated());
+        $role = $this->roleRepository->getItemById($id);
+
+        $role->syncPermissions($request->validated('permissions'));
+
         return redirect()->back()->with('message', 'Successfully saved!');
 
     }
 
-    /**
-     * Soft delete the specified resource from storage.
-     * @param $id
-     * @return RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     */
-    public function destroy($id): RedirectResponse
-    {
-        $this->authorize('user_delete');
-
-        return $this->userRepository->deleteUser($id);
-    }
-
-    /**
-     * Restore the specified resource
-     * @param $id
-     * @return RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     */
-    public function restore($id): RedirectResponse
-    {
-        $this->authorize('user_restore');
-
-        $user = $this->userRepository->getItemById($id);
-
-        $user->restore();
-        return redirect()->back()->with('message', 'Successfully restored');
-    }
-
-    /**
-     * Force delete the specified resource
-     * @param $id
-     * @return RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     */
-    public function wipe($id): RedirectResponse
-    {
-        $this->authorize('user_wipe');
-
-        $user = $this->userRepository->getItemById($id);
-
-        $user->forceDelete();
-        return redirect()->back()->with('message', 'Successfully wiped');
-    }
 }

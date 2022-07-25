@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -58,11 +59,9 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
      */
     protected static function booted()
     {
-//        if (auth()->user()->hasRoles('super-admin')) {
-            static::addGlobalScope('hideSuperAdmin', function (Builder $builder) {
-                $builder->whereHas('roles', fn($builder) => $builder->whereNotIn('name', ['super-admin']));
-            });
-//        }
+//            static::addGlobalScope('hideSuperAdmin', function (Builder $builder) {
+//                $builder->when(!auth()->user()->hasRole('super-admin'), fn($builder) => $builder->whereHas('roles', fn($builder) => $builder->whereNotIn('name', ['super-admin'])));
+//            });
     }
 
     /**
