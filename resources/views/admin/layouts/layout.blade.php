@@ -95,6 +95,16 @@
               </p>
             </a>
           </li>
+            @role('admin|super-admin')
+            <li class="nav-item">
+                <a href="{{ route('roles.index') }}" class="nav-link">
+                    <i class="nav-icon fas fa-ban"></i>
+                    <p>
+                        Roles & Permissions
+                    </p>
+                </a>
+            </li>
+            @endhasanyrole
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

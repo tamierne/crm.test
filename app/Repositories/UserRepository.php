@@ -67,6 +67,8 @@ class UserRepository extends MainRepository
             $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
         }
 
+        $user->assignRole($request->role);
+
         event(new Registered($user));
 
         return redirect()->back();

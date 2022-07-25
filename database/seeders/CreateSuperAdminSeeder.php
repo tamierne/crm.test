@@ -36,6 +36,6 @@ class CreateSuperAdminSeeder extends Seeder
 
         $superAdmin->assignRole('super-admin');
 
-        Permission::create(['name' => 'admin_access']);
+//        Permission::create(['name' => 'admin_access']);
     }
 }

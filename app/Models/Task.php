@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -37,25 +38,33 @@ class Task extends Model
     ];
 
     /**
-     * @param $value
      * @return string
      */
-    public function getDeadlineAttribute($value): string
+    public function getDeadlineParsedAttribute(): string
     {
-        return Carbon::parse($value)->format('m/d/Y');
+        return Carbon::parse($this->deadline)->format('m/d/Y');
     }
 
-    public function project()
+    /**
+     * @return BelongsTo|Project
+     */
+    public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class)->withTrashed();
     }
 
-    public function user()
+    /**
+     * @return BelongsTo|User
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function status()
+    /**
+     * @return BelongsTo|Status
+     */
+    public function status(): BelongsTo
     {
         return $this->belongsTo(Status::class);
     }
@@ -64,8 +73,4 @@ class Task extends Model
     {
         $query->whereHas('status', fn($query) => $query->where('name', $status));
     }
-    // public function status()
-    // {
-    //     return $this->morphOne(Status::class, 'statusable');
-    // }
 }

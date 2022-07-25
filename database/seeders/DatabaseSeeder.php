@@ -16,17 +16,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             CreateSuperAdminSeeder::class,
+            PermissionSeeder::class,
             UserSeeder::class,
             ClientSeeder::class,
             ProjectSeeder::class,
             TaskSeeder::class,
             StatusListSeeder::class,
-            PermissionSeeder::class,
         ]);
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
     }
 }

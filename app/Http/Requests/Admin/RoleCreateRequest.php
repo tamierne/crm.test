@@ -5,7 +5,7 @@ namespace App\Http\Requests\Admin;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class UserCreateRequest extends FormRequest
+class RoleCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +14,7 @@ class UserCreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return Gate::allows('user_store');
+        return Gate::allows('role_store');
     }
 
     /**
@@ -25,12 +25,8 @@ class UserCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string:30',
-            'email' => 'required|email|unique:users,email',
-            'avatar' => 'image|max:1024',
-            'password' => 'required|string:20|min:8',
-            'confirm-password' => 'required|same:password',
-            'role' => 'required|exists:roles,id',
+            'name' => 'required|string:30|unique:roles,name',
+            'permissions' => 'required|exists:permissions,id',
         ];
     }
 }

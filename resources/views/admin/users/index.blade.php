@@ -34,6 +34,7 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
+                                    <th>Role</th>
                                     <th>Email</th>
                                     <th>Assigned Projects</th>
                                     <th>Tasks</th>
@@ -52,6 +53,11 @@
                                                     <img class="img-thumbnail" src="{{ $user->getFirstMediaUrl('avatar') }}" width="150px">
                                                 @endif
                                             </td>
+                                            <td>
+                                                @foreach ($user->roles as $role)
+                                                    {{ $role->name }}<br>
+                                                @endforeach
+                                            </td>
                                             <td>{{ $user->email }}</td>
                                             <td>@foreach ($user->projects as $project)
                                                 <a href= {{ route('projects.edit', $project->id) }}>{{ $project->title }}</a><br>
@@ -67,7 +73,7 @@
                                                 @endif
                                                 @if (auth()->user()->id !== $user->id)
                                                     @if($user->deleted_at)
-                                                        @can('task_wipe')
+                                                        @can('user_wipe')
                                                             <form action="{{ route('users.wipe', $user->id) }}" method="POST">
                                                                 @csrf
                                                                 <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Wipe</button>

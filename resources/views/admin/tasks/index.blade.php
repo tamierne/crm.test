@@ -62,7 +62,7 @@
                                         <td>{{ $task->id }}</td>
                                         <td>{{ $task->title }}</td>
                                         <td>{{ Str::limit($task->description, 50, '...') }}</td>
-                                        <td>{{ $task->deadline }}</td>
+                                        <td>{{ $task->deadline_parsed }}</td>
                                         <td>{{ $task->project->title }}</td>
                                         <td>{{ $task->user->name }}</td>
                                         <td>{{ $task->status->name }}</td>

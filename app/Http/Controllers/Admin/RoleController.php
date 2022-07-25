@@ -2,23 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\Admin\UserCreateRequest;
-use App\Http\Requests\Admin\UserUpdateRequest;
-use App\Models\User;
+use App\Http\Requests\Admin\RoleCreateRequest;
 use App\Repositories\RoleRepository;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use App\Repositories\UserRepository;
 use Illuminate\View\View;
 
-class UserController extends BaseController
+class RoleController extends BaseController
 {
-    private UserRepository $userRepository;
     private RoleRepository $roleRepository;
 
-    public function __construct(UserRepository $userRepository, RoleRepository $roleRepository)
+    public function __construct(RoleRepository $roleRepository)
     {
-        $this->userRepository = $userRepository;
+//        $this->userRepository = $userRepository;
         $this->roleRepository = $roleRepository;
     }
 
@@ -29,10 +24,10 @@ class UserController extends BaseController
      */
     public function index(): View
     {
-        $this->authorize('user_access');
+        $this->authorize('role_access');
 
-        return view('admin.users.index', [
-            'users' => $this->userRepository->getAllItemsWithPaginate(),
+        return view('admin.roles.index', [
+            'roles' => $this->roleRepository->getAllItemsWithPaginate(),
         ]);
     }
 
@@ -43,23 +38,24 @@ class UserController extends BaseController
      */
     public function create(): View
     {
-        $this->authorize('user_create');
+        $this->authorize('role_create');
 
-        return view('admin.users.create', [
-            'roles' => $this->roleRepository->getAllItems(),
+        $permissions = $this->roleRepository->getAllAvailablePermissions();
+        return view('admin.roles.create', [
+            'permissions' => $permissions,
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
-     * @param UserCreateRequest $request
+     * @param RoleCreateRequest $request
      * @return RedirectResponse
      */
-    public function store(UserCreateRequest $request): RedirectResponse
+    public function store(RoleCreateRequest $request): RedirectResponse
     {
-        $this->userRepository->storeUser($request);
+        $this->roleRepository->storeRole($request);
 
-        return redirect()->route('users.index')->with('message', 'User successfully created!');
+        return redirect()->back()->with('message', 'Role successfully created!');
     }
 
     /**
@@ -88,7 +84,6 @@ class UserController extends BaseController
         return view('admin.users.edit', [
             'user' => $user,
             'photos' => $user->getMedia('avatar'),
-            'roles' => $this->roleRepository->getAllItems(),
         ]);
     }
 

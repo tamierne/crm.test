@@ -44,6 +44,16 @@
                         <input type="password" class="form-control" name="confirm-password" id="confirm-password" placeholder="Confirm password">
                     </div>
                     <div class="form-group">
+                        <label for="role">Role</label>
+                        <select class="form-control select2 select2-hidden-accessible" name="role" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->id }}">
+                                    {{ $role->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="avatar">Avatar</label>
                         <input type="file" class="form-control" name="avatar" id="avatar" placeholder="Add profile photo?">
                     </div>

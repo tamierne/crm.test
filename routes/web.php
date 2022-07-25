@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\TaskController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 use Illuminate\Support\Facades\Route;
@@ -33,19 +34,25 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified']], functi
 
     Route::post('clients/{client}/restore', [ClientController::class, 'restore'])->name('clients.restore');
 
-    Route::group(['prefix' => 'projects', 'name' => 'projects.', 'controller' => ProjectController::class], function() {
+    Route::group(['prefix' => 'projects', 'as' => 'projects.', 'controller' => ProjectController::class], function() {
         Route::post('{project}/restore', 'restore')->name('restore');
         Route::post('{project}/wipe', 'wipe')->name('wipe');
     });
 
-    Route::group(['prefix' => 'tasks', 'name' => 'tasks.', 'controller' => TaskController::class], function() {
+    Route::group(['prefix' => 'tasks', 'as' => 'tasks.', 'controller' => TaskController::class], function() {
         Route::post('{task}/restore', 'restore')->name('restore');
         Route::post('{task}/wipe', 'wipe')->name('wipe');
     });
 
-    Route::group(['prefix' => 'users', 'name' => 'users.', 'controller' => UserController::class], function() {
+    Route::group(['prefix' => 'users', 'as' => 'users.', 'controller' => UserController::class], function() {
         Route::post('{user}/restore', 'restore')->name('restore');
         Route::post('{user}/wipe', 'wipe')->name('wipe');
+    });
+
+    Route::group(['middleware' => ['role:super-admin|admin'], 'name' => 'roles.'], function() {
+        Route::post('roles/{role}/restore', [RoleController::class, 'restore'])->name('roles.restore');
+        Route::post('roles/{role}/wipe', [RoleController::class, 'wipe'])->name('roles.wipe');
+        Route::resource('roles', RoleController::class)->except('show');
     });
 
     Route::resources([

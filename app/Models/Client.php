@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 use Askedio\SoftCascade\Traits\SoftCascadeTrait;
@@ -23,7 +25,10 @@ class Client extends BaseModel implements HasMedia
 
     protected $softCascade = ['projects'];
 
-    public function projects()
+    /**
+     * @return HasMany|Collection|Project
+     */
+    public function projects(): HasMany
     {
         return $this->hasMany(Project::class);
     }

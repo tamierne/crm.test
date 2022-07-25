@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Askedio\SoftCascade\Traits\SoftCascadeTrait;
@@ -39,30 +42,41 @@ class Project extends BaseModel
     protected $softCascade = ['tasks'];
 
     /**
-     * @param $value
      * @return string
      */
-    public function getDeadlineAttribute($value): string
+    public function getDeadlineParsedAttribute(): string
     {
-        return Carbon::parse($value)->format('m/d/Y');
+        return Carbon::parse($this->deadline)->format('m/d/Y');
     }
 
-    public function client()
+    /**
+     * @return BelongsTo|Client
+     */
+    public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class)->withTrashed();
     }
 
-    public function user()
+    /**
+     * @return BelongsTo|User
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function status()
+    /**
+     * @return BelongsTo|Status
+     */
+    public function status(): BelongsTo
     {
         return $this->belongsTo(Status::class);
     }
 
-    public function tasks()
+    /**
+     * @return HasMany|Collection|Task
+     */
+    public function tasks(): HasMany
     {
         return $this->hasMany(Task::class);
     }

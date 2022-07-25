@@ -23,14 +23,14 @@ class PermissionSeeder extends Seeder
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $permissions = [
-            'permission_create',
-            'permission_store',
-            'permission_edit',
-            'permission_show',
-            'permission_delete',
-            'permission_wipe',
-            'permission_restore',
-            'permission_access',
+//            'permission_create',
+//            'permission_store',
+//            'permission_edit',
+//            'permission_show',
+//            'permission_delete',
+//            'permission_wipe',
+//            'permission_restore',
+//            'permission_access',
             'role_create',
             'role_store',
             'role_edit',
@@ -95,10 +95,7 @@ class PermissionSeeder extends Seeder
             'task_access',
         ];
 
-        foreach ($userPermission as $permission)
-        {
-            $userRole->givePermissionTo($permission);
-        }
+        $userRole->syncPermissions($userPermission);
 
         $userModel = User::factory()->create([
             'name' => 'Example User',
@@ -111,6 +108,7 @@ class PermissionSeeder extends Seeder
 
         $adminPermission = [
             'user_access',
+            'user_create',
             'user_edit',
             'client_create',
             'client_store',
@@ -128,12 +126,17 @@ class PermissionSeeder extends Seeder
             'task_access',
             'task_delete',
             'task_restore',
+            'role_create',
+            'role_store',
+            'role_edit',
+            'role_show',
+            'role_delete',
+            'role_wipe',
+            'role_restore',
+            'role_access',
         ];
 
-        foreach ($adminPermission as $permission)
-        {
-            $adminRole->givePermissionTo($permission);
-        }
+        $adminRole->syncPermissions($adminPermission);
 
         $adminModel = User::factory()->create([
             'name' => 'Example Admin User',
