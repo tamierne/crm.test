@@ -57,12 +57,14 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
      *
      * @return void
      */
-    protected static function booted()
-    {
+//    protected static function booted()
+//    {
+//        if(!auth()->user()->hasRole('super-admin')) {
 //            static::addGlobalScope('hideSuperAdmin', function (Builder $builder) {
-//                $builder->when(!auth()->user()->hasRole('super-admin'), fn($builder) => $builder->whereHas('roles', fn($builder) => $builder->whereNotIn('name', ['super-admin'])));
+//                $builder->whereHas('roles', fn($builder) => $builder->whereNotIn('name', ['super-admin']));
 //            });
-    }
+//        }
+//    }
 
     /**
      * @return HasMany|Collection|Project
