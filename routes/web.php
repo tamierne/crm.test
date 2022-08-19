@@ -64,7 +64,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified']], functi
         Route::resource('roles', RoleController::class)->except('show');
     });
 
-    Route::resource('parsers', ParserController::class)->except(['edit', 'show']);
+    Route::resource('parsers', ParserController::class)->except(['create', 'edit', 'show']);
 
     Route::resources([
         'clients' => ClientController::class,

@@ -2,16 +2,31 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\ParserCreateRequest;
 use App\Models\Parser;
+use App\Repositories\ParserRepository;
+use App\Repositories\StatusRepository;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ParserController extends BaseController
 {
+    private StatusRepository $statusRepository;
+    private ParserRepository $parserRepository;
+
+    public function __construct(StatusRepository $statusRepository, ParserRepository $parserRepository)
+    {
+        $this->statusRepository = $statusRepository;
+        $this->parserRepository = $parserRepository;
+    }
 
     public function index(): View
     {
-        return view('admin.parsers.index');
+        $parsers = $this->parserRepository->getAllItemsWithPaginate();
+        return view('admin.parsers.index', [
+            'statusList' => $this->statusRepository->getAllItems(),
+            'parsers' => $parsers,
+        ]);
     }
 
     /**
@@ -24,15 +39,13 @@ class ParserController extends BaseController
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+
+    public function store(ParserCreateRequest $request)
     {
-        //
+        $this->parserRepository->store($request);
+//        $this->parserRepository->parse($request);
+
+        //event(notification)
     }
 
     /**

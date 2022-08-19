@@ -16,10 +16,11 @@ class StatusListSeeder extends Seeder
     public function run()
     {
         $statuses = [
-            'Completed',
+            'Queued',
             'Processing',
-            'Cancelled',
             'On Hold',
+            'Completed',
+            'Cancelled',
         ];
 
         foreach ($statuses as $status)

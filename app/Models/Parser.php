@@ -18,9 +18,8 @@ class Parser extends Model
      */
     protected $fillable = [
         'url',
-        'created_by',
+        'user_id',
         'status_id',
-        'url',
     ];
 
     /**
@@ -29,5 +28,13 @@ class Parser extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class)->withTrashed();
+    }
+
+    /**
+     * @return BelongsTo|Project
+     */
+    public function status(): BelongsTo
+    {
+        return $this->belongsTo(Status::class)->withTrashed();
     }
 }

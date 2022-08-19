@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('parsers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('created_by')->foreignId('user_id')->constrained();
+            $table->bigInteger('user_id')->foreignId('user_id')->constrained();
             $table->string('url', 255);
-            $table->json('result');
+            $table->json('result')->nullable();
             $table->tinyInteger('status_id')->foreignId('status_id')->constrained()->default(1);
             $table->timestamps();
             $table->softDeletes();
