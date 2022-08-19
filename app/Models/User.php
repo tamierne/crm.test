@@ -31,6 +31,8 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         'name',
         'email',
         'password',
+        'github_id',
+        'google_id',
     ];
 
     /**

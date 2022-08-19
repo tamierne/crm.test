@@ -1,13 +1,14 @@
 <?php
 
-use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\ProjectController;
-use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\TaskController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-
+use App\Http\Controllers\Auth\SocialAuth\GoogleController;
+use App\Http\Controllers\Auth\SocialAuth\GithubController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,6 +23,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::permanentRedirect('/', 'login')->name('welcome');
+
+Route::group(['prefix' => 'auth'], function () {
+    Route::get('google', [GoogleController::class, 'redirect'])->name('login.google');
+    Route::get('google/callback', [GoogleController::class, 'callback'])->name('callback.google');
+    Route::get('github', [GithubController::class, 'redirect'])->name('login.github');
+    Route::get('github/callback', [GithubController::class, 'callback'])->name('callback.github');
+});
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified']], function() {
     Route::get('/', [AdminController::class, 'index'])->name('admin.index');

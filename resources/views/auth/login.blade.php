@@ -51,6 +51,15 @@
                     {{ __('Log in') }}
                 </x-button>
             </div>
+            <div class="mt-2">
+                <x-socialbutton href="{{ route('login.github') }}">
+                    {{ __('Log in with GitHub') }}
+                </x-socialbutton>
+
+                <x-socialbutton class="ml-3" href="{{ route('login.google') }}">
+                    {{ __('Log in with Google') }}
+                </x-socialbutton>
+            </div>
         </form>
     </x-auth-card>
 </x-guest-layout>
