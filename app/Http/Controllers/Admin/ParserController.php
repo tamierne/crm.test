@@ -43,9 +43,11 @@ class ParserController extends BaseController
     public function store(ParserCreateRequest $request)
     {
         $this->parserRepository->store($request);
-//        $this->parserRepository->parse($request);
+        $this->parserRepository->parse($request);
 
         //event(notification)
+
+        return redirect()->back()->with('message', 'URL successfully added!');
     }
 
     /**

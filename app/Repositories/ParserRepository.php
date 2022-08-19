@@ -36,7 +36,29 @@ class ParserRepository extends MainRepository
 
     public function parse(ParserCreateRequest $request)
     {
-        $htmlString = file_get_contents($request->validated());
+        $address = $request->validated('url');
+
+        $htmlString = file_get_contents($address);
+        $allMetaTags = get_meta_tags($address);
+
+        $description = array_key_exists('description', $allMetaTags)
+            ? $allMetaTags['description']
+            : 'No description';
+
+        $htmlDom = new \DOMDocument;
+        @$htmlDom->loadHTML($htmlString);
+        $titleNode = $htmlDom->getElementsByTagName('title');
+
+        $title = $titleNode->item(0)->nodeValue;
+
+        $result = [
+            'title' => $title,
+            'description' => $description,
+            ];
+
+        dd(json_encode($result));
+
+        return json_encode($result);
     }
 
     public function store(ParserCreateRequest $request)
