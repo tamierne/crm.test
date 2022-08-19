@@ -58,7 +58,9 @@
                                     <th>Status</th>
                                     <th>Date added</th>
                                     <th>Date finished</th>
+                                    @role('super-admin')
                                     <th>Available action</th>
+                                    @endrole
                                 </tr>
                             </thead>
                             <tbody>
@@ -70,15 +72,26 @@
                                         <td>{{ $parser->status->name }}</td>
                                         <td>{{ $parser->created_at }}</td>
                                         <td>{{ $parser->updated_at }}</td>
-                                        <td>
-                                            @role('super-admin')
-                                                <form action="{{ route('parsers.destroy', $parser->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Delete</button>
-                                                </form>
-                                            @endrole
-                                        </td>
+                                        @role('super-admin')
+                                            <td>
+                                                @if($parser->deleted_at)
+                                                    <form action="{{ route('parsers.wipe', $parser->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Wipe</button>
+                                                    </form>
+                                                    <form action="{{ route('parsers.restore', $parser->id) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-block btn-warning mt-1 btn-flat">Restore</button>
+                                                    </form>
+                                                @else
+                                                    <form action="{{ route('parsers.destroy', $parser->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Delete</button>
+                                                    </form>
+                                                @endif
+                                            </td>
+                                        @endrole
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -26,20 +26,16 @@ class ParserRepository extends MainRepository
             ->simplePaginate('10');
     }
 
-    public function getItemById(int $id): Parser
+    public function getItemById(int $id)
     {
-        return Parser::with([
-            'user:id,name',
-        ])
-            ->findOrFail($id);
+        return Parser::withTrashed()->findOrFail($id);
     }
 
-    public function parse(ParserCreateRequest $request)
+    public function parseToJson($url)
     {
-        $address = $request->validated('url');
 
-        $htmlString = file_get_contents($address);
-        $allMetaTags = get_meta_tags($address);
+        $htmlString = file_get_contents($url);
+        $allMetaTags = get_meta_tags($url);
 
         $description = array_key_exists('description', $allMetaTags)
             ? $allMetaTags['description']
@@ -49,23 +45,24 @@ class ParserRepository extends MainRepository
         @$htmlDom->loadHTML($htmlString);
         $titleNode = $htmlDom->getElementsByTagName('title');
 
-        $title = $titleNode->item(0)->nodeValue;
+        $title = is_null($titleNode->item(0)->nodeValue)
+            ? 'No title'
+            : $titleNode->item(0)->nodeValue;
 
         $result = [
             'title' => $title,
             'description' => $description,
             ];
 
-        dd(json_encode($result));
-
         return json_encode($result);
     }
 
-    public function store(ParserCreateRequest $request)
+    public function store($url)
     {
         return Parser::create([
-            'url' => $request->url,
+            'url' => $url,
             'user_id' => auth()->user()->id,
+            'result' => $this->parseToJson($url),
         ]);
     }
 }

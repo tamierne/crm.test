@@ -20,6 +20,7 @@ class Parser extends Model
         'url',
         'user_id',
         'status_id',
+        'result',
     ];
 
     /**

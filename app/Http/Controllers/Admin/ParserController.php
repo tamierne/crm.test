@@ -6,6 +6,7 @@ use App\Http\Requests\Admin\ParserCreateRequest;
 use App\Models\Parser;
 use App\Repositories\ParserRepository;
 use App\Repositories\StatusRepository;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -42,8 +43,9 @@ class ParserController extends BaseController
 
     public function store(ParserCreateRequest $request)
     {
-        $this->parserRepository->store($request);
-        $this->parserRepository->parse($request);
+        $this->parserRepository->store($request->validated('url'));
+
+        $this->parserRepository->parseToJson($request->validated('url'));
 
         //event(notification)
 
@@ -92,6 +94,29 @@ class ParserController extends BaseController
      */
     public function destroy(Parser $parser)
     {
-        //
+        $parser->delete();
+        return redirect()->back()->with('message', 'Successfully deleted');
+    }
+
+    public function restore($id): RedirectResponse
+    {
+        $parser = $this->parserRepository->getItemById($id);
+
+        $parser->restore();
+        return redirect()->back()->with('message', 'Successfully restored');
+    }
+
+    /**
+     * Force delete the specified resource
+     * @param $id
+     * @return RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function wipe($id): RedirectResponse
+    {
+        $parser = $this->parserRepository->getItemById($id);
+
+        $parser->forceDelete();
+        return redirect()->back()->with('message', 'Successfully wiped');
     }
 }

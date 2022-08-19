@@ -59,11 +59,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified']], functi
     });
 
     Route::group(['middleware' => ['role:super-admin|admin'], 'name' => 'roles.'], function() {
-        Route::post('roles/{role}/restore', [RoleController::class, 'restore'])->name('roles.restore');
-        Route::post('roles/{role}/wipe', [RoleController::class, 'wipe'])->name('roles.wipe');
+        Route::post('roles/{role}/restore', [RoleController::class, 'restore'])->name('restore');
+        Route::post('roles/{role}/wipe', [RoleController::class, 'wipe'])->name('wipe');
         Route::resource('roles', RoleController::class)->except('show');
     });
 
+    Route::group(['prefix' => 'parsers', 'as' => 'parsers.', 'controller' => ParserController::class], function() {
+        Route::post('{parser}/restore', 'restore')->name('restore');
+        Route::post('{parser}/wipe', 'wipe')->name('wipe');
+    });
     Route::resource('parsers', ParserController::class)->except(['create', 'edit', 'show']);
 
     Route::resources([
