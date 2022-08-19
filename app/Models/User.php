@@ -77,6 +77,14 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
     }
 
     /**
+     * @return HasMany
+     */
+    public function parsers(): HasMany
+    {
+        return $this->hasMany(Parser::class);
+    }
+
+    /**
      * @return HasMany|Collection|Task
      */
     public function tasks(): HasMany

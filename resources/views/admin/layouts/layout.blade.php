@@ -105,6 +105,14 @@
                 </a>
             </li>
             @endhasanyrole
+            <li class="nav-item">
+                <a href="{{ route('parsers.index') }}" class="nav-link">
+                    <i class="nav-icon fas fa-ad"></i>
+                    <p>
+                        URL Parser
+                    </p>
+                </a>
+            </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

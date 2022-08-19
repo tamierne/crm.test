@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ParserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\SocialAuth\GoogleController;
 use App\Http\Controllers\Auth\SocialAuth\GithubController;
@@ -62,6 +63,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified']], functi
         Route::post('roles/{role}/wipe', [RoleController::class, 'wipe'])->name('roles.wipe');
         Route::resource('roles', RoleController::class)->except('show');
     });
+
+    Route::resource('parsers', ParserController::class)->except(['edit', 'show']);
 
     Route::resources([
         'clients' => ClientController::class,
