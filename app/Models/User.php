@@ -76,13 +76,13 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         return $this->hasMany(Project::class);
     }
 
-    /**
-     * @return HasMany
-     */
-    public function parsers(): HasMany
-    {
-        return $this->hasMany(Parser::class);
-    }
+//    /**
+//     * @return HasMany
+//     */
+//    public function parserTasks(): HasMany
+//    {
+//        return $this->hasMany(ParserTask::class);
+//    }
 
     /**
      * @return HasMany|Collection|Task

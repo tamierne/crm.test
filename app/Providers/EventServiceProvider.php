@@ -2,6 +2,12 @@
 
 namespace App\Providers;
 
+use App\Events\UrlParserFinished;
+use App\Events\UrlParserStarted;
+use App\Listeners\SendFinishedParsingSuperAdminNotification;
+use App\Listeners\SendFinishedParsingUserNotification;
+use App\Listeners\SendStartParsingSuperAdminNotification;
+use App\Listeners\SendStartParsingUserNotification;
 use App\Models\Project;
 use App\Models\Task;
 use App\Observers\ProjectObserver;
@@ -9,7 +15,6 @@ use App\Observers\TaskObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -21,6 +26,14 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        UrlParserStarted::class => [
+            SendStartParsingUserNotification::class,
+            SendStartParsingSuperAdminNotification::class,
+        ],
+        UrlParserFinished::class => [
+            SendFinishedParsingUserNotification::class,
+            SendFinishedParsingSuperAdminNotification::class,
         ],
     ];
 

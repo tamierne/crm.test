@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Parser extends Model
+class ParserTask extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -21,6 +21,11 @@ class Parser extends Model
         'user_id',
         'status_id',
         'result',
+    ];
+
+    protected $casts = [
+        'started_at' => 'datetime',
+        'finished_at' => 'datetime',
     ];
 
     /**

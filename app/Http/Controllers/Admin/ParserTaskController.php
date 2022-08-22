@@ -3,27 +3,30 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Admin\ParserCreateRequest;
-use App\Models\Parser;
-use App\Repositories\ParserRepository;
+use App\Models\ParserTask;
+use App\Repositories\ParserTaskRepository;
 use App\Repositories\StatusRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class ParserController extends BaseController
+class ParserTaskController extends BaseController
 {
     private StatusRepository $statusRepository;
-    private ParserRepository $parserRepository;
+    private ParserTaskRepository $parserTaskRepository;
 
-    public function __construct(StatusRepository $statusRepository, ParserRepository $parserRepository)
+    public function __construct(
+        StatusRepository $statusRepository,
+        ParserTaskRepository $parserTaskRepository
+    )
     {
         $this->statusRepository = $statusRepository;
-        $this->parserRepository = $parserRepository;
+        $this->parserTaskRepository = $parserTaskRepository;
     }
 
     public function index(): View
     {
-        $parsers = $this->parserRepository->getAllItemsWithPaginate();
+        $parsers = $this->parserTaskRepository->getAllItemsWithPaginate();
         return view('admin.parsers.index', [
             'statusList' => $this->statusRepository->getAllItems(),
             'parsers' => $parsers,
@@ -43,11 +46,7 @@ class ParserController extends BaseController
 
     public function store(ParserCreateRequest $request)
     {
-        $this->parserRepository->store($request->validated('url'));
-
-        $this->parserRepository->parseToJson($request->validated('url'));
-
-        //event(notification)
+        $this->parserTaskRepository->store($request->validated('url'));
 
         return redirect()->back()->with('message', 'URL successfully added!');
     }
@@ -55,10 +54,10 @@ class ParserController extends BaseController
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Parser  $parser
+     * @param  \App\Models\ParserTask  $parser
      * @return \Illuminate\Http\Response
      */
-    public function show(Parser $parser)
+    public function show(ParserTask $parser)
     {
         //
     }
@@ -66,10 +65,10 @@ class ParserController extends BaseController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Parser  $parser
+     * @param  \App\Models\ParserTask  $parser
      * @return \Illuminate\Http\Response
      */
-    public function edit(Parser $parser)
+    public function edit(ParserTask $parser)
     {
         //
     }
@@ -78,10 +77,10 @@ class ParserController extends BaseController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Parser  $parser
+     * @param  \App\Models\ParserTask  $parser
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Parser $parser)
+    public function update(Request $request, ParserTask $parser)
     {
         //
     }
@@ -89,10 +88,10 @@ class ParserController extends BaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Parser  $parser
+     * @param  \App\Models\ParserTask  $parser
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Parser $parser)
+    public function destroy(ParserTask $parser)
     {
         $parser->delete();
         return redirect()->back()->with('message', 'Successfully deleted');
@@ -100,7 +99,7 @@ class ParserController extends BaseController
 
     public function restore($id): RedirectResponse
     {
-        $parser = $this->parserRepository->getItemById($id);
+        $parser = $this->parserTaskRepository->getItemById($id);
 
         $parser->restore();
         return redirect()->back()->with('message', 'Successfully restored');
@@ -114,7 +113,7 @@ class ParserController extends BaseController
      */
     public function wipe($id): RedirectResponse
     {
-        $parser = $this->parserRepository->getItemById($id);
+        $parser = $this->parserTaskRepository->getItemById($id);
 
         $parser->forceDelete();
         return redirect()->back()->with('message', 'Successfully wiped');

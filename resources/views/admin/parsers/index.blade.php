@@ -71,7 +71,7 @@
                                         <td>{{ $parser->result }}</td>
                                         <td>{{ $parser->status->name }}</td>
                                         <td>{{ $parser->created_at }}</td>
-                                        <td>{{ $parser->updated_at }}</td>
+                                        <td>{{ $parser->finished_at }}</td>
                                         @role('super-admin')
                                             <td>
                                                 @if($parser->deleted_at)

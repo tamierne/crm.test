@@ -13,12 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('parsers', function (Blueprint $table) {
+        Schema::create('parser_tasks', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('user_id')->foreignId('user_id')->constrained();
             $table->string('url', 255);
             $table->json('result')->nullable();
             $table->tinyInteger('status_id')->foreignId('status_id')->constrained()->default(1);
+            $table->timestamp('started_at')->nullable();
+            $table->timestamp('finished_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -31,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('parsers');
+        Schema::dropIfExists('parser_tasks');
     }
 };

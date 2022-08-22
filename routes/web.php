@@ -6,7 +6,7 @@ use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\ParserController;
+use App\Http\Controllers\Admin\ParserTaskController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\SocialAuth\GoogleController;
 use App\Http\Controllers\Auth\SocialAuth\GithubController;
@@ -64,11 +64,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified']], functi
         Route::resource('roles', RoleController::class)->except('show');
     });
 
-    Route::group(['prefix' => 'parsers', 'as' => 'parsers.', 'controller' => ParserController::class], function() {
+    Route::group(['prefix' => 'parsers', 'as' => 'parsers.', 'controller' => ParserTaskController::class], function() {
         Route::post('{parser}/restore', 'restore')->name('restore');
         Route::post('{parser}/wipe', 'wipe')->name('wipe');
     });
-    Route::resource('parsers', ParserController::class)->except(['create', 'edit', 'show']);
+    Route::resource('parsers', ParserTaskController::class)->except(['create', 'edit', 'show']);
 
     Route::resources([
         'clients' => ClientController::class,
