@@ -18,6 +18,14 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
+      <li class="nav-item dropdown show">
+         <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="true">
+            <i class="far fa-bell"></i>
+             @if(auth()->user()->notifications)
+                <span class="badge badge-warning navbar-badge">{{ count(auth()->user()->unreadNotifications) }}</span>
+             @endif
+         </a>
+      </li>
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button">
           <i class="fas fa-bars"></i>

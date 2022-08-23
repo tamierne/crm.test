@@ -15,7 +15,7 @@
     <!-- Default box -->
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">Here's your tasks list</h3>
+        <h3 class="card-title">Here's your tasks and notifications list</h3>
 
         {{-- {{ @include('admin.layouts.includes.messages') }} --}}
 

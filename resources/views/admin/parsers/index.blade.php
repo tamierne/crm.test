@@ -17,7 +17,7 @@
                         @csrf
                         <h3 class="row">
                             <div>
-                                <button type="submit" class="btn btn-block btn-success btn-flat">Parse URL</button>
+                                <button type="submit" class="btn btn-block btn-success btn-flat">Queue URL</button>
                             </div>
                             <div class="col">
                                 <input type="text" name="url" class="form-control" id="parserCreate" placeholder="Enter URL to parse">
@@ -28,6 +28,9 @@
                             {{ $parsers->links() }}
                         </div>
                         <div class="row">
+                            <div class="col">
+                                <a href= {{ route('force.parse') }} type="button" class="btn btn-block btn-info btn-flat">FORCE PARSE</a>
+                            </div>
                             <div class="col">
                                 <a href= {{ route('parsers.index') }} type="button" class="btn btn-block btn-info btn-flat">View all</a>
                             </div>

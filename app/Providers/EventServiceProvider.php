@@ -2,12 +2,7 @@
 
 namespace App\Providers;
 
-use App\Events\UrlParserFinished;
-use App\Events\UrlParserStarted;
-use App\Listeners\SendFinishedParsingSuperAdminNotification;
-use App\Listeners\SendFinishedParsingUserNotification;
-use App\Listeners\SendStartParsingSuperAdminNotification;
-use App\Listeners\SendStartParsingUserNotification;
+use App\Listeners\ParserTaskEventSubscriber;
 use App\Models\Project;
 use App\Models\Task;
 use App\Observers\ProjectObserver;
@@ -27,14 +22,10 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        UrlParserStarted::class => [
-            SendStartParsingUserNotification::class,
-            SendStartParsingSuperAdminNotification::class,
-        ],
-        UrlParserFinished::class => [
-            SendFinishedParsingUserNotification::class,
-            SendFinishedParsingSuperAdminNotification::class,
-        ],
+    ];
+
+    protected $subscribe = [
+        ParserTaskEventSubscriber::class,
     ];
 
     /**

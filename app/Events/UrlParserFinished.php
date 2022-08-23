@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\ParserTask;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -16,9 +17,9 @@ class UrlParserFinished
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(ParserTask $parserTask)
     {
-        //
+        $this->parserTask = $parserTask;
     }
 
     /**

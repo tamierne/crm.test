@@ -118,4 +118,11 @@ class ParserTaskController extends BaseController
         $parser->forceDelete();
         return redirect()->back()->with('message', 'Successfully wiped');
     }
+
+    public function forceParse()
+    {
+        $this->parserTaskRepository->parseAllToJson();
+
+        return redirect()->back()->with('message', 'Done');
+    }
 }

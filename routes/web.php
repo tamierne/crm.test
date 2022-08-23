@@ -68,6 +68,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified']], functi
         Route::post('{parser}/restore', 'restore')->name('restore');
         Route::post('{parser}/wipe', 'wipe')->name('wipe');
     });
+
+    Route::get('parsers/force', [ParserTaskController::class, 'forceParse'])->name('force.parse');
     Route::resource('parsers', ParserTaskController::class)->except(['create', 'edit', 'show']);
 
     Route::resources([

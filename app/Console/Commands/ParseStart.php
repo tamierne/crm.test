@@ -36,14 +36,6 @@ class ParseStart extends Command
      */
     public function handle()
     {
-        $tasks = $this->parserTaskRepository->getAllUnparsedTasks();
-        if (!$tasks->isEmpty()) {
-
-            foreach ($tasks as $task) {
-                $this->parserTaskRepository->parseToJson($task);
-            }
-            return $this->info('Done');
-        }
-        return $this->info('Nothing to do');
+        return $this->parserTaskRepository->parseAllToJson();
     }
 }

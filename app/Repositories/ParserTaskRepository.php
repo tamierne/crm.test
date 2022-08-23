@@ -2,9 +2,10 @@
 
 namespace App\Repositories;
 
-use App\Http\Requests\Admin\ParserCreateRequest;
+use App\Events\UrlParserAdded;
+use App\Events\UrlParserFinished;
+use App\Events\UrlParserStarted;
 use App\Models\ParserTask;
-use Illuminate\Http\Request;
 
 class ParserTaskRepository extends MainRepository
 {
@@ -38,9 +39,12 @@ class ParserTaskRepository extends MainRepository
 
     public function parseToJson(ParserTask $parserTask)
     {
-        //event (started)
+
         $parserTask->status_id = 2;
         $parserTask->started_at = now();
+        $parserTask->save();
+
+        UrlParserStarted::dispatch($parserTask);
 
 //        try {
             $htmlString = file_get_contents($parserTask->url);
@@ -70,6 +74,8 @@ class ParserTaskRepository extends MainRepository
 
             $parserTask->save();
 
+//            UrlParserFinished::dispatch($parserTask);
+
 //        } catch () {
 //
 //        }
@@ -77,15 +83,29 @@ class ParserTaskRepository extends MainRepository
         //event(finished)
 
         return json_encode($result);
+//        return back();
+    }
+
+    public function parseAllToJson()
+    {
+        $tasks = $this->getAllUnparsedTasks();
+        if (!$tasks->isEmpty()) {
+            foreach ($tasks as $task) {
+                $this->parseToJson($task);
+            }
+        }
+        return 0;
     }
 
     public function store($url)
     {
-        return ParserTask::create([
+        $parserTask = ParserTask::create([
             'url' => $url,
             'user_id' => auth()->user()->id,
         ]);
 
-        //event(added to queue)
+        UrlParserAdded::dispatch($parserTask);
+
+        return back();
     }
 }
