@@ -10,6 +10,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
@@ -20,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Authenticatable implements MustVerifyEmail, HasMedia
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles, InteractsWithMedia;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles, InteractsWithMedia, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -54,6 +56,15 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         'email_verified_at' => 'datetime',
     ];
 
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('users')
+            ->logOnly(['name', 'email'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
+
     /**
      * The "booted" method of the model.
      *
@@ -76,13 +87,13 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         return $this->hasMany(Project::class);
     }
 
-//    /**
-//     * @return HasMany
-//     */
-//    public function parserTasks(): HasMany
-//    {
-//        return $this->hasMany(ParserTask::class);
-//    }
+    /**
+     * @return HasMany
+     */
+    public function parserTasks(): HasMany
+    {
+        return $this->hasMany(ParserTask::class);
+    }
 
     /**
      * @return HasMany|Collection|Task

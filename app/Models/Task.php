@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Task extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -36,6 +38,15 @@ class Task extends Model
         'user_id',
         'project_id',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('tasks')
+            ->logOnly(['title', 'user.name', 'project.title', 'status.name'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     /**
      * @return string
@@ -68,6 +79,11 @@ class Task extends Model
     {
         return $this->belongsTo(Status::class);
     }
+
+//    public function statusable()
+//    {
+//        return $this->morphTo('statusable');
+//    }
 
     public function scopeByStatus($query, $status)
     {

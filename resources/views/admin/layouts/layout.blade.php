@@ -121,6 +121,16 @@
                     </p>
                 </a>
             </li>
+            @role('super-admin')
+            <li class="nav-item">
+                <a href="{{ route('admin.activity') }}" class="nav-link">
+                    <i class="nav-icon fab fa-accessible-icon"></i>
+                    <p>
+                        Activity
+                    </p>
+                </a>
+            </li>
+            @endrole
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

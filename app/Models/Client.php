@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 use Askedio\SoftCascade\Traits\SoftCascadeTrait;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Image\Manipulations;
@@ -15,7 +17,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Client extends BaseModel implements HasMedia
 {
-    use HasFactory, SoftDeletes, SoftCascadeTrait, InteractsWithMedia;
+    use HasFactory, SoftDeletes, SoftCascadeTrait, InteractsWithMedia, LogsActivity;
 
     protected $fillable = [
         'name',
@@ -24,6 +26,15 @@ class Client extends BaseModel implements HasMedia
     ];
 
     protected $softCascade = ['projects'];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('clients')
+            ->logOnly(['name', 'VAT', 'address'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     /**
      * @return HasMany|Collection|Project

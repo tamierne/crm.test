@@ -10,10 +10,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Askedio\SoftCascade\Traits\SoftCascadeTrait;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Project extends BaseModel
 {
-    use HasFactory, SoftDeletes, SoftCascadeTrait;
+    use HasFactory, SoftDeletes, SoftCascadeTrait, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -40,6 +42,15 @@ class Project extends BaseModel
     ];
 
     protected $softCascade = ['tasks'];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('projects')
+            ->logOnly(['title', 'user.name', 'status.name'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     /**
      * @return string
@@ -72,6 +83,11 @@ class Project extends BaseModel
     {
         return $this->belongsTo(Status::class);
     }
+
+//    public function status()
+//    {
+//        return $this->morphOne(Status::class, 'status', 'status_id');
+//    }
 
     /**
      * @return HasMany|Collection|Task

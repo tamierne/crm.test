@@ -35,6 +35,10 @@ Route::group(['prefix' => 'auth'], function () {
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified']], function() {
     Route::get('/', [AdminController::class, 'index'])->name('admin.index');
 
+    Route::get('activity', [AdminController::class, 'activity'])
+        ->middleware('role:super-admin')
+        ->name('admin.activity');
+
     Route::get('/email/verify', function () {
         return view('auth.verify-email');
     })->name('verification.notice');

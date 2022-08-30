@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Repositories\TaskRepository;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Spatie\Activitylog\Models\Activity;
 
 class AdminController extends BaseController
 {
@@ -21,5 +22,11 @@ class AdminController extends BaseController
     {
         $tasks = $this->taskRepository->getCurrentUserTasks();
         return view('admin.index', compact('tasks'));
+    }
+
+    public function activity()
+    {
+        $activities = Activity::simplePaginate('50');
+        return view('admin.activity', compact('activities'));
     }
 }
