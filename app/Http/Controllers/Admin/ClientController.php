@@ -87,7 +87,7 @@ class ClientController extends BaseController
         $photos = $client->getMedia('avatar');
         return view('admin.clients.edit', [
             'client' => $client,
-            'photos' => $photos
+            'photos' => $photos,
         ]);
     }
 

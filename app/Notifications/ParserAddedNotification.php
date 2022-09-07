@@ -39,6 +39,7 @@ class ParserAddedNotification extends Notification implements ShouldQueue
         return [
             'user_id' => $this->parserTask->user_id,
             'user_name' => $this->parserTask->user->name,
+            'action' => 'Added URL parser',
             'url' => $this->parserTask->url,
             'created_at' => $this->parserTask->created_at,
         ];

@@ -46,6 +46,7 @@ class ParserStartedNotification extends Notification implements ShouldQueue
         return [
             'user_id' => $this->parserTask->user_id,
             'user_name' => $this->parserTask->user->name,
+            'action' => 'Started URL parser',
             'url' => $this->parserTask->url,
             'started_at' => $this->parserTask->started_at,
         ];

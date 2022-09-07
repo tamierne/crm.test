@@ -19,9 +19,9 @@
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <li class="nav-item dropdown show">
-         <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="true">
+         <a class="nav-link" href="{{ route('welcome') }}" aria-expanded="true">
             <i class="far fa-bell"></i>
-             @if(auth()->user()->notifications)
+             @if(auth()->user()->unreadNotifications)
                 <span class="badge badge-warning navbar-badge">{{ count(auth()->user()->unreadNotifications) }}</span>
              @endif
          </a>

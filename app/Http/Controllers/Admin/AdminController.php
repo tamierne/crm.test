@@ -21,7 +21,12 @@ class AdminController extends BaseController
     public function index(): View
     {
         $tasks = $this->taskRepository->getCurrentUserTasks();
-        return view('admin.index', compact('tasks'));
+        $notifications = auth()->user()->notifications;
+        return view('admin.index',
+        [
+            'tasks' => $tasks,
+            'notifications' => $notifications,
+        ]);
     }
 
     public function activity()

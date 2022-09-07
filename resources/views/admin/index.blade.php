@@ -71,6 +71,34 @@
             </table>
         @endif
     </div>
+        <div class="card-body p-0">
+            @if(count($notifications) == 0)
+                <h3 class="card-title ml-5">You've no notifications</h3>
+            @else
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>User #</th>
+                        <th>Username</th>
+                        <th>Action</th>
+                        <th>Details</th>
+                        <th>When</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach ($notifications as $notification)
+                        <tr>
+                            <td>{{ $notification->data['user_id'] }}</td>
+                            <td>{{ $notification->data['user_name'] }}</td>
+{{--                            <td>{{ $notification->data['action'] }}</td>--}}
+                            <td>{{ $notification->data['url'] }}</td>
+                            <td>{{ $notification->data['created_at'] }}</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            @endif
+        </div>
       <!-- /.card-body -->
       <div class="card-footer">
         Footer
