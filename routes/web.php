@@ -33,7 +33,10 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified']], function() {
+
     Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+
+    Route::get('mark', [AdminController::class, 'mark'])->name('admin.mark');
 
     Route::get('activity', [AdminController::class, 'activity'])
         ->middleware('role:super-admin')

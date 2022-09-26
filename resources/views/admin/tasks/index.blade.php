@@ -59,7 +59,7 @@
                             <tbody>
                                 @foreach ($tasks as $task)
                                     <tr>
-                                        <td>{{ $task->id }}</td>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ $task->title }}</td>
                                         <td>{{ Str::limit($task->description, 50, '...') }}</td>
                                         <td>{{ $task->deadline_parsed }}</td>

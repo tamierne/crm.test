@@ -21,7 +21,8 @@ class AdminController extends BaseController
     public function index(): View
     {
         $tasks = $this->taskRepository->getCurrentUserTasks();
-        $notifications = auth()->user()->notifications;
+        $notifications = auth()->user()->unreadNotifications;
+
         return view('admin.index',
         [
             'tasks' => $tasks,
@@ -32,6 +33,14 @@ class AdminController extends BaseController
     public function activity()
     {
         $activities = Activity::orderByDesc('created_at')->simplePaginate('50');
+
         return view('admin.activity', compact('activities'));
+    }
+
+    public function mark()
+    {
+        auth()->user()->unreadNotifications->markAsRead();
+
+        return back();
     }
 }

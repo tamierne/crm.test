@@ -10,7 +10,6 @@ class ParserFinishedNotification extends Notification
 {
     use Queueable;
     public ParserTask $parserTask;
-
     /**
      * Create a new notification instance.
      *
@@ -32,6 +31,7 @@ class ParserFinishedNotification extends Notification
         return ['database'];
     }
 
+
     /**
      * Get the array representation of the notification.
      *
@@ -44,9 +44,7 @@ class ParserFinishedNotification extends Notification
             'user_id' => $this->parserTask->user_id,
             'user_name' => $this->parserTask->user->name,
             'action' => 'Finished URL parser',
-            'result' => $this->parserTask->result,
             'url' => $this->parserTask->url,
-            'started_at' => $this->parserTask->started_at,
             'finished_at' => $this->parserTask->finished_at,
         ];
     }

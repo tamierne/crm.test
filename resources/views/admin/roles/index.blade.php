@@ -33,6 +33,7 @@
                             <table class="table">
                                 <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Title</th>
                                     <th>Permissions</th>
                                     <th>Users</th>
@@ -45,7 +46,8 @@
                                         <tr style="background-color: #2a2d31">
                                     @else
                                         <tr>
-                                            @endif
+                                    @endif
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ $role->name }}</td>
                                             <td>@foreach ($role->permissions as $permission)
                                                     {{ $permission->name }}<br>

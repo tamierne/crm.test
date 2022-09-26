@@ -33,6 +33,7 @@
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Name</th>
                                     <th>Role</th>
                                     <th>Email</th>
@@ -48,6 +49,7 @@
                                     @else
                                         <tr>
                                     @endif
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ $user->name }}
                                                 @if (!@empty($user->getFirstMediaUrl('avatar')))
                                                     <img class="img-thumbnail" src="{{ $user->getFirstMediaUrl('avatar') }}" width="150px">

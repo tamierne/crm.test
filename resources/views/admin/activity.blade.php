@@ -16,17 +16,19 @@
                     <h3 class="card-title">
                         Recent activity
                     </h3>
-                    <div class="card-tools">
-                        {{ $activities->links() }}
-                    </div>
+                    @if(count($activities) !== 0)
+                        <div class="card-tools">
+                            {{ $activities->links() }}
+                        </div>
+                    @endif
 
                 @include('admin.layouts.includes.messages')
 
                 </div>
 
                 <div class="card-body p-0">
-                    @if(count($activities) == 0)
-                        <h3 class="card-title ml-5">You've no activities yet... somehow</h3>
+                    @if(count($activities) === 0)
+                        <h5 class="card-header">You've no activities yet... somehow</h5>
                     @else
                         <table class="table">
                             <thead>

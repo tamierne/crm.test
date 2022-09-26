@@ -6,6 +6,7 @@ use App\Events\UrlParser\UrlParserAdded;
 use App\Events\UrlParser\UrlParserFinished;
 use App\Events\UrlParser\UrlParserStarted;
 use App\Models\ParserTask;
+use App\Models\Status;
 
 class ParserTaskRepository extends MainRepository
 {
@@ -24,6 +25,7 @@ class ParserTaskRepository extends MainRepository
             'status:id,name',
         ])
             ->withTrashed()
+            ->orderbyDesc('created_at')
             ->simplePaginate('10');
     }
 
@@ -34,13 +36,13 @@ class ParserTaskRepository extends MainRepository
 
     public function getAllUnparsedTasks()
     {
-        return ParserTask::where('status_id', '1')->get();
+        return ParserTask::where('status_id', Status::STATUS_QUEUED)->get();
     }
 
     public function parseToJson(ParserTask $parserTask)
     {
 
-        $parserTask->status_id = 2;
+        $parserTask->status_id = Status::STATUS_PROCESSING;
         $parserTask->started_at = now();
         $parserTask->save();
 
@@ -70,7 +72,7 @@ class ParserTaskRepository extends MainRepository
             $parserTask->result = $result;
             $parserTask->finished_at = now();
 
-            $parserTask->status_id = 4;
+            $parserTask->status_id = Status::STATUS_COMPLETED;
 
             $parserTask->save();
 
@@ -93,7 +95,7 @@ class ParserTaskRepository extends MainRepository
                 $this->parseToJson($task);
             }
         }
-        return 0;
+        return true;
     }
 
     public function store($url)

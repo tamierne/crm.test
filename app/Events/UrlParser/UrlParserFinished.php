@@ -12,6 +12,7 @@ class UrlParserFinished
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public ParserTask $parserTask;
     /**
      * Create a new event instance.
      *

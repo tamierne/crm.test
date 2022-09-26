@@ -55,6 +55,7 @@
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Added by</th>
                                     <th>URL</th>
                                     <th>Result</th>
@@ -69,6 +70,7 @@
                             <tbody>
                                 @foreach ($parsers as $parser)
                                     <tr>
+                                        <td>{{ $loop->iteration }}
                                         <td>{{ $parser->user->name }}</td>
                                         <td>{{ $parser->url }}</td>
                                         <td>{{ $parser->result }}</td>

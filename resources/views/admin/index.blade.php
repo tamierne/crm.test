@@ -29,6 +29,7 @@
         </div>
       </div>
       <div class="card-body p-0">
+          <h5 class="card-header">TASKS</h5>
         @if(count($tasks) == 0)
             <h3 class="card-title ml-5">You've no active tasks! Enjoy!</h3>
         @else
@@ -72,27 +73,43 @@
         @endif
     </div>
         <div class="card-body p-0">
+            <h5 class="card-header">NOTIFICATIONS</h5>
             @if(count($notifications) == 0)
                 <h3 class="card-title ml-5">You've no notifications</h3>
             @else
+                <a href= {{ route('admin.mark') }} type="button" class="btn btn-block btn-success btn-flat">Mark all as read</a>
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>User #</th>
+                        <th>#</th>
                         <th>Username</th>
                         <th>Action</th>
-                        <th>Details</th>
-                        <th>When</th>
+                        <th>Date created</th>
+                        <th>Date started</th>
+                        <th>Date finished</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach ($notifications as $notification)
                         <tr>
-                            <td>{{ $notification->data['user_id'] }}</td>
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $notification->data['user_name'] }}</td>
-{{--                            <td>{{ $notification->data['action'] }}</td>--}}
-                            <td>{{ $notification->data['url'] }}</td>
-                            <td>{{ $notification->data['created_at'] }}</td>
+                            <td>{{ $notification->data['action'] }}</td>
+                            @isset($notification->data['created_at'])
+                                <td>{{ $notification->data['created_at'] }}</td>
+                            @else
+                                <td> No data </td>
+                            @endisset
+                            @isset($notification->data['started_at'])
+                                <td>{{ $notification->data['started_at'] }}</td>
+                            @else
+                                <td> No data </td>
+                            @endisset
+                            @isset($notification->data['finished_at'])
+                                <td>{{ $notification->data['finished_at'] }}</td>
+                            @else
+                                <td> No data </td>
+                            @endisset
                         </tr>
                     @endforeach
                     </tbody>

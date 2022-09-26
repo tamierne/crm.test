@@ -42,6 +42,7 @@
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Company</th>
                                     <th>VAT</th>
                                     <th>Address</th>
@@ -52,6 +53,7 @@
                             <tbody>
                                 @foreach ($clients as $client)
                                     <tr>
+                                        <td>{{ $loop->iteration }}
                                         <td>{{ $client->name }}
                                             @if (!@empty($client->getFirstMediaUrl('avatar')))
                                                 <img class="img-thumbnail" src="{{ $client->getFirstMediaUrl('avatar') }}" width="150px">
