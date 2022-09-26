@@ -31,7 +31,7 @@ class AdminController extends BaseController
 
     public function activity()
     {
-        $activities = Activity::simplePaginate('50');
+        $activities = Activity::orderByDesc('created_at')->simplePaginate('50');
         return view('admin.activity', compact('activities'));
     }
 }

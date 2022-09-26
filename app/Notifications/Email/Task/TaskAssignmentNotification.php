@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications\Email\Task;
 
 use App\Models\Task;
 use Illuminate\Bus\Queueable;
@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class TaskCompletedEmailNotification extends Notification
+class TaskAssignmentNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -45,21 +45,8 @@ class TaskCompletedEmailNotification extends Notification
     {
         return (new MailMessage)
                     ->line('Hello '.$this->task->user->name.'!')
-                    ->line('Your task '.$this->task->title.' was successfully finished!')
+                    ->line('You have been assigned on a task '.$this->task->title)
                     ->action('View task', route('tasks.edit', $this->task->id))
                     ->line('Thank you for using our application!');
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toArray($notifiable)
-    {
-        return [
-            //
-        ];
     }
 }

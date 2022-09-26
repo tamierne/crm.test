@@ -2,11 +2,11 @@
 
 namespace App\Listeners;
 
-use App\Events\UrlParserAdded;
-use App\Events\UrlParserFinished;
-use App\Events\UrlParserStarted;
-use App\Notifications\ParserAddedNotification;
-use App\Notifications\ParserStartedNotification;
+use App\Events\UrlParser\UrlParserAdded;
+use App\Events\UrlParser\UrlParserFinished;
+use App\Events\UrlParser\UrlParserStarted;
+use App\Notifications\Database\UrlParser\ParserAddedNotification;
+use App\Notifications\Database\UrlParser\ParserStartedNotification;
 
 class ParserTaskEventSubscriber
 {

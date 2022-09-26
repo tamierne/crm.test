@@ -1,18 +1,16 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications\Database\UrlParser;
 
 use App\Models\ParserTask;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ParserStartedNotification extends Notification implements ShouldQueue
+class ParserFinishedNotification extends Notification
 {
     use Queueable;
-
     public ParserTask $parserTask;
+
     /**
      * Create a new notification instance.
      *
@@ -34,7 +32,6 @@ class ParserStartedNotification extends Notification implements ShouldQueue
         return ['database'];
     }
 
-
     /**
      * Get the array representation of the notification.
      *
@@ -46,9 +43,11 @@ class ParserStartedNotification extends Notification implements ShouldQueue
         return [
             'user_id' => $this->parserTask->user_id,
             'user_name' => $this->parserTask->user->name,
-            'action' => 'Started URL parser',
+            'action' => 'Finished URL parser',
+            'result' => $this->parserTask->result,
             'url' => $this->parserTask->url,
             'started_at' => $this->parserTask->started_at,
+            'finished_at' => $this->parserTask->finished_at,
         ];
     }
 }

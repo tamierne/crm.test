@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Events\UrlParserAdded;
-use App\Events\UrlParserFinished;
-use App\Events\UrlParserStarted;
+use App\Events\UrlParser\UrlParserAdded;
+use App\Events\UrlParser\UrlParserFinished;
+use App\Events\UrlParser\UrlParserStarted;
 use App\Models\ParserTask;
 
 class ParserTaskRepository extends MainRepository
@@ -74,7 +74,7 @@ class ParserTaskRepository extends MainRepository
 
             $parserTask->save();
 
-//            UrlParserFinished::dispatch($parserTask);
+            UrlParserFinished::dispatch($parserTask);
 
 //        } catch () {
 //
@@ -83,7 +83,6 @@ class ParserTaskRepository extends MainRepository
         //event(finished)
 
         return json_encode($result);
-//        return back();
     }
 
     public function parseAllToJson()

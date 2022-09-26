@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\UrlParser;
 
 use App\Models\ParserTask;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -8,10 +8,11 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UrlParserFinished
+class UrlParserStarted
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public ParserTask $parserTask;
     /**
      * Create a new event instance.
      *

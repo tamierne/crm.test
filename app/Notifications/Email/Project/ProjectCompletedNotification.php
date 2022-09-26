@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications\Email\Project;
 
 use App\Models\Project;
 use Illuminate\Bus\Queueable;
@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ProjectCompletedEmailNotification extends Notification
+class ProjectCompletedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

@@ -1,27 +1,27 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications\Email\Task;
 
-use App\Models\Project;
+use App\Models\Task;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ProjectAssignmentEmailNotification extends Notification
+class TaskCompletedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private Project $project;
+    private Task $task;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Project $project)
+    public function __construct(Task $task)
     {
-        $this->project = $project;
+        $this->task = $task;
     }
 
     /**
@@ -44,23 +44,9 @@ class ProjectAssignmentEmailNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('Hello '.$this->project->user->name.'!')
-                    ->line('You have been assigned on a task '.$this->project->title)
-                    ->line('This project is for '.$this->project->client->name)
-                    ->action('View task', route('projects.edit', $this->project->id))
+                    ->line('Hello '.$this->task->user->name.'!')
+                    ->line('Your task '.$this->task->title.' was successfully finished!')
+                    ->action('View task', route('tasks.edit', $this->task->id))
                     ->line('Thank you for using our application!');
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toArray($notifiable)
-    {
-        return [
-            //
-        ];
     }
 }

@@ -1,24 +1,27 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications\Email\Project;
 
+use App\Models\Project;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ParserFinishedNotification extends Notification
+class ProjectAssignmentNotification extends Notification implements ShouldQueue
 {
     use Queueable;
+
+    private Project $project;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Project $project)
     {
-        //
+        $this->project = $project;
     }
 
     /**
@@ -41,8 +44,10 @@ class ParserFinishedNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
+                    ->line('Hello '.$this->project->user->name.'!')
+                    ->line('You have been assigned on a task '.$this->project->title)
+                    ->line('This project is for '.$this->project->client->name)
+                    ->action('View task', route('projects.edit', $this->project->id))
                     ->line('Thank you for using our application!');
     }
 
