@@ -6,6 +6,7 @@ use App\Events\UrlParser\UrlParserAdded;
 use App\Events\UrlParser\UrlParserFinished;
 use App\Events\UrlParser\UrlParserStarted;
 use App\Notifications\Database\UrlParser\ParserAddedNotification;
+use App\Notifications\Database\UrlParser\ParserFinishedNotification;
 use App\Notifications\Database\UrlParser\ParserStartedNotification;
 
 class ParserTaskEventSubscriber
@@ -22,7 +23,7 @@ class ParserTaskEventSubscriber
 
     public function handleUrlParserFinished(UrlParserFinished $event)
     {
-//
+        $event->parserTask->user->notify(new ParserFinishedNotification($event->parserTask));
     }
 
     /**
@@ -36,7 +37,7 @@ class ParserTaskEventSubscriber
         return [
             UrlParserAdded::class => 'handleUrlParserAdded',
             UrlParserStarted::class => 'handleUrlParserStarted',
-//            UrlParserFinished::class => 'handleUrlParserFinished',
+            UrlParserFinished::class => 'handleUrlParserFinished',
         ];
     }
 }

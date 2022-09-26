@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Listeners\ParserTaskEventSubscriber;
+use App\Models\Client;
 use App\Models\Project;
 use App\Models\Task;
+use App\Observers\ClientObserver;
 use App\Observers\ProjectObserver;
 use App\Observers\TaskObserver;
 use Illuminate\Auth\Events\Registered;
@@ -35,6 +37,7 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Client::observe(ClientObserver::class);
         Task::observe(TaskObserver::class);
         Project::observe(ProjectObserver::class);
     }

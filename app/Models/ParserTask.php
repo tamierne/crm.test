@@ -32,7 +32,7 @@ class ParserTask extends BaseModel
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->useLogName('projects')
+            ->useLogName('parsers')
             ->logOnly(['url', 'result', 'user.name', 'status.name'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
