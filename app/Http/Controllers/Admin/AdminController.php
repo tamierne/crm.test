@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Notification;
 use App\Repositories\TaskRepository;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -21,7 +22,10 @@ class AdminController extends BaseController
     public function index(): View
     {
         $tasks = $this->taskRepository->getCurrentUserTasks();
-        $notifications = auth()->user()->unreadNotifications;
+
+        auth()->user()->hasRole('super-admin')
+            ? $notifications = Notification::adminUnread()->get()
+            : $notifications = auth()->user()->unreadNotifications;
 
         return view('admin.index',
         [
@@ -39,7 +43,9 @@ class AdminController extends BaseController
 
     public function mark()
     {
-        auth()->user()->unreadNotifications->markAsRead();
+        auth()->user()->hasRole('super-admin')
+            ? Notification::markAllAsAdminRead()
+            : auth()->user()->unreadNotifications->markAsRead();
 
         return back();
     }

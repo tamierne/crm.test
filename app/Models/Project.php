@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Askedio\SoftCascade\Traits\SoftCascadeTrait;
-use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -17,6 +16,12 @@ class Project extends BaseModel
 {
     use HasFactory, SoftDeletes, SoftCascadeTrait, LogsActivity;
 
+    /**
+     * The relationships that should always be loaded.
+     *
+     * @var array
+     */
+    protected $with = ['status:id,name'];
     /**
      * The attributes that are mass assignable.
      *

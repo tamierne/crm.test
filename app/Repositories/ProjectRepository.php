@@ -38,7 +38,6 @@ class ProjectRepository extends MainRepository
         return Project::with([
             'client:id,name',
             'user:id,name',
-            'status:id,name',
             ])
             ->simplePaginate('10');
     }
