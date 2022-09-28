@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -52,6 +53,24 @@ class ParserTask extends BaseModel
     public function status(): BelongsTo
     {
         return $this->belongsTo(Status::class)->withTrashed();
+    }
+
+    public function getStartedAtAttribute($value)
+    {
+        if($value) {
+            return Carbon::parse($value)->format('m/d/Y');
+        } else {
+            return $value;
+        }
+    }
+
+    public function getFinishedAtAttribute($value)
+    {
+        if($value) {
+            return Carbon::parse($value)->format('m/d/Y');
+        } else {
+            return $value;
+        }
     }
 
 //    public function statusable()

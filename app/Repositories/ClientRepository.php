@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Events\Client\ClientUpdated;
 use App\Http\Requests\Admin\ClientCreateRequest;
 use App\Http\Requests\Admin\ClientUpdateRequest;
 use App\Models\Client;
@@ -69,6 +70,8 @@ class ClientRepository extends MainRepository
         if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
             $client->addMediaFromRequest('avatar')->toMediaCollection('avatar');
         }
+
+        ClientUpdated::dispatch($client);
 
         return redirect()->back();
     }

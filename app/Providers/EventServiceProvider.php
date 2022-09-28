@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Listeners\ClientEventSubscriber;
+use App\Listeners\LoginLogoutEventSubscriber;
 use App\Listeners\ParserTaskEventSubscriber;
 use App\Models\Client;
 use App\Models\Project;
@@ -27,6 +29,8 @@ class EventServiceProvider extends ServiceProvider
     ];
 
     protected $subscribe = [
+        ClientEventSubscriber::class,
+        LoginLogoutEventSubscriber::class,
         ParserTaskEventSubscriber::class,
     ];
 

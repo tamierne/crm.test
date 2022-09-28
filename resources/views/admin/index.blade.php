@@ -84,34 +84,20 @@
                         <th>#</th>
                         <th>Username</th>
                         <th>Action</th>
-                        <th>Date created</th>
-                        <th>Date started</th>
-                        <th>Date finished</th>
+                        <th>Details</th>
+                        <th>When</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach ($notifications as $notification)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $notification->data['user_name'] }}</td>
-                            <td>{{ $notification->data['action'] }}</td>
-                            @isset($notification->data['created_at'])
-                                <td>{{ $notification->data['created_at'] }}</td>
-                            @else
-                                <td> No data </td>
-                            @endisset
-                            @isset($notification->data['started_at'])
-                                <td>{{ $notification->data['started_at'] }}</td>
-                            @else
-                                <td> No data </td>
-                            @endisset
-                            @isset($notification->data['finished_at'])
-                                <td>{{ $notification->data['finished_at'] }}</td>
-                            @else
-                                <td> No data </td>
-                            @endisset
-                        </tr>
-                    @endforeach
+                        @foreach ($notifications as $notification)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $notification->data['user_name'] }}</td>
+                                <td>{{ $notification->data['action'] }}</td>
+                                <td>{{ $notification->data['details'] }}</td>
+                                <td>{{ $notification->data['when'] }}</td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             @endif

@@ -1,24 +1,24 @@
 <?php
 
-namespace App\Notifications\Database\Client;
+namespace App\Notifications\Database\Auth;
 
-use App\Models\Client;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
-class ClientCreatedNotification extends Notification
+class UserLoggedOutNotification extends Notification
 {
     use Queueable;
 
-    public Client $client;
+    public User $user;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Client $client)
+    public function __construct(User $user)
     {
-        $this->client = $client;
+        $this->user = $user;
     }
 
     /**
@@ -35,10 +35,10 @@ class ClientCreatedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'user_name' => auth()->user()->name,
-            'action' => 'Added new client',
-            'details' => $this->client->name,
-            'when' => $this->client->created_at,
+            'user_name' => $this->user->name,
+            'action' => 'User logged out',
+            'details' => 'No data',
+            'when' => now()->parse()->format('m/d/Y'),
         ];
     }
 }

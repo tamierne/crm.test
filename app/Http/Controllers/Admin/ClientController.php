@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\Client\ClientDeleted;
+use App\Events\Client\ClientUpdated;
 use App\Http\Requests\Admin\ClientIndexRequest;
 use App\Http\Requests\Admin\ClientCreateRequest;
 use App\Http\Requests\Admin\ClientUpdateRequest;
@@ -106,6 +108,9 @@ class ClientController extends BaseController
         }
 
         $client->update($request->validated());
+
+        ClientUpdated::dispatch($client);
+
         return redirect()->back()->with('message', 'Successfully saved!');
     }
 
@@ -119,7 +124,10 @@ class ClientController extends BaseController
     {
         $this->authorize('client_delete');
 
+        ClientDeleted::dispatch($client);
+
         $client->delete();
+
         return redirect()->back()->with('message', 'Successfully deleted');
     }
 

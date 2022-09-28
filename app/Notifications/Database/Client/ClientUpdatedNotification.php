@@ -6,7 +6,7 @@ use App\Models\Client;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
-class ClientCreatedNotification extends Notification
+class ClientUpdatedNotification extends Notification
 {
     use Queueable;
 
@@ -36,9 +36,9 @@ class ClientCreatedNotification extends Notification
     {
         return [
             'user_name' => auth()->user()->name,
-            'action' => 'Added new client',
+            'action' => 'Updated client info',
             'details' => $this->client->name,
-            'when' => $this->client->created_at,
+            'when' => $this->client->updated_at,
         ];
     }
 }

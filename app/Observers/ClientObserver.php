@@ -4,7 +4,7 @@ namespace App\Observers;
 
 use App\Models\Client;
 use App\Models\User;
-use App\Notifications\Database\Client\ClientCreatedNotification;
+use App\Notifications\Database\Client\ClientDeletedNotification;
 
 class ClientObserver
 {
@@ -23,7 +23,7 @@ class ClientObserver
      */
     public function created(Client $client)
     {
-        $this->user->notify(new ClientCreatedNotification($client));
+        $this->user->notify(new ClientDeletedNotification($client));
     }
 
     /**

@@ -42,11 +42,10 @@ class ParserStartedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'user_id' => $this->parserTask->user_id,
             'user_name' => $this->parserTask->user->name,
             'action' => 'Started URL parser',
-            'url' => $this->parserTask->url,
-            'started_at' => $this->parserTask->started_at,
+            'details' => $this->parserTask->url,
+            'when' => $this->parserTask->started_at,
         ];
     }
 }

@@ -41,11 +41,10 @@ class ParserFinishedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'user_id' => $this->parserTask->user_id,
             'user_name' => $this->parserTask->user->name,
             'action' => 'Finished URL parser',
-            'url' => $this->parserTask->url,
-            'finished_at' => $this->parserTask->finished_at,
+            'details' => $this->parserTask->url,
+            'when' => $this->parserTask->finished_at,
         ];
     }
 }
