@@ -4,15 +4,17 @@ namespace App\Observers;
 
 use App\Models\Client;
 use App\Models\User;
+use App\Notifications\Database\Client\ClientCreatedNotification;
 use App\Notifications\Database\Client\ClientDeletedNotification;
+use App\Notifications\Database\Client\ClientUpdatedNotification;
 
 class ClientObserver
 {
-    private User $user;
+    private User $admin;
 
     public function __construct()
     {
-        $this->user = User::role('super-admin')->first();
+        $this->admin = User::role('super-admin')->first();
     }
 
     /**
@@ -23,7 +25,7 @@ class ClientObserver
      */
     public function created(Client $client)
     {
-        $this->user->notify(new ClientDeletedNotification($client));
+        $this->admin->notify(new ClientCreatedNotification($client));
     }
 
     /**
@@ -34,7 +36,7 @@ class ClientObserver
      */
     public function updated(Client $client)
     {
-        //
+        $this->admin->notify(new ClientUpdatedNotification($client));
     }
 
     /**
@@ -45,7 +47,7 @@ class ClientObserver
      */
     public function deleted(Client $client)
     {
-        //
+        $this->admin->notify(new ClientDeletedNotification($client));
     }
 
     /**

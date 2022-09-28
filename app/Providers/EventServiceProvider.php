@@ -29,7 +29,6 @@ class EventServiceProvider extends ServiceProvider
     ];
 
     protected $subscribe = [
-        ClientEventSubscriber::class,
         LoginLogoutEventSubscriber::class,
         ParserTaskEventSubscriber::class,
     ];
