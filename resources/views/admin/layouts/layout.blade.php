@@ -92,7 +92,7 @@
               <i class="nav-icon fas fa-paste"></i>
               <p>
                 Projects
-                  <span class="badge badge-info right">{{ count(auth()->user()->projects) }}</span>
+                  <span class="badge badge-info right">{{ $projectsCount }}</span>
               </p>
             </a>
           </li>
@@ -101,7 +101,7 @@
               <i class="nav-icon fas fa-tasks"></i>
               <p>
                 Tasks
-                  <span class="badge badge-info right">{{ count(auth()->user()->tasks) }}</span>
+                  <span class="badge badge-info right">{{ $tasksCount }}</span>
               </p>
             </a>
           </li>

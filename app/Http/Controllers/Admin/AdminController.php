@@ -4,16 +4,19 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Notification;
 use App\Repositories\TaskRepository;
-use Illuminate\Http\Request;
+use App\Services\CounterService;
 use Illuminate\View\View;
 use Spatie\Activitylog\Models\Activity;
 
 class AdminController extends BaseController
 {
     private TaskRepository $taskRepository;
-    public function __construct(TaskRepository $taskRepository)
+    private CounterService $counterService;
+
+    public function __construct(TaskRepository $taskRepository, CounterService $counterService)
     {
         $this->taskRepository = $taskRepository;
+        $this->counterService = $counterService;
     }
 
     /**
@@ -23,12 +26,17 @@ class AdminController extends BaseController
     {
         $tasks = $this->taskRepository->getCurrentUserTasks();
 
+        $projectsCount = $this->counterService->getUserActiveProjectsCount(auth()->user());
+        $tasksCount = $this->counterService->getUserActiveTasksCount(auth()->user());
+
         auth()->user()->hasRole('super-admin')
             ? $notifications = Notification::adminUnread()->get()
             : $notifications = auth()->user()->unreadNotifications;
 
         return view('admin.index',
         [
+            'projectsCount' => $projectsCount,
+            'tasksCount' => $tasksCount,
             'tasks' => $tasks,
             'notifications' => $notifications,
         ]);
