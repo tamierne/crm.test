@@ -27,7 +27,6 @@ class ParserTask extends BaseModel
 
     protected $casts = [
         'started_at' => 'datetime',
-        'finished_at' => 'datetime',
     ];
 
     public function getActivitylogOptions(): LogOptions

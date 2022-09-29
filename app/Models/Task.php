@@ -14,12 +14,17 @@ class Task extends Model
 {
     use HasFactory, SoftDeletes, LogsActivity;
 
+    protected $touches = ['project'];
+
     /**
      * The relationships that should always be loaded.
      *
      * @var array
      */
-    protected $with = ['status:id,name', 'project:id,title'];
+    protected $with = [
+        'status:id,name',
+        'project:id,title',
+    ];
 
     /**
      * The attributes that are mass assignable.

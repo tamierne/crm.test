@@ -44,7 +44,7 @@ class ParserFinishedNotification extends Notification
             'user_name' => $this->parserTask->user->name,
             'action' => 'Finished URL parser',
             'details' => $this->parserTask->url,
-            'when' => $this->parserTask->finished_at,
+            'when' => $this->parserTask->updated_at,
         ];
     }
 }

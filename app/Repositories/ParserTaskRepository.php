@@ -74,7 +74,6 @@ class ParserTaskRepository extends MainRepository
             $parserTask->update([
                 'status_id' => Status::STATUS_COMPLETED,
                 'result' => $result,
-                'finished_at' => now(),
                 ]);
 
             UrlParserFinished::dispatch($parserTask);
