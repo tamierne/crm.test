@@ -103,6 +103,21 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         return $this->hasMany(Task::class);
     }
 
+    public function getCountActiveTasksAttribute()
+    {
+        return $this->tasks()->active()->count();
+    }
+
+    public function getCountActiveProjectsAttribute()
+    {
+        return $this->projects()->active()->count();
+    }
+
+    public function getCountParsersAttribute()
+    {
+        return $this->parserTasks()->count();
+    }
+
     public function registerMediaConversions(Media $media = null): void
     {
         $this

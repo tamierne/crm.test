@@ -93,6 +93,11 @@ class Task extends Model
 
     public function scopeByStatus($query, $status)
     {
-        $query->whereHas('status', fn($query) => $query->where('name', $status));
+        return $query->whereHas('status', fn($query) => $query->where('name', $status));
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status_id', '=', Status::STATUS_PROCESSING);
     }
 }

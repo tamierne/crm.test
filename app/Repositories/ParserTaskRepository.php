@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Events\UrlParser\UrlParserAdded;
 use App\Events\UrlParser\UrlParserFinished;
 use App\Events\UrlParser\UrlParserStarted;
+use App\Jobs\UrlParserJob;
 use App\Models\ParserTask;
 use App\Models\Status;
 
@@ -42,9 +43,10 @@ class ParserTaskRepository extends MainRepository
     public function parseToJson(ParserTask $parserTask)
     {
 
-        $parserTask->status_id = Status::STATUS_PROCESSING;
-        $parserTask->started_at = now();
-        $parserTask->save();
+        $parserTask->update([
+            'status_id' => Status::STATUS_PROCESSING,
+            'started_at' => now(),
+        ]);
 
         UrlParserStarted::dispatch($parserTask);
 
@@ -69,12 +71,11 @@ class ParserTaskRepository extends MainRepository
                 'description' => $description,
             ];
 
-            $parserTask->result = $result;
-            $parserTask->finished_at = now();
-
-            $parserTask->status_id = Status::STATUS_COMPLETED;
-
-            $parserTask->save();
+            $parserTask->update([
+                'status_id' => Status::STATUS_COMPLETED,
+                'result' => $result,
+                'finished_at' => now(),
+                ]);
 
             UrlParserFinished::dispatch($parserTask);
 
@@ -105,6 +106,7 @@ class ParserTaskRepository extends MainRepository
             'user_id' => auth()->user()->id,
         ]);
 
+        UrlParserJob::dispatch($parserTask);
         UrlParserAdded::dispatch($parserTask);
 
         return back();

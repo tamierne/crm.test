@@ -18,7 +18,7 @@ class Kernel extends ConsoleKernel
 //        $schedule->command('inspire')->everyMinute();
         $schedule->command('parse:start')
             ->everyMinute();
-
+//        $schedule->
     }
 
     /**

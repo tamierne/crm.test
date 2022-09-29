@@ -92,7 +92,7 @@
               <i class="nav-icon fas fa-paste"></i>
               <p>
                 Projects
-                  <span class="badge badge-info right">{{ $projectsCount }}</span>
+                  <span class="badge badge-info right">{{ auth()->user()->CountActiveProjects }}</span>
               </p>
             </a>
           </li>
@@ -101,7 +101,7 @@
               <i class="nav-icon fas fa-tasks"></i>
               <p>
                 Tasks
-                  <span class="badge badge-info right">{{ $tasksCount }}</span>
+                  <span class="badge badge-info right">{{ auth()->user()->CountActiveTasks }}</span>
               </p>
             </a>
           </li>
@@ -120,7 +120,7 @@
                     <i class="nav-icon fas fa-ad"></i>
                     <p>
                         URL Parser
-                        <span class="badge badge-info right">{{ count(auth()->user()->parserTasks) }}</span>
+                        <span class="badge badge-info right">{{ auth()->user()->CountParsers }}</span>
                     </p>
                 </a>
             </li>
