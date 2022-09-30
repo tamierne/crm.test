@@ -46,39 +46,14 @@
                                         <tr>
                                             <td>{{ $activity->log_name }}</td>
                                             <td>{{ $activity->description }}</td>
-                                            <td>{{ $activity->causer->name }}</td>
+                                            @isset($activity->causer->name)
+                                                <td>{{ $activity->causer->name }}</td>
+                                            @else
+                                                <td>No data</td>
+                                            @endisset
                                             <td>{{ $activity->properties }}</td>
                                             <td>{{ $activity->created_at }}</td>
                                             <td>{{ $activity->updated_at }}</td>
-{{--                                            <td>--}}
-{{--                                                @if(auth()->user()->can('user_edit') || auth()->user()->id == $user->id)--}}
-{{--                                                    <a href= {{ route('users.edit', $user->id) }} type="button" class="btn btn-block btn-success btn-flat">Edit</a>--}}
-{{--                                                @endif--}}
-{{--                                                @if (auth()->user()->id !== $user->id)--}}
-{{--                                                    @if($user->deleted_at)--}}
-{{--                                                        @can('user_wipe')--}}
-{{--                                                            <form action="{{ route('users.wipe', $user->id) }}" method="POST">--}}
-{{--                                                                @csrf--}}
-{{--                                                                <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Wipe</button>--}}
-{{--                                                            </form>--}}
-{{--                                                        @endcan--}}
-{{--                                                        @can('user_restore')--}}
-{{--                                                            <form action="{{ route('users.restore', $user->id) }}" method="POST">--}}
-{{--                                                                @csrf--}}
-{{--                                                                <button type="submit" class="btn btn-block btn-warning mt-1 btn-flat">Restore</button>--}}
-{{--                                                            </form>--}}
-{{--                                                        @endcan--}}
-{{--                                                    @else--}}
-{{--                                                        @can('user_delete')--}}
-{{--                                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST">--}}
-{{--                                                                @csrf--}}
-{{--                                                                @method('DELETE')--}}
-{{--                                                                <button type="submit" class="btn btn-block btn-danger mt-1 btn-flat">Delete</button>--}}
-{{--                                                            </form>--}}
-{{--                                                        @endcan--}}
-{{--                                                    @endif--}}
-{{--                                                @endif--}}
-{{--                                            </td>--}}
                                         </tr>
                                 @endforeach
                             </tbody>

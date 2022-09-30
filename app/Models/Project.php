@@ -114,7 +114,8 @@ class Project extends BaseModel
 
     public function scopeActive($query)
     {
-        return $query->where('status_id', '=', Status::STATUS_PROCESSING);
+        return $query->whereNot('status_id', '=', Status::STATUS_COMPLETED)
+            ->whereNot('status_id', '=', Status::STATUS_CANCELLED);
     }
 
 }

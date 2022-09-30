@@ -2,7 +2,10 @@
 
 namespace App\Observers;
 
+use App\Jobs\EmailProjectAssignmentJob;
+use App\Jobs\EmailProjectCompletionJob;
 use App\Models\Project;
+use App\Models\Status;
 use App\Notifications\Email\Project\ProjectAssignmentNotification;
 use App\Notifications\Email\Project\ProjectCompletedNotification;
 
@@ -16,7 +19,7 @@ class ProjectObserver
      */
     public function created(Project $project): void
     {
-        $project->user->notify(new ProjectAssignmentNotification($project));
+        EmailProjectAssignmentJob::dispatch($project);
     }
 
     /**
@@ -27,10 +30,10 @@ class ProjectObserver
      */
     public function updating(Project $project): void
     {
-        if ($project->isDirty('status_id') && $project->status_id == 1) {
-            $project->client->notify(new ProjectCompletedNotification($project));
+        if ($project->isDirty('status_id') && $project->status_id === Status::STATUS_COMPLETED) {
+            EmailProjectCompletionJob::dispatch($project);
         } elseif ($project->isDirty('user_id')) {
-            $project->user->notify(new ProjectAssignmentNotification($project));
+            EmailProjectAssignmentJob::dispatch($project);
         }
     }
 

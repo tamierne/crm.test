@@ -29,7 +29,7 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                <a href= {{ route('force.parse') }} type="button" class="btn btn-block btn-info btn-flat">FORCE PARSE</a>
+                                <a href= {{ route('parsers.force') }} type="button" class="btn btn-block btn-info btn-flat">FORCE PARSE</a>
                             </div>
                             <div class="col">
                                 <a href= {{ route('parsers.index') }} type="button" class="btn btn-block btn-info btn-flat">View all</a>

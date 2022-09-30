@@ -4,11 +4,10 @@ namespace App\Notifications\Email\Task;
 
 use App\Models\Task;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class TaskAssignmentNotification extends Notification implements ShouldQueue
+class TaskAssignmentNotification extends Notification
 {
     use Queueable;
 

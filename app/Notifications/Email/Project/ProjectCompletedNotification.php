@@ -4,11 +4,10 @@ namespace App\Notifications\Email\Project;
 
 use App\Models\Project;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ProjectCompletedNotification extends Notification implements ShouldQueue
+class ProjectCompletedNotification extends Notification
 {
     use Queueable;
 
