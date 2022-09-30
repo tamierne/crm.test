@@ -5,7 +5,7 @@ namespace App\Repositories;
 use App\Events\UrlParser\UrlParserAdded;
 use App\Events\UrlParser\UrlParserFinished;
 use App\Events\UrlParser\UrlParserStarted;
-use App\Jobs\EmailProjectCompletionJob;
+use App\Jobs\UrlParserJob;
 use App\Models\ParserTask;
 use App\Models\Status;
 
@@ -105,7 +105,7 @@ class ParserTaskRepository extends MainRepository
             'user_id' => auth()->user()->id,
         ]);
 
-        EmailProjectCompletionJob::dispatch($parserTask);
+        UrlParserJob::dispatch($parserTask);
         UrlParserAdded::dispatch($parserTask);
 
         return back();

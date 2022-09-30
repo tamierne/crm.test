@@ -26,12 +26,11 @@ class Client extends BaseModel implements HasMedia
             $model->user_id =
                 is_object(auth()->user())
                     ? auth()->user()->id
-                    : 1;
+                    : 13320;
         });
     }
 
     protected $fillable = [
-//        'user_id',
         'name',
         'VAT',
         'address',
