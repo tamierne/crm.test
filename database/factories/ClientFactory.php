@@ -17,6 +17,7 @@ class ClientFactory extends Factory
     public function definition()
     {
         return [
+            'user_id' => $this->faker->numberBetween(2, 13),
             'name' => $this->faker->company(),
             'VAT' => $this->faker->randomNumber(8, false),
             'address' => $this->faker->address(),

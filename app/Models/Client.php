@@ -19,10 +19,31 @@ class Client extends BaseModel implements HasMedia
 {
     use HasFactory, SoftDeletes, SoftCascadeTrait, InteractsWithMedia, LogsActivity;
 
+    protected static function boot() {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->user_id =
+                is_object(auth()->user())
+                    ? auth()->user()->id
+                    : 1;
+        });
+    }
+
     protected $fillable = [
+//        'user_id',
         'name',
         'VAT',
         'address',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'user_id',
     ];
 
     protected $softCascade = ['projects'];
@@ -31,11 +52,15 @@ class Client extends BaseModel implements HasMedia
     {
         return LogOptions::defaults()
             ->useLogName('clients')
-            ->logOnly(['name', 'VAT', 'address'])
+            ->logOnly(['user.name','name', 'VAT', 'address'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     /**
      * @return HasMany|Collection|Project
      */

@@ -18,6 +18,7 @@ class RoleSeeder extends Seeder
         Role::create([
             'name' => 'No Role'
         ]);
+
         Role::factory(9)->create();
     }
 }

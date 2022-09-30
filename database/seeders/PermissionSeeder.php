@@ -86,11 +86,10 @@ class PermissionSeeder extends Seeder
 
         $userPermission = [
             'user_access',
-            'client_create',
-            'client_edit',
             'client_show',
             'client_access',
             'project_access',
+            'project_edit',
             'task_edit',
             'task_access',
         ];
@@ -144,5 +143,36 @@ class PermissionSeeder extends Seeder
             'password' => Hash::make('12345678'),
         ]);
         $adminModel->assignRole($adminRole);
+
+        $managerRole = Role::create(['name' => 'manager']);
+
+        $managerPermission = [
+            'user_access',
+            'user_edit',
+            'client_create',
+            'client_store',
+            'client_edit',
+            'client_show',
+            'client_access',
+            'project_create',
+            'project_store',
+            'project_create',
+            'project_access',
+            'project_edit',
+            'task_create',
+            'task_store',
+            'task_edit',
+            'task_access',
+            'task_restore',
+        ];
+
+        $managerRole->syncPermissions($managerPermission);
+
+        $managerModel = User::factory()->create([
+            'name' => 'Example Manager User',
+            'email' => 'manager@example.com',
+            'password' => Hash::make('12345678'),
+        ]);
+        $managerModel->assignRole($managerRole);
     }
 }

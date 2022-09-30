@@ -18,9 +18,16 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->date('deadline');
-            $table->integer('user_id')->foreignId('user_id')->constrained();
-            $table->bigInteger('project_id')->foreignId('project_id')->constrained();
-            $table->tinyInteger('status_id')->foreignId('status_id')->constrained()->default(1);
+            $table->integer('user_id')
+                ->foreignId('user_id')
+                ->constrained();
+            $table->bigInteger('project_id')
+                ->foreignId('project_id')
+                ->constrained();
+            $table->tinyInteger('status_id')
+                ->foreignId('status_id')
+                ->constrained()
+                ->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

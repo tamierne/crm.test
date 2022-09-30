@@ -21,9 +21,8 @@ class DatabaseSeeder extends Seeder
             CreateSuperAdminSeeder::class,
             PermissionSeeder::class,
             UserSeeder::class,
-            ClientSeeder::class,
-            ProjectSeeder::class,
-            TaskSeeder::class,
+//            ProjectSeeder::class,
+//            TaskSeeder::class,
             StatusListSeeder::class,
         ]);
     }
