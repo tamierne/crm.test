@@ -3,138 +3,32 @@
 namespace Tests\Unit\Http\Controllers\Admin;
 
 use App\Models\User;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\WithoutEvents;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Carbon;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 class UserControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, WithFaker, WithoutEvents;
+
+    protected $seed = true;
 
     public function setUp() :void
     {
         parent::setUp();
-
-        // Reset cached roles and permissions
-        $this->app->make(PermissionRegistrar::class)->registerPermissions();
-
-        $permissions = [
-            'permission_create',
-            'permission_store',
-            'permission_edit',
-            'permission_show',
-            'permission_delete',
-            'permission_wipe',
-            'permission_restore',
-            'permission_access',
-            'role_create',
-            'role_store',
-            'role_edit',
-            'role_show',
-            'role_delete',
-            'role_wipe',
-            'role_restore',
-            'role_access',
-            'user_create',
-            'user_store',
-            'user_edit',
-            'user_show',
-            'user_delete',
-            'user_wipe',
-            'user_restore',
-            'user_access',
-            'client_create',
-            'client_store',
-            'client_edit',
-            'client_show',
-            'client_delete',
-            'client_wipe',
-            'client_restore',
-            'client_access',
-            'project_create',
-            'project_store',
-            'project_edit',
-            'project_show',
-            'project_delete',
-            'project_wipe',
-            'project_restore',
-            'project_access',
-            'task_create',
-            'task_store',
-            'task_edit',
-            'task_show',
-            'task_delete',
-            'task_wipe',
-            'task_restore',
-            'task_access',
-        ];
-
-        foreach ($permissions as $permission)
-        {
-            $permit = Permission::make([
-                'name' => $permission,
-            ]);
-
-            $permit->saveOrFail();
-        }
-
-        /**
-         * Create admin account with admin permissions.
-         */
-
-        $this->admin = User::factory()->create();
-
-        Role::create([
-            'name' => 'super-admin',
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
-        ]);
-
-        $this->admin->assignRole('super-admin');
-
-        Permission::create(['name' => 'admin_access']);
-
-        /**
-        * Create user account with user permissions.
-        */
-
-        $userRole = Role::create([
-            'name' => 'user',
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
-        ]);
-
-        $userPermission = [
-            'user_access',
-            'client_create',
-            'client_edit',
-            'client_show',
-            'client_access',
-            'project_access',
-            'task_edit',
-            'task_access',
-        ];
-
-        $userRole->syncPermissions($userPermission);
-
-        $this->user = User::factory()->create();
-
-        $this->user->assignRole($userRole);
-
-        /**
-        * Create avatar.
-        */
 
         $this->avatar = UploadedFile::fake()->image('avatar.jpg');
     }
 
     public function test_index_as_super_admin()
     {
-        $response = $this->actingAs($this->admin)->get('/admin/users');
+        $admin = User::role('admin')
+            ->inRandomOrder()
+            ->first();
+
+        $response = $this->actingAs($admin)->get(route('users.index'));
 
         $response->assertOk();
 
@@ -143,7 +37,11 @@ class UserControllerTest extends TestCase
 
     public function test_index_as_user()
     {
-        $response = $this->actingAs($this->user)->get('/admin/users');
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $response = $this->actingAs($user)->get(route('users.index'));
 
         $response->assertOk();
 
@@ -152,14 +50,18 @@ class UserControllerTest extends TestCase
 
     public function test_index_as_guest()
     {
-        $response = $this->get('/admin/users');
+        $response = $this->get(route('users.index'));
 
         $response->assertRedirect();
     }
 
     public function test_create_as_super_admin()
     {
-        $response = $this->actingAs($this->admin)->get('/admin/users/create');
+        $admin = User::role('super-admin')
+            ->inRandomOrder()
+            ->first();
+
+        $response = $this->actingAs($admin)->get(route('users.create'));
 
         $response->assertOk();
 
@@ -168,133 +70,160 @@ class UserControllerTest extends TestCase
 
     public function test_create_as_user()
     {
-        $response = $this->actingAs($this->user)->get('/admin/users/create');
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $response = $this->actingAs($user)->get(route('users.create'));
 
         $response->assertForbidden();
     }
 
     public function test_create_as_guest()
     {
-        $response = $this->get('/admin/users/create');
+        $response = $this->get(route('users.create'));
 
         $response->assertRedirect();
     }
 
     public function test_store_as_super_admin()
     {
-        $response = $this->actingAs($this->admin)->post(
-            '/admin/users',
+        $admin = User::role('super-admin')
+            ->inRandomOrder()
+            ->first();
+
+        $user = User::factory()
+            ->make();
+
+        $response = $this->actingAs($admin)->post(
+            route('users.store'),
             [
-                'name' => 'randomname',
-                'email' => 'random@email.com',
-                'password' => '12345678',
-                'confirm-password' => '12345678',
-                'role' => '2',
-                'avatar' => $this->avatar,
+                'name' => $user->name,
+                'email' => $user->email,
+                'password' => $user->password,
+                'confirm-password' => $user->password,
+                'role' => 'user',
             ],
         );
 
+        $response->assertRedirect();
+
         $this->assertDatabaseHas('users', [
-            'name' => 'randomname',
-            'email' => 'random@email.com',
+            'name' => $user->name,
+            'email' => $user->email,
         ]);
-
-        // $this->assertDatabaseHas('media', [
-        //     'model_id' => $this->admin->id,
-        // ]);
-
-//        $response->assertViewIs('admin.users.index');
-//
-//        $response->assertViewHas('users');
     }
 
-    public function test_cant_store_duplicated_user_as_super_admin()
+    public function test_cant_store_duplicated_email()
     {
-        $this->actingAs($this->admin)->post(
-            '/admin/users',
+        $admin = User::role('super-admin')
+            ->inRandomOrder()
+            ->first();
+
+        $user = User::factory()
+            ->make();
+
+        $failUser = User::factory()
+            ->make();
+
+        $response = $this->actingAs($admin)->post(
+            route('users.store'),
             [
-                'name' => 'randomname',
-                'email' => 'random@email.com',
-                'password' => '12345678',
-                'confirm-password' => '12345678',
+                'name' => $user->name,
+                'email' => $user->email,
+                'password' => $user->password,
+                'confirm-password' => $user->password,
+                'role' => 'user',
             ],
         );
 
-        $this->actingAs($this->admin)->post(
-            '/admin/users',
-            [
-                'name' => 'randomname2',
-                'email' => 'random@email.com',
-                'password' => '12345678',
-                'confirm-password' => '12345678',
-            ],
-        );
+        $response->assertRedirect();
 
         $this->assertDatabaseHas('users', [
-            'name' => 'randomname',
-            'email' => 'random@email.com',
+            'name' => $user->name,
+            'email' => $user->email,
         ]);
 
+        $failResponse = $this->actingAs($admin)->post(
+            route('users.store'),
+            [
+                'name' => $failUser->name,
+                'email' => $user->email,
+                'password' => $failUser->password,
+                'confirm-password' => $failUser->password,
+                'role' => 'user',
+            ],
+        );
+
+        $failResponse->assertRedirect();
+        $failResponse->assertSessionHasErrors(['email']);
+
         $this->assertDatabaseMissing('users', [
-            'name' => 'randomname2',
-            'email' => 'random@email.com',
+            'name' => $failUser->name,
+            'email' => $failUser->email,
         ]);
     }
 
     public function test_store_as_user()
     {
-        $response = $this->actingAs($this->user)->post(
-            '/admin/users',
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $userModel = User::factory()
+            ->make();
+
+        $response = $this->actingAs($user)->post(
+            route('users.store'),
             [
-                'name' => 'test',
-                'email' => 'test@email.com',
-                'password' => '12345678',
-                'confirm-password' => '12345678',
-                'avatar' => $this->avatar,
+                'name' => $userModel->name,
+                'email' => $userModel->email,
+                'password' => $userModel->password,
+                'confirm-password' => $userModel->password,
+                'role' => 'user',
             ],
         );
 
         $response->assertForbidden();
 
         $this->assertDatabaseMissing('users', [
-            'name' => 'test',
-            'email' => 'test@email.com',
+            'name' => $userModel->name,
+            'email' => $userModel->email,
         ]);
-
-        // $this->assertDatabaseMissing('media', [
-        //     'model_id' => $this->user->id,
-        // ]);
     }
 
     public function test_store_as_guest()
     {
+        $user = User::factory()
+            ->make();
+
         $response = $this->post(
-            '/admin/users',
+            route('users.store'),
             [
-                'name' => 'test',
-                'email' => 'test@email.com',
-                'password' => '12345678',
-                'confirm-password' => '12345678',
-                'avatar' => $this->avatar,
+                'name' => $user->name,
+                'email' => $user->email,
+                'password' => $user->password,
+                'confirm-password' => $user->password,
+                'role' => 'admin',
             ],
         );
 
         $response->assertRedirect();
 
         $this->assertDatabaseMissing('users', [
-            'name' => 'test',
-            'email' => 'test@email.com',
+            'name' => $user->name,
+            'email' => $user->email,
         ]);
-
-        // $this->assertDatabaseMissing('media', [
-        //     'model_id' => $this->user->id,
-        // ]);
     }
 
-    public function test_admin_can_edit_self_as_admin()
+    public function test_admin_can_edit_self()
     {
-        $response = $this->actingAs($this->admin)->get(
-            "/admin/users/{$this->admin->id}/edit",
+        $admin = User::role('admin')
+            ->inRandomOrder()
+            ->first();
+
+        $response = $this->actingAs($admin)->get(
+            "/admin/users/{$admin->id}/edit",
         );
 
         $response->assertOk();
@@ -302,14 +231,22 @@ class UserControllerTest extends TestCase
         $response->assertViewIs('admin.users.edit');
 
         $response->assertViewHas([
-            'user' => $this->admin,
+            'user' => $admin,
         ]);
     }
 
     public function test_user_can_be_edit_as_admin()
     {
-        $response = $this->actingAs($this->admin)->get(
-            "/admin/users/{$this->user->id}/edit",
+        $admin = User::role('admin')
+            ->inRandomOrder()
+            ->first();
+
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $response = $this->actingAs($admin)->get(
+            "/admin/users/{$user->id}/edit",
         );
 
         $response->assertOk();
@@ -317,14 +254,18 @@ class UserControllerTest extends TestCase
         $response->assertViewIs('admin.users.edit');
 
         $response->assertViewHas([
-            'user' => $this->user,
+            'user' => $user,
         ]);
     }
 
-    public function test_user_can_edit_self_as_user()
+    public function test_user_can_edit_self()
     {
-        $response = $this->actingAs($this->user)->get(
-            "/admin/users/{$this->user->id}/edit",
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $response = $this->actingAs($user)->get(
+            "/admin/users/{$user->id}/edit",
         );
 
         $response->assertOk();
@@ -332,14 +273,22 @@ class UserControllerTest extends TestCase
         $response->assertViewIs('admin.users.edit');
 
         $response->assertViewHas([
-            'user' => $this->user,
+            'user' => $user,
         ]);
     }
 
-    public function test_user_cant_edit_another_user_as_user()
+    public function test_user_cant_edit_another_user()
     {
-        $response = $this->actingAs($this->user)->get(
-            "/admin/users/{$this->admin->id}/edit",
+        $admin = User::role('admin')
+            ->inRandomOrder()
+            ->first();
+
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $response = $this->actingAs($user)->get(
+            "/admin/users/$admin->id/edit",
         );
 
         $response->assertForbidden();
@@ -347,8 +296,12 @@ class UserControllerTest extends TestCase
 
     public function test_user_cant_be_edit_as_guest()
     {
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
         $response = $this->get(
-            "/admin/users/{$this->admin->id}/edit",
+            "/admin/users/$user->id/edit",
         );
 
         $response->assertRedirect();
@@ -356,148 +309,340 @@ class UserControllerTest extends TestCase
 
     public function test_user_can_be_updated_as_admin()
     {
-        $data = [
-            'name' => 'dummy',
-            'email' => 'dummy@dummy.dummy',
-        ];
+        $admin = User::role('admin')
+            ->inRandomOrder()
+            ->first();
 
-        $this->actingAs($this->admin)->patch(
-            "/admin/users/{$this->user->id}",
-            $data,
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $userModel = User::factory()
+            ->make();
+
+        $this->actingAs($admin)->patch(
+            "/admin/users/$user->id",
+            [
+                'name' => $userModel->name,
+                'email' => $userModel->email,
+            ],
         );
 
-        $this->assertEquals($data['name'], $this->user->name);
-        $this->assertEquals($data['email'], $this->user->email);
+        $user->refresh();
 
-        // $this->assertDatabaseHas('users', [
-        //     'name' => 'dummy',
-        //     'email' => 'dummy@dummy.dummy',
-        // ]);
+        $this->assertEquals($userModel->name, $user->name);
+        $this->assertEquals($userModel->email, $user->email);
+
+//         $this->assertDatabaseHas('users', [
+//             'name' => 'dummy',
+//             'email' => 'dummy@dummy.dummy',
+//         ]);
     }
 
-    public function test_user_cant_update_another_user_as_user()
+    public function test_user_cant_visit_another_user_profile()
     {
-        $data = [
-            'name' => 'dummy',
-            'email' => 'dummy@dummy.dummy',
-        ];
+        $admin = User::role('admin')
+            ->inRandomOrder()
+            ->first();
 
-        $this->actingAs($this->user)->patch(
-            "/admin/users/{$this->admin->id}",
-            $data,
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $userModel = User::factory()
+            ->make();
+
+        $response = $this->actingAs($user)->get(
+            "/admin/users/$admin->id/edit"
         );
 
+        $response->assertForbidden();
+
+//        $this->assertDatabaseMissing('users', [
+//            'name' => $userModel->name,
+//            'email' => $userModel->email,
+//        ]);
+    }
+
+    public function test_user_cant_update_another_user()
+    {
+        $admin = User::role('admin')
+            ->inRandomOrder()
+            ->first();
+
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $userModel = User::factory()
+            ->make();
+
+        $response = $this->actingAs($user)->patch(
+            "/admin/users/$admin->id",
+            [
+                'name' => $userModel->name,
+                'email' => $userModel->email,
+            ],
+        );
+
+        $response->assertRedirect();
+
         $this->assertDatabaseMissing('users', [
-            'name' => 'dummy',
-            'email' => 'dummy@dummy.dummy',
+            'name' => $userModel->name,
+            'email' => $userModel->email,
         ]);
     }
 
     public function test_user_can_update_self()
     {
-        $user = User::factory()->create();
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
 
-        $data = [
-            'name' => 'dummy',
-            'email' => 'dummy@dummy.dummy',
-        ];
+        $userModel = User::factory()
+            ->make();
 
-        $this->actingAs($user)->patch(
-            "/admin/users/{$user->id}",
-            $data,
+        $response = $this->actingAs($user)->patch(
+            "/admin/users/$user->id",
+            [
+                'name' => $userModel->name,
+                'email' => $userModel->email,
+            ],
         );
 
-        $this->assertEquals($data['name'], $user->name);
-        $this->assertEquals($data['email'], $user->email);
+        $response->assertRedirect();
+
+        $user->refresh();
+
+        $this->assertEquals($userModel->name, $user->name);
+        $this->assertEquals($userModel->email, $user->email);
+    }
+
+    public function user_cant_change_role()
+    {
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $response = $this->actingAs($user)->patch(
+            "/admin/users/$user->id",
+            [
+                'role' => 'admin',
+            ],
+        );
+
+        $response->assertForbidden();
+    }
+
+    public function admin_can_change_user_role()
+    {
+        $admin = User::role('admin')
+            ->inRandomOrder()
+            ->first();
+
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $response = $this->actingAs($user)->patch(
+            "/admin/users/$user->id",
+            [
+                'role' => 'admin',
+            ],
+        );
+
+        $this->assertEquals('admin', $user->getRoleNames()->first());
     }
 
     public function test_user_cant_soft_delete_self()
     {
-        $response = $this->actingAs($this->admin)->delete(
-            "/admin/users/{$this->admin->id}",
-        );
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
 
-        $this->assertDatabaseMissing('users', [
-            'deleted_at' => '1231231313',
-        ]);
-
-        $response->assertRedirect();
-    }
-
-    public function test_user_cant_soft_delete_user()
-    {
-        $response = $this->actingAs($this->user)->delete(
-            "/admin/users/{$this->admin->id}",
-        );
-
-        $this->assertDatabaseHas('users', [
-            'deleted_at' => '1231231313',
-        ]);
-
-        $response->assertRedirect();
-    }
-
-    public function test_user_cant_restore_as_user()
-    {
-        $user = User::factory()->create();
-
-        $user->delete();
-
-        $response = $this->actingAs($this->user)->post(
-            "admin/users/{$user->id}/restore",
+        $response = $this->actingAs($user)->delete(
+            "/admin/users/$user->id",
         );
 
         $response->assertForbidden();
 
-        $this->assertDatabaseMissing('users', [
-            'deleted_at' => '1231231313',
-        ]);
+        $this->assertNotSoftDeleted($user);
     }
 
-    public function test_user_restore_as_admin()
+    public function test_user_cant_soft_delete()
     {
-        $user = User::factory()->create();
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
 
-        $user->delete();
+        $admin = User::role('admin')
+            ->inRandomOrder()
+            ->first();
 
-        $response = $this->actingAs($this->admin)->post(
-            "admin/users/{$user->id}/restore",
-        );
-
-        $response->assertRedirect();
-
-        $this->assertDatabaseMissing('users', [
-            'deleted_at' => '1231231313',
-        ]);
-    }
-
-    public function test_user_cant_forceDelete_user()
-    {
-        $user = User::factory()->create();
-
-        $user->delete();
-
-        $response = $this->actingAs($this->user)->post(
-            "admin/users/{$user->id}/wipe",
+        $response = $this->actingAs($user)->delete(
+            "/admin/users/$admin->id",
         );
 
         $response->assertForbidden();
 
-        $this->assertModelExists($user);
+        $this->assertNotSoftDeleted($admin);
     }
 
-    public function test_admin_forceDelete_user()
+    public function test_admin_cant_soft_delete()
     {
-        $user = User::factory()->create();
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
 
-        $user->delete();
+        $admin = User::role('admin')
+            ->inRandomOrder()
+            ->first();
 
-        $response = $this->actingAs($this->admin)->post(
-            "admin/users/{$user->id}/wipe",
+        $response = $this->actingAs($admin)->delete(
+            "/admin/users/$user->id",
+        );
+
+        $response->assertForbidden();
+
+        $this->assertNotSoftDeleted($user);
+    }
+
+    public function test_super_admin_can_soft_delete()
+    {
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $admin = User::role('super-admin')
+            ->inRandomOrder()
+            ->first();
+
+        $response = $this->actingAs($admin)->delete(
+            "/admin/users/$user->id",
         );
 
         $response->assertRedirect();
 
-        $this->assertModelMissing($user);
+        $this->assertSoftDeleted($user);
+    }
+
+    public function test_user_cant_restore()
+    {
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $deletedUser = User::factory()
+            ->create();
+
+        $deletedUser->delete();
+
+        $response = $this->actingAs($user)->post(
+            "admin/users/$deletedUser->id/restore",
+        );
+
+        $response->assertForbidden();
+
+        $this->assertSoftDeleted($deletedUser);
+    }
+
+    public function test_admin_cant_restore()
+    {
+        $admin = User::role('admin')
+            ->inRandomOrder()
+            ->first();
+
+        $deletedUser = User::factory()
+            ->create();
+
+        $deletedUser->delete();
+
+        $response = $this->actingAs($admin)->post(
+            "admin/users/$deletedUser->id/restore",
+        );
+
+        $response->assertForbidden();
+
+        $this->assertSoftDeleted($deletedUser);
+    }
+
+    public function test_super_admin_can_restore()
+    {
+        $admin = User::role('super-admin')
+            ->inRandomOrder()
+            ->first();
+
+        $deletedUser = User::factory()
+            ->create();
+
+        $deletedUser->delete();
+
+        $response = $this->actingAs($admin)->post(
+            "admin/users/$deletedUser->id/restore",
+        );
+
+        $response->assertRedirect();
+
+        $this->assertNotSoftDeleted($deletedUser);
+    }
+
+    public function test_user_cant_forceDelete()
+    {
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $deletedUser = User::factory()
+            ->create();
+
+        $deletedUser->delete();
+
+        $response = $this->actingAs($user)->post(
+            "admin/users/$deletedUser->id/wipe",
+        );
+
+        $response->assertForbidden();
+
+        $this->assertSoftDeleted($deletedUser);
+    }
+
+    public function test_admin_cant_forceDelete()
+    {
+        $admin = User::role('admin')
+            ->inRandomOrder()
+            ->first();
+
+        $deletedUser = User::factory()
+            ->create();
+
+        $deletedUser->delete();
+
+        $response = $this->actingAs($admin)->post(
+            "admin/users/$deletedUser->id/wipe",
+        );
+
+        $response->assertForbidden();
+
+        $this->assertSoftDeleted($deletedUser);
+    }
+
+    public function test_super_admin_can_forceDelete()
+    {
+        $admin = User::role('super-admin')
+            ->inRandomOrder()
+            ->first();
+
+        $deletedUser = User::factory()
+            ->create();
+
+        $deletedUser->delete();
+
+        $response = $this->actingAs($admin)->post(
+            "admin/users/$deletedUser->id/wipe",
+        );
+
+        $response->assertRedirect();
+
+        $this->assertModelMissing($deletedUser);
     }
 }

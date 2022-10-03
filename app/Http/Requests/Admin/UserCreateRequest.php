@@ -30,7 +30,7 @@ class UserCreateRequest extends FormRequest
             'avatar' => 'image|max:1024',
             'password' => 'required|string:20|min:8',
             'confirm-password' => 'required|same:password',
-            'role' => 'required|exists:roles,id',
+            'role' => 'required|exists:roles,name',
         ];
     }
 }

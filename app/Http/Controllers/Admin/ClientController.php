@@ -58,8 +58,6 @@ class ClientController extends BaseController
      */
     public function store(ClientCreateRequest $request): RedirectResponse
     {
-        $this->authorize('client_store');
-
         $this->clientRepository->storeClient($request);
 
         return redirect()->back()->with('message', 'Client successfully created!');

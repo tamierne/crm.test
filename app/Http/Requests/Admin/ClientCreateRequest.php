@@ -14,7 +14,7 @@ class ClientCreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('client_create');
+        return Gate::allows('client_store');
     }
 
     /**

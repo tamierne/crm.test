@@ -82,8 +82,6 @@ class ParserTaskRepository extends MainRepository
 //
 //        }
 
-        //event(finished)
-
         return json_encode($result);
     }
 

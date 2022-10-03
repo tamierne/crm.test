@@ -103,12 +103,21 @@ class UserController extends BaseController
      */
     public function update(UserUpdateRequest $request, User $user): RedirectResponse
     {
-        if(auth()->user()->id != $user->id) {
+        if(auth()->user()->id !== $user->id) {
             $this->authorize('user_store');
         }
+
         if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
             $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
         }
+
+        if($request->role && auth()->user()->hasAnyRole('admin', 'super-admin')) {
+            $user->removeRole(
+                $user->getRoleNames()->first()
+            );
+            $user->assignRole($request->role);
+        }
+
         $user->update($request->validated());
         return redirect()->back()->with('message', 'Successfully saved!');
 

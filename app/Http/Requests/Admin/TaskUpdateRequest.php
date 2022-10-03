@@ -14,7 +14,7 @@ class TaskUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('task_store');
+        return Gate::allows('task_update');
     }
 
     /**
