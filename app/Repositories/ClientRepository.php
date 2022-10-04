@@ -4,12 +4,11 @@ namespace App\Repositories;
 
 use App\Events\Client\ClientUpdated;
 use App\Http\Requests\Admin\ClientCreateRequest;
-use App\Http\Requests\Admin\ClientUpdateRequest;
 use App\Models\Client;
 use Illuminate\Database\Eloquent\Collection;
-use App\Repositories\MainRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Pagination\Paginator;
+use Throwable;
 
 class ClientRepository extends MainRepository
 {
@@ -65,13 +64,23 @@ class ClientRepository extends MainRepository
      */
     public function storeClient(ClientCreateRequest $request): RedirectResponse
     {
-        $client = Client::create($request->validated());
+        try {
+            $client = Client::create([
+                'name' => $request->name,
+                'VAT' => $request->VAT,
+                'address' => $request->address,
+                'user_id' => auth()->user()->id,
+            ]);
 
-        if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
-            $client->addMediaFromRequest('avatar')->toMediaCollection('avatar');
+            if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+                $client->addMediaFromRequest('avatar')->toMediaCollection('avatar');
+            }
+
+            ClientUpdated::dispatch($client);
+
+        } catch (Throwable $e) {
+            dump($e->getMessage());
         }
-
-        ClientUpdated::dispatch($client);
 
         return redirect()->back();
     }

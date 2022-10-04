@@ -25,7 +25,7 @@ class ProjectUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string:50|unique:projects,title',
+            'title' => 'required|string:50|unique:projects,title,'.$this->project->id,
             'description' => 'required|string:300',
             'deadline' => 'required|date|after:today',
             'user_id' => 'required|exists:users,id',

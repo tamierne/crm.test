@@ -63,17 +63,6 @@ class UserController extends BaseController
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-//    public function show($id)
-//    {
-//        //
-//    }
-
-    /**
      * Show the form for editing the specified resource.
      * @param $id
      * @return View
@@ -120,7 +109,6 @@ class UserController extends BaseController
 
         $user->update($request->validated());
         return redirect()->back()->with('message', 'Successfully saved!');
-
     }
 
     /**

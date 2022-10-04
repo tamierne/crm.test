@@ -3,7 +3,6 @@
 namespace Tests\Unit\Http\Controllers\Admin;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutEvents;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -11,9 +10,9 @@ use Tests\TestCase;
 
 class AdminControllerTest extends TestCase
 {
-    use RefreshDatabase, WithFaker, WithoutEvents;
+    use RefreshDatabase, WithoutEvents;
 
-    protected $seed = true;
+    protected bool $seed = true;
 
     public function setUp() :void
     {

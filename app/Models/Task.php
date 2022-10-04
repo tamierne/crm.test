@@ -40,6 +40,10 @@ class Task extends Model
         'status_id',
     ];
 
+    protected $casts = [
+        'deadline' => 'datetime',
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      *

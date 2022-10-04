@@ -3,23 +3,19 @@
 namespace Tests\Unit\Http\Controllers\Admin;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutEvents;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class UserControllerTest extends TestCase
 {
-    use RefreshDatabase, WithFaker, WithoutEvents;
+    use RefreshDatabase, WithoutEvents;
 
-    protected $seed = true;
+    protected bool $seed = true;
 
     public function setUp() :void
     {
         parent::setUp();
-
-        $this->avatar = UploadedFile::fake()->image('avatar.jpg');
     }
 
     public function test_index_as_super_admin()
@@ -325,6 +321,7 @@ class UserControllerTest extends TestCase
             [
                 'name' => $userModel->name,
                 'email' => $userModel->email,
+                'role' => 'user'
             ],
         );
 
@@ -332,11 +329,6 @@ class UserControllerTest extends TestCase
 
         $this->assertEquals($userModel->name, $user->name);
         $this->assertEquals($userModel->email, $user->email);
-
-//         $this->assertDatabaseHas('users', [
-//             'name' => 'dummy',
-//             'email' => 'dummy@dummy.dummy',
-//         ]);
     }
 
     public function test_user_cant_visit_another_user_profile()
@@ -357,11 +349,6 @@ class UserControllerTest extends TestCase
         );
 
         $response->assertForbidden();
-
-//        $this->assertDatabaseMissing('users', [
-//            'name' => $userModel->name,
-//            'email' => $userModel->email,
-//        ]);
     }
 
     public function test_user_cant_update_another_user()
@@ -407,6 +394,7 @@ class UserControllerTest extends TestCase
             [
                 'name' => $userModel->name,
                 'email' => $userModel->email,
+                'role' => 'user',
             ],
         );
 

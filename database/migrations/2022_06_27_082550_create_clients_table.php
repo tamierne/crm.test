@@ -15,7 +15,9 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('user_id')->foreignId('user_id')->constrained();
+            $table->unsignedBigInteger('user_id')
+                ->foreignId('user_id')
+                ->constrained();
             $table->string('name');
             $table->string('VAT', 10)->unique();
             $table->tinyText('address');

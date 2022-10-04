@@ -18,10 +18,10 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->date('deadline');
-            $table->integer('user_id')
+            $table->unsignedBigInteger('user_id')
                 ->foreignId('user_id')
                 ->constrained();
-            $table->bigInteger('project_id')
+            $table->unsignedBigInteger('project_id')
                 ->foreignId('project_id')
                 ->constrained();
             $table->tinyInteger('status_id')

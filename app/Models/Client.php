@@ -19,21 +19,11 @@ class Client extends BaseModel implements HasMedia
 {
     use HasFactory, SoftDeletes, SoftCascadeTrait, InteractsWithMedia, LogsActivity;
 
-    protected static function boot() {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->user_id =
-                is_object(auth()->user())
-                    ? auth()->user()->id
-                    : 13320;
-        });
-    }
-
     protected $fillable = [
         'name',
         'VAT',
         'address',
+        'user_id',
     ];
 
     /**

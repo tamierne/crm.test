@@ -23,7 +23,7 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label for="name">Company name</label>
-                        <input type="text" class="form-control" name="name" id="title" placeholder="Enter title">
+                        <input type="text" class="form-control" name="name" id="name" placeholder="Enter title">
                     </div>
                     <div class="form-group">
                         <label for="VAT">VAT</label>

@@ -4,21 +4,15 @@ namespace Tests\Unit\Http\Controllers\Admin;
 
 use App\Models\Client;
 use App\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutEvents;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Carbon;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 class ClientControllerTest extends TestCase
 {
-    use RefreshDatabase, WithFaker, WithoutEvents;
+    use RefreshDatabase, WithoutEvents;
 
-    protected $seed = true;
+    protected bool $seed = true;
 
     public function setUp() :void
     {

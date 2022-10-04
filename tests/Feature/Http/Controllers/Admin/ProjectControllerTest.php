@@ -4,28 +4,24 @@ namespace Tests\Unit\Http\Controllers\Admin;
 
 use App\Models\Project;
 use App\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutEvents;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ProjectControllerTest extends TestCase
 {
-    use RefreshDatabase, WithFaker, WithoutEvents;
+    use RefreshDatabase, WithoutEvents;
 
-    protected $seed = true;
+    protected bool $seed = true;
 
     public function setUp() :void
     {
         parent::setUp();
-
-        $this->avatar = UploadedFile::fake()->image('avatar.jpg');
     }
 
     public function test_index_as_super_admin()
     {
-        $admin = User::role('admin')
+        $admin = User::role('super-admin')
             ->inRandomOrder()
             ->first();
 
@@ -87,7 +83,7 @@ class ProjectControllerTest extends TestCase
         $response->assertRedirect();
     }
 
-    public function test_super_admin_can_view_create_project()
+    public function test_super_admin_can_visit_create_project()
     {
         $admin = User::role('super-admin')
             ->inRandomOrder()
@@ -106,7 +102,7 @@ class ProjectControllerTest extends TestCase
         $response->assertViewIs('admin.projects.create');
     }
 
-    public function test_user_cant_view_create_project()
+    public function test_user_cant_visit_create_project()
     {
         $user = User::role('user')
             ->inRandomOrder()
@@ -117,7 +113,7 @@ class ProjectControllerTest extends TestCase
         $response->assertForbidden();
     }
 
-    public function test_guest_cant_open_create_project()
+    public function test_guest_cant_visit_create_project()
     {
         $response = $this->get(route('projects.create'));
 
@@ -138,7 +134,7 @@ class ProjectControllerTest extends TestCase
             [
                 'title' => $project->title,
                 'description' => $project->description,
-                'deadline' => $project->deadline,
+                'deadline' => $project->deadline->format('Y-m-d'),
                 'user_id' => $project->user_id,
                 'client_id' => $project->client_id,
                 'status_id' => $project->status_id,
@@ -150,542 +146,410 @@ class ProjectControllerTest extends TestCase
         $this->assertDatabaseHas('projects', [
             'title' => $project->title,
             'description' => $project->description,
+        ]);
+    }
+
+    public function test_cant_store_duplicated_title()
+    {
+        $admin = User::role('super-admin')
+            ->inRandomOrder()
+            ->first();
+
+        $project = Project::factory()
+            ->make();
+
+        $failProject = Project::factory()
+            ->make();
+
+        $response = $this->actingAs($admin)->post(
+            route('projects.store'),
+            [
+                'title' => $project->title,
+                'description' => $project->description,
+                'deadline' => $project->deadline->format('Y-m-d'),
+                'user_id' => $project->user_id,
+                'client_id' => $project->client_id,
+                'status_id' => $project->status_id,
+            ],
+        );
+
+        $response->assertRedirect();
+
+        $this->assertDatabaseHas('projects', [
+            'title' => $project->title,
+            'description' => $project->description,
+        ]);
+
+        $failResponse = $this->actingAs($admin)->post(
+            route('projects.store'),
+            [
+                'title' => $project->title,
+                'description' => $failProject->description,
+                'deadline' => $failProject->deadline->format('Y-m-d'),
+                'user_id' => $failProject->user_id,
+                'client_id' => $failProject->client_id,
+                'status_id' => $failProject->status_id,
+            ],
+        );
+
+        $failResponse->assertRedirect();
+
+        $this->assertDatabaseMissing('projects', [
+            'description' => $failProject->description,
+        ]);
+    }
+
+    public function test_store_as_user()
+    {
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $project = Project::factory()
+            ->make();
+
+        $response = $this->actingAs($user)->post(
+            route('projects.store'),
+            [
+                'title' => $project->title,
+                'description' => $project->description,
+                'deadline' => $project->deadline,
+                'user_id' => $project->user_id,
+                'client_id' => $project->client_id,
+                'status_id' => $project->status_id,
+            ],
+        );
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseMissing('projects', [
+            'title' => $project->title,
+            'description' => $project->description,
             'deadline' => $project->deadline,
             'user_id' => $project->user_id,
             'client_id' => $project->client_id,
             'status_id' => $project->status_id,
         ]);
     }
-//
-//    public function test_cant_store_duplicated_email()
-//    {
-//        $admin = User::role('super-admin')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $user = User::factory()
-//            ->make();
-//
-//        $failUser = User::factory()
-//            ->make();
-//
-//        $response = $this->actingAs($admin)->post(
-//            route('users.store'),
-//            [
-//                'name' => $user->name,
-//                'email' => $user->email,
-//                'password' => $user->password,
-//                'confirm-password' => $user->password,
-//                'role' => 'user',
-//            ],
-//        );
-//
-//        $response->assertRedirect();
-//
-//        $this->assertDatabaseHas('users', [
-//            'name' => $user->name,
-//            'email' => $user->email,
-//        ]);
-//
-//        $failResponse = $this->actingAs($admin)->post(
-//            route('users.store'),
-//            [
-//                'name' => $failUser->name,
-//                'email' => $user->email,
-//                'password' => $failUser->password,
-//                'confirm-password' => $failUser->password,
-//                'role' => 'user',
-//            ],
-//        );
-//
-//        $failResponse->assertRedirect();
-//        $failResponse->assertSessionHasErrors(['email']);
-//
-//        $this->assertDatabaseMissing('users', [
-//            'name' => $failUser->name,
-//            'email' => $failUser->email,
-//        ]);
-//    }
-//
-//    public function test_store_as_user()
-//    {
-//        $user = User::role('user')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $userModel = User::factory()
-//            ->make();
-//
-//        $response = $this->actingAs($user)->post(
-//            route('users.store'),
-//            [
-//                'name' => $userModel->name,
-//                'email' => $userModel->email,
-//                'password' => $userModel->password,
-//                'confirm-password' => $userModel->password,
-//                'role' => 'user',
-//            ],
-//        );
-//
-//        $response->assertForbidden();
-//
-//        $this->assertDatabaseMissing('users', [
-//            'name' => $userModel->name,
-//            'email' => $userModel->email,
-//        ]);
-//    }
-//
-//    public function test_store_as_guest()
-//    {
-//        $user = User::factory()
-//            ->make();
-//
-//        $response = $this->post(
-//            route('users.store'),
-//            [
-//                'name' => $user->name,
-//                'email' => $user->email,
-//                'password' => $user->password,
-//                'confirm-password' => $user->password,
-//                'role' => 'admin',
-//            ],
-//        );
-//
-//        $response->assertRedirect();
-//
-//        $this->assertDatabaseMissing('users', [
-//            'name' => $user->name,
-//            'email' => $user->email,
-//        ]);
-//    }
-//
-//    public function test_admin_can_edit_self()
-//    {
-//        $admin = User::role('admin')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $response = $this->actingAs($admin)->get(
-//            "/admin/users/{$admin->id}/edit",
-//        );
-//
-//        $response->assertOk();
-//
-//        $response->assertViewIs('admin.users.edit');
-//
-//        $response->assertViewHas([
-//            'user' => $admin,
-//        ]);
-//    }
-//
-//    public function test_user_can_be_edit_as_admin()
-//    {
-//        $admin = User::role('admin')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $user = User::role('user')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $response = $this->actingAs($admin)->get(
-//            "/admin/users/{$user->id}/edit",
-//        );
-//
-//        $response->assertOk();
-//
-//        $response->assertViewIs('admin.users.edit');
-//
-//        $response->assertViewHas([
-//            'user' => $user,
-//        ]);
-//    }
-//
-//    public function test_user_can_edit_self()
-//    {
-//        $user = User::role('user')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $response = $this->actingAs($user)->get(
-//            "/admin/users/{$user->id}/edit",
-//        );
-//
-//        $response->assertOk();
-//
-//        $response->assertViewIs('admin.users.edit');
-//
-//        $response->assertViewHas([
-//            'user' => $user,
-//        ]);
-//    }
-//
-//    public function test_user_cant_edit_another_user()
-//    {
-//        $admin = User::role('admin')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $user = User::role('user')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $response = $this->actingAs($user)->get(
-//            "/admin/users/$admin->id/edit",
-//        );
-//
-//        $response->assertForbidden();
-//    }
-//
-//    public function test_user_cant_be_edit_as_guest()
-//    {
-//        $user = User::role('user')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $response = $this->get(
-//            "/admin/users/$user->id/edit",
-//        );
-//
-//        $response->assertRedirect();
-//    }
-//
-//    public function test_user_can_be_updated_as_admin()
-//    {
-//        $admin = User::role('admin')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $user = User::role('user')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $userModel = User::factory()
-//            ->make();
-//
-//        $this->actingAs($admin)->patch(
-//            "/admin/users/$user->id",
-//            [
-//                'name' => $userModel->name,
-//                'email' => $userModel->email,
-//            ],
-//        );
-//
-//        $user->refresh();
-//
-//        $this->assertEquals($userModel->name, $user->name);
-//        $this->assertEquals($userModel->email, $user->email);
-//
-////         $this->assertDatabaseHas('users', [
-////             'name' => 'dummy',
-////             'email' => 'dummy@dummy.dummy',
-////         ]);
-//    }
-//
-//    public function test_user_cant_visit_another_user_profile()
-//    {
-//        $admin = User::role('admin')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $user = User::role('user')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $userModel = User::factory()
-//            ->make();
-//
-//        $response = $this->actingAs($user)->get(
-//            "/admin/users/$admin->id/edit"
-//        );
-//
-//        $response->assertForbidden();
-//
-////        $this->assertDatabaseMissing('users', [
-////            'name' => $userModel->name,
-////            'email' => $userModel->email,
-////        ]);
-//    }
-//
-//    public function test_user_cant_update_another_user()
-//    {
-//        $admin = User::role('admin')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $user = User::role('user')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $userModel = User::factory()
-//            ->make();
-//
-//        $response = $this->actingAs($user)->patch(
-//            "/admin/users/$admin->id",
-//            [
-//                'name' => $userModel->name,
-//                'email' => $userModel->email,
-//            ],
-//        );
-//
-//        $response->assertRedirect();
-//
-//        $this->assertDatabaseMissing('users', [
-//            'name' => $userModel->name,
-//            'email' => $userModel->email,
-//        ]);
-//    }
-//
-//    public function test_user_can_update_self()
-//    {
-//        $user = User::role('user')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $userModel = User::factory()
-//            ->make();
-//
-//        $response = $this->actingAs($user)->patch(
-//            "/admin/users/$user->id",
-//            [
-//                'name' => $userModel->name,
-//                'email' => $userModel->email,
-//            ],
-//        );
-//
-//        $response->assertRedirect();
-//
-//        $user->refresh();
-//
-//        $this->assertEquals($userModel->name, $user->name);
-//        $this->assertEquals($userModel->email, $user->email);
-//    }
-//
-//    public function user_cant_change_role()
-//    {
-//        $user = User::role('user')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $response = $this->actingAs($user)->patch(
-//            "/admin/users/$user->id",
-//            [
-//                'role' => 'admin',
-//            ],
-//        );
-//
-//        $response->assertForbidden();
-//    }
-//
-//    public function admin_can_change_user_role()
-//    {
-//        $admin = User::role('admin')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $user = User::role('user')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $response = $this->actingAs($user)->patch(
-//            "/admin/users/$user->id",
-//            [
-//                'role' => 'admin',
-//            ],
-//        );
-//
-//        $this->assertEquals('admin', $user->getRoleNames()->first());
-//    }
-//
-//    public function test_user_cant_soft_delete_self()
-//    {
-//        $user = User::role('user')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $response = $this->actingAs($user)->delete(
-//            "/admin/users/$user->id",
-//        );
-//
-//        $response->assertForbidden();
-//
-//        $this->assertNotSoftDeleted($user);
-//    }
-//
-//    public function test_user_cant_soft_delete()
-//    {
-//        $user = User::role('user')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $admin = User::role('admin')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $response = $this->actingAs($user)->delete(
-//            "/admin/users/$admin->id",
-//        );
-//
-//        $response->assertForbidden();
-//
-//        $this->assertNotSoftDeleted($admin);
-//    }
-//
-//    public function test_admin_cant_soft_delete()
-//    {
-//        $user = User::role('user')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $admin = User::role('admin')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $response = $this->actingAs($admin)->delete(
-//            "/admin/users/$user->id",
-//        );
-//
-//        $response->assertForbidden();
-//
-//        $this->assertNotSoftDeleted($user);
-//    }
-//
-//    public function test_super_admin_can_soft_delete()
-//    {
-//        $user = User::role('user')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $admin = User::role('super-admin')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $response = $this->actingAs($admin)->delete(
-//            "/admin/users/$user->id",
-//        );
-//
-//        $response->assertRedirect();
-//
-//        $this->assertSoftDeleted($user);
-//    }
-//
-//    public function test_user_cant_restore()
-//    {
-//        $user = User::role('user')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $deletedUser = User::factory()
-//            ->create();
-//
-//        $deletedUser->delete();
-//
-//        $response = $this->actingAs($user)->post(
-//            "admin/users/$deletedUser->id/restore",
-//        );
-//
-//        $response->assertForbidden();
-//
-//        $this->assertSoftDeleted($deletedUser);
-//    }
-//
-//    public function test_admin_cant_restore()
-//    {
-//        $admin = User::role('admin')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $deletedUser = User::factory()
-//            ->create();
-//
-//        $deletedUser->delete();
-//
-//        $response = $this->actingAs($admin)->post(
-//            "admin/users/$deletedUser->id/restore",
-//        );
-//
-//        $response->assertForbidden();
-//
-//        $this->assertSoftDeleted($deletedUser);
-//    }
-//
-//    public function test_super_admin_can_restore()
-//    {
-//        $admin = User::role('super-admin')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $deletedUser = User::factory()
-//            ->create();
-//
-//        $deletedUser->delete();
-//
-//        $response = $this->actingAs($admin)->post(
-//            "admin/users/$deletedUser->id/restore",
-//        );
-//
-//        $response->assertRedirect();
-//
-//        $this->assertNotSoftDeleted($deletedUser);
-//    }
-//
-//    public function test_user_cant_forceDelete()
-//    {
-//        $user = User::role('user')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $deletedUser = User::factory()
-//            ->create();
-//
-//        $deletedUser->delete();
-//
-//        $response = $this->actingAs($user)->post(
-//            "admin/users/$deletedUser->id/wipe",
-//        );
-//
-//        $response->assertForbidden();
-//
-//        $this->assertSoftDeleted($deletedUser);
-//    }
-//
-//    public function test_admin_cant_forceDelete()
-//    {
-//        $admin = User::role('admin')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $deletedUser = User::factory()
-//            ->create();
-//
-//        $deletedUser->delete();
-//
-//        $response = $this->actingAs($admin)->post(
-//            "admin/users/$deletedUser->id/wipe",
-//        );
-//
-//        $response->assertForbidden();
-//
-//        $this->assertSoftDeleted($deletedUser);
-//    }
-//
-//    public function test_super_admin_can_forceDelete()
-//    {
-//        $admin = User::role('super-admin')
-//            ->inRandomOrder()
-//            ->first();
-//
-//        $deletedUser = User::factory()
-//            ->create();
-//
-//        $deletedUser->delete();
-//
-//        $response = $this->actingAs($admin)->post(
-//            "admin/users/$deletedUser->id/wipe",
-//        );
-//
-//        $response->assertRedirect();
-//
-//        $this->assertModelMissing($deletedUser);
-//    }
+
+    public function test_store_as_guest()
+    {
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $project = Project::factory()
+            ->make();
+
+        $response = $this->post(
+            route('projects.store'),
+            [
+                'title' => $project->title,
+                'description' => $project->description,
+                'deadline' => $project->deadline,
+                'user_id' => $project->user_id,
+                'client_id' => $project->client_id,
+                'status_id' => $project->status_id,
+            ],
+        );
+
+        $response->assertRedirect();
+
+        $this->assertDatabaseMissing('projects', [
+            'title' => $project->title,
+            'description' => $project->description,
+            'deadline' => $project->deadline,
+            'user_id' => $project->user_id,
+            'client_id' => $project->client_id,
+            'status_id' => $project->status_id,
+        ]);
+    }
+
+    public function test_admin_can_visit_edit_project()
+    {
+        $admin = User::role('admin')
+            ->inRandomOrder()
+            ->first();
+
+        $project = Project::inRandomOrder()
+            ->first();
+
+        $response = $this->actingAs($admin)->get(
+            "/admin/projects/$project->id/edit",
+        );
+
+        $response->assertOk();
+
+        $response->assertViewIs('admin.projects.edit');
+
+        $response->assertViewHas([
+            'usersList',
+            'clientsList',
+            'statusList',
+            'project' => $project,
+        ]);
+    }
+
+    public function test_user_can_visit_edit_project()
+    {
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $project = Project::inRandomOrder()
+            ->first();
+
+        $response = $this->actingAs($user)->get(
+            "/admin/projects/$project->id/edit",
+        );
+
+        $response->assertOk();
+
+        $response->assertViewIs('admin.projects.edit');
+
+        $response->assertViewHas([
+            'usersList',
+            'clientsList',
+            'statusList',
+            'project' => $project,
+        ]);
+    }
+
+    public function test_guest_cant_visit_edit_project()
+    {
+        $project = Project::inRandomOrder()
+            ->first();
+
+        $response = $this->get(
+            "/admin/projects/$project->id/edit",
+        );
+
+        $response->assertRedirect();
+    }
+
+    public function test_user_can_update_project()
+    {
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $project = Project::inRandomOrder()
+            ->first();
+
+        $projectModel = Project::factory()
+            ->make();
+
+        $response = $this->actingAs($user)->patch(
+            "/admin/projects/$project->id",
+            [
+                'title' => $projectModel->title,
+                'description' => $projectModel->description,
+                'deadline' => $projectModel->deadline->format('Y-m-d'),
+                'user_id' => $projectModel->user_id,
+                'client_id' => $projectModel->client_id,
+                'status_id' => $projectModel->status_id,
+            ]
+        );
+
+        $response->assertRedirect();
+
+        $this->assertDatabaseHas('projects', [
+            'title' => $projectModel->title,
+            'description' => $projectModel->description,
+        ]);
+    }
+
+    public function test_guest_cant_update_project()
+    {
+        $project = Project::inRandomOrder()
+            ->first();
+
+        $projectModel = Project::factory()
+            ->make();
+
+        $response = $this->patch(
+            "/admin/projects/$project->id",
+            [
+                'title' => $projectModel->title,
+                'description' => $projectModel->description,
+                'deadline' => $projectModel->deadline->format('Y-m-d'),
+                'user_id' => $projectModel->user_id,
+                'client_id' => $projectModel->client_id,
+                'status_id' => $projectModel->status_id,
+            ]
+        );
+
+        $response->assertRedirect(route('login'));
+
+        $this->assertDatabaseMissing('projects', [
+            'title' => $projectModel->title,
+            'description' => $projectModel->description,
+            'deadline' => $projectModel->deadline,
+            'user_id' => $projectModel->user_id,
+            'client_id' => $projectModel->client_id,
+            'status_id' => $projectModel->status_id,
+        ]);
+    }
+
+    public function test_user_cant_soft_delete_project()
+    {
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $project = Project::inRandomOrder()
+            ->first();
+
+        $response = $this->actingAs($user)->delete(
+            "/admin/projects/$project->id",
+        );
+
+        $response->assertForbidden();
+
+        $this->assertNotSoftDeleted($project);
+    }
+
+    public function test_super_admin_can_soft_delete_project()
+    {
+        $admin = User::role('super-admin')
+            ->inRandomOrder()
+            ->first();
+
+        $project = Project::inRandomOrder()
+            ->first();
+
+        $response = $this->actingAs($admin)->delete(
+            "/admin/projects/$project->id",
+        );
+
+        $response->assertRedirect();
+
+        $this->assertSoftDeleted($project);
+    }
+
+    public function test_guest_cant_soft_delete_project()
+    {
+        $project = Project::inRandomOrder()
+            ->first();
+
+        $response = $this->delete(
+            "/admin/projects/$project->id",
+        );
+
+        $response->assertRedirect();
+
+        $this->assertNotSoftDeleted($project);
+    }
+
+    public function test_user_cant_restore_project()
+    {
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $project = Project::inRandomOrder()
+            ->first();
+
+        $project->delete();
+
+        $response = $this->actingAs($user)->post(
+            "/admin/projects/$project->id/restore",
+        );
+
+        $response->assertForbidden();
+
+        $this->assertSoftDeleted($project);
+    }
+
+    public function test_super_admin_can_restore_project()
+    {
+        $admin = User::role('super-admin')
+            ->inRandomOrder()
+            ->first();
+
+        $project = Project::inRandomOrder()
+            ->first();
+
+        $project->delete();
+
+        $response = $this->actingAs($admin)->post(
+            "/admin/projects/$project->id/restore",
+        );
+
+        $response->assertRedirect();
+
+        $this->assertNotSoftDeleted($project);
+    }
+
+    public function test_guest_cant_restore_project()
+    {
+        $project = Project::inRandomOrder()
+            ->first();
+
+        $project->delete();
+
+        $response = $this->post(
+            "/admin/projects/$project->id/restore",
+        );
+
+        $response->assertRedirect();
+
+        $this->assertSoftDeleted($project);
+    }
+
+    public function test_user_cant_wipe_project()
+    {
+        $user = User::role('user')
+            ->inRandomOrder()
+            ->first();
+
+        $project = Project::inRandomOrder()
+            ->first();
+
+        $project->delete();
+
+        $response = $this->actingAs($user)->post(
+            "/admin/projects/$project->id/wipe",
+        );
+
+        $response->assertForbidden();
+
+        $this->assertModelExists($project);
+    }
+
+    public function test_super_admin_cant_wipe_project()
+    {
+        $admin = User::role('super-admin')
+            ->inRandomOrder()
+            ->first();
+
+        $project = Project::inRandomOrder()
+            ->first();
+
+        $project->delete();
+
+        $response = $this->actingAs($admin)->post(
+            "/admin/projects/$project->id/wipe",
+        );
+
+        $response->assertRedirect();
+
+        $this->assertModelMissing($project);
+    }
+
+    public function test_guest_cant_wipe_project()
+    {
+        $project = Project::inRandomOrder()
+            ->first();
+
+        $project->delete();
+
+        $response = $this->post(
+            "/admin/projects/$project->id/wipe",
+        );
+
+        $response->assertRedirect();
+
+        $this->assertModelExists($project);
+    }
 }

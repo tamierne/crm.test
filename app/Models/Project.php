@@ -16,6 +16,7 @@ class Project extends BaseModel
 {
     use HasFactory, SoftDeletes, SoftCascadeTrait, LogsActivity;
 
+    protected $touches = ['client'];
     /**
      * The relationships that should always be loaded.
      *
@@ -44,6 +45,10 @@ class Project extends BaseModel
     protected $hidden = [
         'user_id',
         'client_id',
+    ];
+
+    protected $casts = [
+        'deadline' => 'datetime',
     ];
 
     protected $softCascade = ['tasks'];

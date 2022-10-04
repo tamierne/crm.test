@@ -20,10 +20,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CreateSuperAdminSeeder::class,
             PermissionSeeder::class,
+            StatusListSeeder::class,
             UserSeeder::class,
 //            ProjectSeeder::class,
 //            TaskSeeder::class,
-            StatusListSeeder::class,
         ]);
     }
 }
