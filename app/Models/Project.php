@@ -104,7 +104,7 @@ class Project extends BaseModel
      */
     public function tasks(): HasMany
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Task::class)->withTrashed();
     }
 
     public function scopeRecent($query)

@@ -55,7 +55,7 @@ class Client extends BaseModel implements HasMedia
      */
     public function projects(): HasMany
     {
-        return $this->hasMany(Project::class);
+        return $this->hasMany(Project::class)->withTrashed();
     }
 
     public function scopeActiveClients()

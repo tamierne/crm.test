@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Events\Client\ClientDeleted;
 use App\Events\Client\ClientUpdated;
 use App\Http\Requests\Admin\ClientIndexRequest;
 use App\Http\Requests\Admin\ClientCreateRequest;
 use App\Http\Requests\Admin\ClientUpdateRequest;
 use App\Models\Client;
 use App\Repositories\ClientRepository;
-use App\Repositories\ProjectRepository;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ClientController extends BaseController
@@ -107,8 +104,6 @@ class ClientController extends BaseController
 
         $client->update($request->validated());
 
-        ClientUpdated::dispatch($client);
-
         return redirect()->back()->with('message', 'Successfully saved!');
     }
 
@@ -121,8 +116,6 @@ class ClientController extends BaseController
     public function destroy(Client $client): RedirectResponse
     {
         $this->authorize('client_delete');
-
-        ClientDeleted::dispatch($client);
 
         $client->delete();
 

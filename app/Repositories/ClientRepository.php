@@ -39,7 +39,7 @@ class ClientRepository extends MainRepository
      */
     public function getItemById($id): Client
     {
-        return Client::withTrashed()->findOrFail($id);
+        return Client::withTrashed()->findOrFail($id, 'id');
     }
 
     /**

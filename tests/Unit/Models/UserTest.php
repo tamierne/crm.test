@@ -5,7 +5,6 @@ namespace Tests\Unit;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -48,6 +47,6 @@ class UserTest extends TestCase
             $user->delete();
         }
 
-        $this->assertTrue(true);
+        $this->assertModelMissing($user);
     }
 }
