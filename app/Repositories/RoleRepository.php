@@ -58,10 +58,13 @@ class RoleRepository extends MainRepository
      */
     public function getAllItemsWithPaginate(): Paginator
     {
-        if (!auth()->user()->hasRole('super-admin')) {
-            return Role::whereNotIn('name', ['super-admin'])->with([
-                'permissions:name',
-            ])->simplePaginate('10');
+        if (!auth()->user()->hasRole('super-admin'))
+        {
+            return Role::whereNotIn('name', ['super-admin'])
+                ->with([
+                    'permissions:name',
+                ])
+                ->simplePaginate('10');
         }
         return Role::with([
             'permissions:name',

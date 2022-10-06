@@ -24,7 +24,7 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label for="name">Role name</label>
-                        <input type="text" class="form-control" name="name" id="name" value="{{ $role->name }}">
+                        <input type="text" class="form-control" name="name" id="name" value="{{ $role->name }}" disabled>
                     </div>
                     <label>Role permissions</label>
                     @foreach($permissions as $permission)

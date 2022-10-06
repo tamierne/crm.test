@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -39,6 +38,7 @@ class PermissionSeeder extends Seeder
             'role_wipe',
             'role_restore',
             'role_access',
+            'role_update',
             'user_create',
             'user_store',
             'user_edit',
@@ -141,6 +141,7 @@ class PermissionSeeder extends Seeder
             'role_wipe',
             'role_restore',
             'role_access',
+            'role_update',
         ];
 
         $adminRole->syncPermissions($adminPermission);

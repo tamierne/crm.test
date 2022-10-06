@@ -126,26 +126,30 @@ class TaskControllerTest extends TestCase
             ->inRandomOrder()
             ->first();
 
-        $task = Task::factory()
+        $taskModel = Task::factory()
             ->make();
 
         $response = $this->actingAs($admin)->post(
             route('tasks.store'),
             [
-                'title' => $task->title,
-                'description' => $task->description,
-                'deadline' => $task->deadline->format('Y-m-d'),
-                'user_id' => $task->user_id,
-                'project_id' => $task->project_id,
-                'status_id' => $task->status_id,
+                'title' => $taskModel->title,
+                'description' => $taskModel->description,
+                'deadline' => $taskModel->deadline->format('Y-m-d'),
+                'user_id' => $taskModel->user_id,
+                'project_id' => $taskModel->project_id,
+                'status_id' => $taskModel->status_id,
             ],
         );
 
         $response->assertRedirect();
 
+        $task = Task::where('title', '=', $taskModel->title)
+            ->first();
+
+        $this->assertModelExists($task);
+
         $this->assertDatabaseHas('tasks', [
             'title' => $task->title,
-            'description' => $task->description,
         ]);
     }
 
@@ -155,49 +159,47 @@ class TaskControllerTest extends TestCase
             ->inRandomOrder()
             ->first();
 
-        $task = Task::factory()
+        $taskModel = Task::factory()
             ->make();
 
-        $failTask = Task::factory()
+        $failTaskModel = Task::factory()
             ->make();
 
         $response = $this->actingAs($admin)->post(
             route('tasks.store'),
             [
-                'title' => $task->title,
-                'description' => $task->description,
-                'deadline' => $task->deadline->format('Y-m-d'),
-                'user_id' => $task->user_id,
-                'project_id' => $task->project_id,
-                'status_id' => $task->status_id,
+                'title' => $taskModel->title,
+                'description' => $taskModel->description,
+                'deadline' => $taskModel->deadline->format('Y-m-d'),
+                'user_id' => $taskModel->user_id,
+                'project_id' => $taskModel->project_id,
+                'status_id' => $taskModel->status_id,
             ],
         );
 
         $response->assertRedirect();
 
-        $this->assertDatabaseHas('tasks', [
-            'title' => $task->title,
-            'description' => $task->description,
-        ]);
+        $task = Task::where('title', '=', $taskModel->title)->first();
+
+        $this->assertModelExists($task);
 
         $failResponse = $this->actingAs($admin)->post(
             route('tasks.store'),
             [
                 'title' => $task->title,
-                'description' => $failTask->description,
-                'deadline' => $failTask->deadline->format('Y-m-d'),
-                'user_id' => $failTask->user_id,
-                'project_id' => $failTask->project_id,
-                'status_id' => $failTask->status_id,
+                'description' => $failTaskModel->description,
+                'deadline' => $failTaskModel->deadline->format('Y-m-d'),
+                'user_id' => $failTaskModel->user_id,
+                'project_id' => $failTaskModel->project_id,
+                'status_id' => $failTaskModel->status_id,
             ],
         );
 
         $failResponse->assertRedirect();
 
-        $this->assertDatabaseMissing('tasks', [
-            'title' => $failTask->title,
-            'description' => $failTask->description,
-        ]);
+        $failTask = Task::where('description', '=', $failTaskModel->description)->first();
+
+        $this->assertNull($failTask);
     }
 
     public function test_store_as_user()
@@ -350,10 +352,10 @@ class TaskControllerTest extends TestCase
 
         $response->assertRedirect();
 
-        $this->assertDatabaseHas('tasks', [
-            'title' => $taskModel->title,
-            'description' => $taskModel->description,
-        ]);
+        $task->refresh();
+
+        $this->assertEqualsIgnoringCase($task->title, $taskModel->title);
+        $this->assertEqualsIgnoringCase($task->description, $taskModel->description);
     }
 
     public function test_guest_cant_update_task()

@@ -126,27 +126,27 @@ class ProjectControllerTest extends TestCase
             ->inRandomOrder()
             ->first();
 
-        $project = Project::factory()
+        $projectModel = Project::factory()
             ->make();
 
         $response = $this->actingAs($admin)->post(
             route('projects.store'),
             [
-                'title' => $project->title,
-                'description' => $project->description,
-                'deadline' => $project->deadline->format('Y-m-d'),
-                'user_id' => $project->user_id,
-                'client_id' => $project->client_id,
-                'status_id' => $project->status_id,
+                'title' => $projectModel->title,
+                'description' => $projectModel->description,
+                'deadline' => $projectModel->deadline->format('Y-m-d'),
+                'user_id' => $projectModel->user_id,
+                'client_id' => $projectModel->client_id,
+                'status_id' => $projectModel->status_id,
             ],
         );
 
         $response->assertRedirect();
 
-        $this->assertDatabaseHas('projects', [
-            'title' => $project->title,
-            'description' => $project->description,
-        ]);
+        $project = Project::where('title', '=', $projectModel->title)->first();
+
+        $this->assertEqualsIgnoringCase($projectModel->title, $project->title);
+        $this->assertEqualsIgnoringCase($projectModel->description, $project->description);
     }
 
     public function test_cant_store_duplicated_title()
@@ -155,48 +155,45 @@ class ProjectControllerTest extends TestCase
             ->inRandomOrder()
             ->first();
 
-        $project = Project::factory()
+        $projectModel = Project::factory()
             ->make();
 
-        $failProject = Project::factory()
+        $failProjectModel = Project::factory()
             ->make();
 
         $response = $this->actingAs($admin)->post(
             route('projects.store'),
             [
-                'title' => $project->title,
-                'description' => $project->description,
-                'deadline' => $project->deadline->format('Y-m-d'),
-                'user_id' => $project->user_id,
-                'client_id' => $project->client_id,
-                'status_id' => $project->status_id,
+                'title' => $projectModel->title,
+                'description' => $projectModel->description,
+                'deadline' => $projectModel->deadline->format('Y-m-d'),
+                'user_id' => $projectModel->user_id,
+                'client_id' => $projectModel->client_id,
+                'status_id' => $projectModel->status_id,
             ],
         );
 
         $response->assertRedirect();
 
-        $this->assertDatabaseHas('projects', [
-            'title' => $project->title,
-            'description' => $project->description,
-        ]);
+        $project = Project::where('title', '=', $projectModel->title)->first();
+
+        $this->assertModelExists($project);
 
         $failResponse = $this->actingAs($admin)->post(
             route('projects.store'),
             [
                 'title' => $project->title,
-                'description' => $failProject->description,
-                'deadline' => $failProject->deadline->format('Y-m-d'),
-                'user_id' => $failProject->user_id,
-                'client_id' => $failProject->client_id,
-                'status_id' => $failProject->status_id,
+                'description' => $failProjectModel->description,
+                'deadline' => $failProjectModel->deadline->format('Y-m-d'),
+                'user_id' => $failProjectModel->user_id,
+                'client_id' => $failProjectModel->client_id,
+                'status_id' => $failProjectModel->status_id,
             ],
         );
 
         $failResponse->assertRedirect();
 
-        $this->assertDatabaseMissing('projects', [
-            'description' => $failProject->description,
-        ]);
+        $this->assertNotEqualsIgnoringCase($project->description, $failProjectModel->description);
     }
 
     public function test_store_as_user()
@@ -353,10 +350,10 @@ class ProjectControllerTest extends TestCase
 
         $response->assertRedirect();
 
-        $this->assertDatabaseHas('projects', [
-            'title' => $projectModel->title,
-            'description' => $projectModel->description,
-        ]);
+        $project->refresh();
+
+        $this->assertEqualsIgnoringCase($project->title, $projectModel->title);
+        $this->assertEqualsIgnoringCase($project->description, $projectModel->description);
     }
 
     public function test_guest_cant_update_project()
