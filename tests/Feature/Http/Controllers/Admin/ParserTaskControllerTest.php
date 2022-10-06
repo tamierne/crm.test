@@ -199,7 +199,7 @@ class ParserTaskControllerTest extends TestCase
             ->first();
 
         $parserTask = ParserTask::create([
-            'url' => 'https://laravel.com/docs/9.x/http-tests#assert-session-has-errors',
+            'url' => 'http://localhost:8000/admin',
             'user_id' => $user->id,
             'status_id' => Status::STATUS_QUEUED,
         ]);

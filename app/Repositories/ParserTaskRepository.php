@@ -103,6 +103,7 @@ class ParserTaskRepository extends MainRepository
             $parserTask = ParserTask::create([
                 'url' => $url,
                 'user_id' => auth()->user()->id,
+                'status_id' => Status::STATUS_QUEUED,
             ]);
 
             UrlParserJob::dispatch($parserTask);
