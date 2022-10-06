@@ -28,24 +28,13 @@ class TaskObserver
      * @param  \App\Models\Task  $task
      * @return void
      */
-    public function updating(Task $task)
+    public function updated(Task $task)
     {
         if ($task->isDirty('status_id') && $task->status_id === Status::STATUS_COMPLETED) {
             EmailTaskCompletionJob::dispatch($task);
         } elseif ($task->isDirty('user_id')) {
             EmailTaskAssignmentJob::dispatch($task);
         }
-    }
-
-    /**
-     * Handle the Task "updated" event.
-     *
-     * @param  \App\Models\Task  $task
-     * @return void
-     */
-    public function updated(Task $task)
-    {
-        //
     }
 
     /**

@@ -76,7 +76,7 @@ class ClientRepository extends MainRepository
                 $client->addMediaFromRequest('avatar')->toMediaCollection('avatar');
             }
 
-            ClientUpdated::dispatch($client);
+//            ClientUpdated::dispatch($client);
 
         } catch (Throwable $e) {
             dump($e->getMessage());

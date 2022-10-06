@@ -28,24 +28,13 @@ class ProjectObserver
      * @param  \App\Models\Project  $project
      * @return void
      */
-    public function updating(Project $project): void
+    public function updated(Project $project): void
     {
         if ($project->isDirty('status_id') && $project->status_id === Status::STATUS_COMPLETED) {
             EmailProjectCompletionJob::dispatch($project);
         } elseif ($project->isDirty('user_id')) {
             EmailProjectAssignmentJob::dispatch($project);
         }
-    }
-
-    /**
-     * Handle the Project "updated" event.
-     *
-     * @param  \App\Models\Project  $project
-     * @return void
-     */
-    public function updated(Project $project)
-    {
-        //
     }
 
     /**

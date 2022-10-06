@@ -37,7 +37,7 @@ class UserLoggedInNotification extends Notification
         return [
             'user_name' => $this->user->name,
             'action' => 'User logged in',
-            'details' => 'No data',
+            'details' => ($this->user->google_id || $this->user->github_id) ? 'Signed via google/github' : 'No data',
             'when' => now()->parse()->format('m/d/Y'),
         ];
     }

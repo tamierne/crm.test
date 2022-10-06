@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Http\Controllers\Admin;
+namespace Tests\Feature\Http\Controllers\Admin;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\WithoutEvents;

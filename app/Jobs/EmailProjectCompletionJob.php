@@ -34,6 +34,6 @@ class EmailProjectCompletionJob implements ShouldQueue
      */
     public function handle()
     {
-        $this->project->client->notify(new ProjectCompletedNotification($this->project));
+        $this->project->user->notify(new ProjectCompletedNotification($this->project));
     }
 }

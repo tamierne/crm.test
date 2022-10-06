@@ -1,10 +1,9 @@
 <?php
 
-namespace Tests\Unit\Http\Features;
+namespace Tests\Feature\Http\Features;
 
 use App\Models\Client;
 use App\Models\Project;
-use App\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

@@ -24,10 +24,12 @@ class GoogleController extends Controller
         ], [
             'name' => $googleUser->name,
             'email' => $googleUser->email,
-            'password' => Hash::make('gitpwd059'),
+            'password' => Hash::make('gglpwd059'),
 //            'google_token' => $googleUser->token,
 //            'google_refresh_token' => $googleUser->refreshToken,
         ]);
+
+        $user->markEmailAsVerified();
 
         $user->assignRole('user');
 

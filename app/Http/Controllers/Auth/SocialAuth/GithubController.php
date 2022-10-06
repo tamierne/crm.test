@@ -29,6 +29,8 @@ class GithubController extends Controller
 //            'github_refresh_token' => $githubUser->refreshToken,
         ]);
 
+        $user->markEmailAsVerified();
+
         $user->assignRole('user');
 
         Auth::login($user);
