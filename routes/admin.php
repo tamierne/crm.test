@@ -83,8 +83,12 @@ use Illuminate\Support\Facades\Route;
             'as' => 'parsers.',
             'controller' => ParserTaskController::class
         ], function() {
-            Route::post('{parser}/restore', 'restore')->name('restore');
-            Route::post('{parser}/wipe', 'wipe')->name('wipe');
+            Route::group([
+                'middleware' => ['role:super-admin|admin'],
+            ], function() {
+                Route::post('{parser}/restore', 'restore')->name('restore');
+                Route::post('{parser}/wipe', 'wipe')->name('wipe');
+            });
             Route::get('force', 'forceParse')->name('force');
         });
 

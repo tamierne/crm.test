@@ -93,12 +93,16 @@ class ParserTaskController extends BaseController
      */
     public function destroy(ParserTask $parser)
     {
+        $this->authorize('parser_delete');
+
         $parser->delete();
         return redirect()->back()->with('message', 'Successfully deleted');
     }
 
     public function restore($id): RedirectResponse
     {
+        $this->authorize('parser_restore');
+
         $parser = $this->parserTaskRepository->getItemById($id);
 
         $parser->restore();
@@ -113,6 +117,8 @@ class ParserTaskController extends BaseController
      */
     public function wipe($id): RedirectResponse
     {
+        $this->authorize('parser_wipe');
+
         $parser = $this->parserTaskRepository->getItemById($id);
 
         $parser->forceDelete();

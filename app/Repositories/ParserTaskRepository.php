@@ -8,6 +8,7 @@ use App\Events\UrlParser\UrlParserStarted;
 use App\Jobs\UrlParserJob;
 use App\Models\ParserTask;
 use App\Models\Status;
+use Throwable;
 
 class ParserTaskRepository extends MainRepository
 {
@@ -98,13 +99,17 @@ class ParserTaskRepository extends MainRepository
 
     public function store($url)
     {
-        $parserTask = ParserTask::create([
-            'url' => $url,
-            'user_id' => auth()->user()->id,
-        ]);
+        try {
+            $parserTask = ParserTask::create([
+                'url' => $url,
+                'user_id' => auth()->user()->id,
+            ]);
 
-        UrlParserJob::dispatch($parserTask);
-        UrlParserAdded::dispatch($parserTask);
+            UrlParserJob::dispatch($parserTask);
+            UrlParserAdded::dispatch($parserTask);
+        } catch (Throwable $e) {
+            dump($e->getMessage());
+        }
 
         return back();
     }

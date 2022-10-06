@@ -73,6 +73,9 @@ class PermissionSeeder extends Seeder
             'task_wipe',
             'task_restore',
             'task_access',
+            'parser_delete',
+            'parser_wipe',
+            'parser_restore',
         ];
 
         foreach ($permissions as $permission)
@@ -142,6 +145,9 @@ class PermissionSeeder extends Seeder
             'role_restore',
             'role_access',
             'role_update',
+            'parser_delete',
+            'parser_wipe',
+            'parser_restore',
         ];
 
         $adminRole->syncPermissions($adminPermission);
