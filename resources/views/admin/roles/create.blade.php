@@ -26,11 +26,12 @@
                         <input type="text" class="form-control" name="name" id="title" placeholder="Enter title">
                     </div>
                     <label for="permissions">Select Permissions</label>
-                    <select name="permissions[]" id="permissions" multiple class="form-control">
-                        @foreach($permissions as $permission)
-                            <option value="{{ $permission->id }}">{{ $permission->id }} {{ $permission->name }}</option>
-                        @endforeach
-                    </select>
+                    @foreach($permissions as $permission)
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="{{ $permission->name }}" name="permissions[]" value="{{ $permission->name }}"/>
+                            <label for="{{ $permission->name }}" class="form-check-label">{{ $permission->name }}</label>
+                        </div>
+                    @endforeach
                 </div>
                 <div class="card-footer">
                     <button type="submit" class="btn btn-info">Create</button>

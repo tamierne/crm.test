@@ -17,9 +17,9 @@ class ProjectFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->sentence(5),
+            'title' => $this->faker->realText(45),
             'description' => $this->faker->realText(200),
-            'deadline' => $this->faker->dateTimeThisMonth('+2 months'),
+            'deadline' => $this->faker->dateTimeBetween('+15 days', '+2 months'),
             'user_id' => $this->faker->numberBetween(2, 13),
             'client_id' => $this->faker->numberBetween(1, 15),
             'status_id' => $this->faker->numberBetween(1, 5),

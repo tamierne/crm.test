@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\Status;
 use Illuminate\Database\Eloquent\Collection;
-use App\Repositories\MainRepository;
 use Illuminate\Pagination\Paginator;
 
 class StatusRepository extends MainRepository

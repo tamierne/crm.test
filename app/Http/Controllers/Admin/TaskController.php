@@ -41,8 +41,8 @@ class TaskController extends BaseController
 
         if(empty($status) && empty($filter)) {
             $tasks = $this->taskRepository->getAllItemsWithPaginate();
-        } elseif($filter == 'Deleted') {
-            $tasks = $this->taskRepository->getAllDeletedTasksPaginated();
+        } elseif(! empty($filter)) {
+            $tasks = $this->taskRepository->getAllDeletedTasksPaginated($filter);
         } else {
             $tasks = $this->taskRepository->getAllTasksByStatusPaginated($status);
         }

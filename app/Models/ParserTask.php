@@ -23,6 +23,11 @@ class ParserTask extends BaseModel
         'user_id',
         'status_id',
         'result',
+        'started_at',
+    ];
+
+    protected $hidden = [
+        'started_at',
     ];
 
     protected $casts = [
@@ -55,15 +60,6 @@ class ParserTask extends BaseModel
     }
 
     public function getStartedAtAttribute($value)
-    {
-        if($value) {
-            return Carbon::parse($value)->format('m/d/Y');
-        } else {
-            return $value;
-        }
-    }
-
-    public function getFinishedAtAttribute($value)
     {
         if($value) {
             return Carbon::parse($value)->format('m/d/Y');

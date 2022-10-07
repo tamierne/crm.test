@@ -2,15 +2,17 @@
 
 namespace Tests\Feature\Http\Controllers\Admin;
 
+use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutEvents;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class TaskControllerTest extends TestCase
 {
-    use RefreshDatabase, WithoutEvents;
+    use RefreshDatabase, WithoutEvents, WithFaker;
 
     protected bool $seed = true;
 
@@ -129,14 +131,17 @@ class TaskControllerTest extends TestCase
         $taskModel = Task::factory()
             ->make();
 
+        $projectCount = Project::count();
+        $userCount = User::count();
+
         $response = $this->actingAs($admin)->post(
             route('tasks.store'),
             [
                 'title' => $taskModel->title,
                 'description' => $taskModel->description,
-                'deadline' => $taskModel->deadline->format('Y-m-d'),
-                'user_id' => $taskModel->user_id,
-                'project_id' => $taskModel->project_id,
+                'deadline' => $taskModel->deadline,
+                'user_id' => $this->faker->numberBetween(1, $userCount),
+                'project_id' => $this->faker->numberBetween(1, $projectCount),
                 'status_id' => $taskModel->status_id,
             ],
         );
@@ -170,7 +175,7 @@ class TaskControllerTest extends TestCase
             [
                 'title' => $taskModel->title,
                 'description' => $taskModel->description,
-                'deadline' => $taskModel->deadline->format('Y-m-d'),
+                'deadline' => $taskModel->deadline,
                 'user_id' => $taskModel->user_id,
                 'project_id' => $taskModel->project_id,
                 'status_id' => $taskModel->status_id,
@@ -188,7 +193,7 @@ class TaskControllerTest extends TestCase
             [
                 'title' => $task->title,
                 'description' => $failTaskModel->description,
-                'deadline' => $failTaskModel->deadline->format('Y-m-d'),
+                'deadline' => $failTaskModel->deadline,
                 'user_id' => $failTaskModel->user_id,
                 'project_id' => $failTaskModel->project_id,
                 'status_id' => $failTaskModel->status_id,
@@ -343,7 +348,7 @@ class TaskControllerTest extends TestCase
             [
                 'title' => $taskModel->title,
                 'description' => $taskModel->description,
-                'deadline' => $taskModel->deadline->format('Y-m-d'),
+                'deadline' => $taskModel->deadline,
                 'user_id' => $taskModel->user_id,
                 'project_id' => $taskModel->project_id,
                 'status_id' => $taskModel->status_id,
@@ -371,7 +376,7 @@ class TaskControllerTest extends TestCase
             [
                 'title' => $taskModel->title,
                 'description' => $taskModel->description,
-                'deadline' => $taskModel->deadline->format('Y-m-d'),
+                'deadline' => $taskModel->deadline,
                 'user_id' => $taskModel->user_id,
                 'project_id' => $taskModel->project_id,
                 'status_id' => $taskModel->status_id,

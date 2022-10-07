@@ -60,7 +60,7 @@ class Client extends BaseModel implements HasMedia
 
     public function scopeActiveClients()
     {
-        return $this->whereHas('projects', fn(Builder $builder) => $builder->recent());
+        return $this->latest('updated_at');
     }
 
     public function registerMediaConversions(Media $media = null): void

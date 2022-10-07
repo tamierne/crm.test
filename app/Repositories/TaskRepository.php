@@ -2,13 +2,12 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\StatusNotFoundException;
+use App\Exceptions\FilterNotFoundException;
 use App\Http\Requests\Admin\TaskCreateRequest;
-use App\Http\Requests\Admin\TaskUpdateRequest;
 use App\Models\Status;
 use App\Models\Task;
 use Illuminate\Database\Eloquent\Collection;
-use App\Repositories\MainRepository;
-use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Pagination\Paginator;
 
 class TaskRepository extends MainRepository
@@ -51,9 +50,16 @@ class TaskRepository extends MainRepository
 
     /**
      * @return Paginator
+     * @throws \Throwable
      */
-    public function getAllDeletedTasksPaginated(): Paginator
+    public function getAllDeletedTasksPaginated(string $filter): Paginator
     {
+        try {
+            throw_if($filter != 'Deleted', FilterNotFoundException::class);
+        } catch (FilterNotFoundException $e) {
+            dump($e->getMessage());
+        }
+
         return Task::onlyTrashed()->with([
             'user:id,name',
             ])->simplePaginate(10)
@@ -67,9 +73,12 @@ class TaskRepository extends MainRepository
      */
     public function getAllTasksByStatusPaginated(string $status): Paginator
     {
-        $statusCheck = Status::where('name', $status)->first();
-
-        throw_if(!$statusCheck, StatusNotFoundException::class);
+        try {
+            $statusCheck = Status::where('name', $status)->first();
+            throw_if(!$statusCheck, StatusNotFoundException::class);
+        } catch (StatusNotFoundException $e) {
+            dump($e->getMessage());
+        }
 
         return Task::byStatus($status)->with([
             'user:id,name',

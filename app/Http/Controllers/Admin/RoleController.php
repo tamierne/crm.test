@@ -27,9 +27,10 @@ class RoleController extends BaseController
     {
         $this->authorize('role_access');
 
-        return view('admin.roles.index', [
-            'roles' => $this->roleRepository->getAllItemsWithPaginate(),
-        ]);
+        return view('admin.roles.index',
+            [
+                'roles' => $this->roleRepository->getAllItemsWithPaginate(),
+            ]);
     }
 
     /**
@@ -42,9 +43,10 @@ class RoleController extends BaseController
         $this->authorize('role_create');
 
         $permissions = $this->roleRepository->getAllAvailablePermissions();
-        return view('admin.roles.create', [
-            'permissions' => $permissions,
-        ]);
+        return view('admin.roles.create',
+            [
+                'permissions' => $permissions,
+            ]);
     }
 
     /**

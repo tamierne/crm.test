@@ -2,8 +2,6 @@
 
 namespace App\Observers;
 
-use App\Events\Client\ClientDeleted;
-use App\Events\Client\ClientUpdated;
 use App\Models\Client;
 use App\Models\User;
 use App\Notifications\Database\Client\ClientCreatedNotification;

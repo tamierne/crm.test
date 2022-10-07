@@ -4,11 +4,9 @@ namespace App\Repositories;
 
 use App\Exceptions\StatusNotFoundException;
 use App\Http\Requests\Admin\ProjectCreateRequest;
-use App\Http\Requests\Admin\ProjectUpdateRequest;
 use App\Models\Project;
 use App\Models\Status;
 use Illuminate\Database\Eloquent\Collection;
-use App\Repositories\MainRepository;
 use Illuminate\Pagination\Paginator;
 
 class ProjectRepository extends MainRepository

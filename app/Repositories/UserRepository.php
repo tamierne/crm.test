@@ -4,9 +4,7 @@ namespace App\Repositories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
-use App\Repositories\MainRepository;
 use App\Http\Requests\Admin\UserCreateRequest;
-use App\Http\Requests\Admin\UserUpdateRequest;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Pagination\Paginator;
@@ -27,10 +25,11 @@ class UserRepository extends MainRepository
      */
     public function getAllItemsWithPaginate(): Paginator
     {
-        return User::with([
-            'projects:id,title,user_id',
-            'tasks:id,title,user_id',
-            'media',
+        return User::select(['id', 'name', 'email'])
+            ->with([
+                'projects:id,title,user_id',
+                'tasks:id,title,user_id',
+                'media',
             ])
             ->withTrashed()
             ->simplePaginate('10');

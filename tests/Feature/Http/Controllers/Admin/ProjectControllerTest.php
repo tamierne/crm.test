@@ -134,7 +134,7 @@ class ProjectControllerTest extends TestCase
             [
                 'title' => $projectModel->title,
                 'description' => $projectModel->description,
-                'deadline' => $projectModel->deadline->format('Y-m-d'),
+                'deadline' => $projectModel->deadline,
                 'user_id' => $projectModel->user_id,
                 'client_id' => $projectModel->client_id,
                 'status_id' => $projectModel->status_id,
@@ -166,7 +166,7 @@ class ProjectControllerTest extends TestCase
             [
                 'title' => $projectModel->title,
                 'description' => $projectModel->description,
-                'deadline' => $projectModel->deadline->format('Y-m-d'),
+                'deadline' => $projectModel->deadline,
                 'user_id' => $projectModel->user_id,
                 'client_id' => $projectModel->client_id,
                 'status_id' => $projectModel->status_id,
@@ -184,7 +184,7 @@ class ProjectControllerTest extends TestCase
             [
                 'title' => $project->title,
                 'description' => $failProjectModel->description,
-                'deadline' => $failProjectModel->deadline->format('Y-m-d'),
+                'deadline' => $failProjectModel->deadline,
                 'user_id' => $failProjectModel->user_id,
                 'client_id' => $failProjectModel->client_id,
                 'status_id' => $failProjectModel->status_id,
@@ -341,7 +341,7 @@ class ProjectControllerTest extends TestCase
             [
                 'title' => $projectModel->title,
                 'description' => $projectModel->description,
-                'deadline' => $projectModel->deadline->format('Y-m-d'),
+                'deadline' => $projectModel->deadline,
                 'user_id' => $projectModel->user_id,
                 'client_id' => $projectModel->client_id,
                 'status_id' => $projectModel->status_id,
@@ -369,7 +369,7 @@ class ProjectControllerTest extends TestCase
             [
                 'title' => $projectModel->title,
                 'description' => $projectModel->description,
-                'deadline' => $projectModel->deadline->format('Y-m-d'),
+                'deadline' => $projectModel->deadline,
                 'user_id' => $projectModel->user_id,
                 'client_id' => $projectModel->client_id,
                 'status_id' => $projectModel->status_id,
