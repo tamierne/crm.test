@@ -122,6 +122,36 @@ class TaskControllerTest extends TestCase
         $response->assertRedirect();
     }
 
+    public function test_cant_store_past_deadline_as_super_admin()
+    {
+        $admin = User::role('super-admin')
+            ->inRandomOrder()
+            ->first();
+
+        $taskModel = Task::factory()
+            ->make();
+
+        $response = $this->actingAs($admin)->post(
+            route('tasks.store'),
+            [
+                'title' => $taskModel->title,
+                'description' => $taskModel->description,
+                'deadline' => $this->faker->dateTimeBetween('-1 month', '-5 days')->format('Y-m-d'),
+                'user_id' => $taskModel->user_id,
+                'project_id' => $taskModel->project_id,
+                'status_id' => $taskModel->status_id,
+            ],
+        );
+
+        $response->assertRedirect();
+        $response->assertSessionHasErrors(['deadline']);
+
+        $task = Task::where('title', '=', $taskModel->title)->first();
+
+        $this->assertNull($task);
+
+    }
+
     public function test_store_as_super_admin()
     {
         $admin = User::role('super-admin')
@@ -329,6 +359,30 @@ class TaskControllerTest extends TestCase
         );
 
         $response->assertRedirect();
+    }
+
+    public function test_cant_update_past_deadline_as_super_admin()
+    {
+        $admin = User::role('super-admin')
+            ->inRandomOrder()
+            ->first();
+
+        $task = Task::inRandomOrder()
+            ->first();
+
+        $response = $this->actingAs($admin)->patch(
+            "/admin/tasks/$task->id",
+            [
+                'deadline' => $this->faker->dateTimeBetween('-1 month', '-5 days')->format('Y-m-d'),
+            ],
+        );
+
+        $response->assertRedirect();
+        $response->assertSessionHasErrors(['deadline']);
+
+        $taskCheck = $task->refresh();
+
+        $this->assertEquals($task->deadline, $taskCheck->deadline);
     }
 
     public function test_user_can_update_task()

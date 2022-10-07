@@ -4,13 +4,14 @@ namespace Tests\Feature\Http\Controllers\Admin;
 
 use App\Models\Project;
 use App\Models\User;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutEvents;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ProjectControllerTest extends TestCase
 {
-    use RefreshDatabase, WithoutEvents;
+    use RefreshDatabase, WithoutEvents, WithFaker;
 
     protected bool $seed = true;
 
@@ -118,6 +119,36 @@ class ProjectControllerTest extends TestCase
         $response = $this->get(route('projects.create'));
 
         $response->assertRedirect();
+    }
+
+    public function test_cant_store_past_deadline_as_super_admin()
+    {
+        $admin = User::role('super-admin')
+            ->inRandomOrder()
+            ->first();
+
+        $projectModel = Project::factory()
+            ->make();
+
+        $response = $this->actingAs($admin)->post(
+            route('projects.store'),
+            [
+                'title' => $projectModel->title,
+                'description' => $projectModel->description,
+                'deadline' => $this->faker->dateTimeBetween('-1 month', '-5 days')->format('Y-m-d'),
+                'user_id' => $projectModel->user_id,
+                'client_id' => $projectModel->client_id,
+                'status_id' => $projectModel->status_id,
+            ],
+        );
+
+        $response->assertRedirect();
+        $response->assertSessionHasErrors(['deadline']);
+
+        $project = Project::where('title', '=', $projectModel->title)->first();
+
+        $this->assertNull($project);
+
     }
 
     public function test_store_as_super_admin()
@@ -322,6 +353,30 @@ class ProjectControllerTest extends TestCase
         );
 
         $response->assertRedirect();
+    }
+
+    public function test_cant_update_past_deadline_as_super_admin()
+    {
+        $admin = User::role('super-admin')
+            ->inRandomOrder()
+            ->first();
+
+        $project = Project::inRandomOrder()
+            ->first();
+
+        $response = $this->actingAs($admin)->patch(
+            "/admin/projects/$project->id",
+            [
+                'deadline' => $this->faker->dateTimeBetween('-1 month', '-5 days')->format('Y-m-d'),
+            ],
+        );
+
+        $response->assertRedirect();
+        $response->assertSessionHasErrors(['deadline']);
+
+        $projectCheck = $project->refresh();
+
+        $this->assertEquals($project->deadline, $projectCheck->deadline);
     }
 
     public function test_user_can_update_project()

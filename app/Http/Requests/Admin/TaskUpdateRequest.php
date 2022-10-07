@@ -25,7 +25,7 @@ class TaskUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string:50|unique:projects,title,'.$this->task->id,
+            'title' => 'required|string:50|unique:tasks,title,'.$this->task->id,
             'description' => 'required|string:300',
             'deadline' => 'required|date|after:today',
             'user_id' => 'required|exists:users,id',

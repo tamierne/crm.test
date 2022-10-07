@@ -32,7 +32,7 @@
                     </div>
                     <div class="form-group">
                         <label for="deadline">Deadline</label>
-                        <input type="date" class="form-control" name="deadline" id="deadline" value="{{ $task->deadline }}">
+                        <input type="datetime-local" class="form-control" name="deadline" id="deadline" value="{{ $task->deadline }}">
                     </div>
                     <div class="form-group">
                         <label for="AssignedUser">Assigned user</label>

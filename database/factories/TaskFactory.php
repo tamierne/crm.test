@@ -19,7 +19,7 @@ class TaskFactory extends Factory
         return [
             'title' => $this->faker->realText(45),
             'description' => $this->faker->realText(200),
-            'deadline' => $this->faker->dateTimeBetween('+10 days', '+20 days')->format('Y-m-d'),
+            'deadline' => $this->faker->dateTimeBetween('+10 days', '+20 days'),
             'project_id' => $this->faker->numberBetween(1, 10),
             'user_id' => $this->faker->numberBetween(2, 10),
             'status_id' => $this->faker->numberBetween(1, 5),
