@@ -22,7 +22,7 @@ class Project extends BaseModel
      *
      * @var array
      */
-    protected $with = ['status:id,name'];
+//    protected $with = ['status:id,name'];
     /**
      * The attributes that are mass assignable.
      *
@@ -86,18 +86,18 @@ class Project extends BaseModel
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * @return BelongsTo|Status
-     */
-    public function status(): BelongsTo
-    {
-        return $this->belongsTo(Status::class);
-    }
-
-//    public function status()
+//    /**
+//     * @return BelongsTo|Status
+//     */
+//    public function status(): BelongsTo
 //    {
-//        return $this->morphOne(Status::class, 'status', 'status_id');
+//        return $this->belongsTo(Status::class);
 //    }
+
+    public function status()
+    {
+        return $this->morphToMany(Status::class, 'statusable')->first();
+    }
 
     /**
      * @return HasMany|Collection|Task

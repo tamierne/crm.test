@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             StatusListSeeder::class,
             UserSeeder::class,
+            StatusSeeder::class,
 //            ProjectSeeder::class,
 //            TaskSeeder::class,
         ]);

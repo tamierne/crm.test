@@ -37,7 +37,8 @@ class ProjectRepository extends MainRepository
             'client:id,name',
             'user:id,name',
             ])
-            ->simplePaginate('10');
+            ->get();
+//            ->simplePaginate('10');
     }
 
     /**

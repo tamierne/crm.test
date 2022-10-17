@@ -20,18 +20,23 @@ class Status extends BaseModel
         'name',
     ];
 
+    public function statusable()
+    {
+        return $this->morphTo();
+    }
+
 //    public function tasks()
 //    {
-//        return $this->morphMany(Task::class, 'statusable');
+//        return $this->morphedByMany(Task::class, 'statusable');
 //    }
 //
 //    public function projects()
 //    {
-//        return $this->morphMany(Project::class, 'statusable');
+//        return $this->morphedByMany(Project::class, 'statusable');
 //    }
 //
 //    public function parserTasks()
 //    {
-//        return $this->morphMany(ParserTask::class, 'statusable');
+//        return $this->morphedByMany(ParserTask::class, 'statusable');
 //    }
 }

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->bigInteger('user_id')->foreignId('user_id')->constrained();
             $table->string('url', 255);
             $table->json('result')->nullable();
-            $table->tinyInteger('status_id')->foreignId('status_id')->constrained()->default(1);
+//            $table->tinyInteger('status_id')->foreignId('status_id')->constrained()->default(1);
             $table->timestamp('started_at')->nullable();
             $table->timestamps();
             $table->softDeletes();

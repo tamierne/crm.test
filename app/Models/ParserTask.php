@@ -51,13 +51,13 @@ class ParserTask extends BaseModel
         return $this->belongsTo(User::class)->withTrashed();
     }
 
-    /**
-     * @return BelongsTo|Status
-     */
-    public function status(): BelongsTo
-    {
-        return $this->belongsTo(Status::class)->withTrashed();
-    }
+//    /**
+//     * @return BelongsTo|Status
+//     */
+//    public function status(): BelongsTo
+//    {
+//        return $this->belongsTo(Status::class)->withTrashed();
+//    }
 
     public function getStartedAtAttribute($value)
     {
@@ -68,8 +68,8 @@ class ParserTask extends BaseModel
         }
     }
 
-//    public function statusable()
-//    {
-//        return $this->morphOne(Status::class, 'statusable');
-//    }
+    public function status()
+    {
+        return $this->morphToMany(Status::class, 'statusable')->first();
+    }
 }

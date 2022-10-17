@@ -24,10 +24,10 @@ return new class extends Migration
             $table->unsignedBigInteger('project_id')
                 ->foreignId('project_id')
                 ->constrained();
-            $table->tinyInteger('status_id')
-                ->foreignId('status_id')
-                ->constrained()
-                ->default(1);
+//            $table->tinyInteger('status_id')
+//                ->foreignId('status_id')
+//                ->constrained()
+//                ->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

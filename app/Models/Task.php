@@ -21,10 +21,10 @@ class Task extends Model
      *
      * @var array
      */
-    protected $with = [
-        'status:id,name',
-        'project:id,title',
-    ];
+//    protected $with = [
+//        'status:id,name',
+//        'project:id,title',
+//    ];
 
     /**
      * The attributes that are mass assignable.
@@ -87,18 +87,18 @@ class Task extends Model
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * @return BelongsTo|Status
-     */
-    public function status(): BelongsTo
-    {
-        return $this->belongsTo(Status::class);
-    }
-
-//    public function statusable()
+//    /**
+//     * @return BelongsTo|Status
+//     */
+//    public function status(): BelongsTo
 //    {
-//        return $this->morphTo('statusable');
+//        return $this->belongsTo(Status::class);
 //    }
+
+    public function status()
+    {
+        return $this->morphToMany(Status::class, 'statusable');
+    }
 
     public function scopeByStatus($query, $status)
     {

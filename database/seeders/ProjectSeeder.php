@@ -2,13 +2,15 @@
 
 namespace Database\Seeders;
 
+use App\Models\Status;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Project;
+use Illuminate\Foundation\Testing\WithFaker;
 
 class ProjectSeeder extends Seeder
 {
-    use WithoutModelEvents;
+    use WithoutModelEvents, WithFaker;
 
     /**
      * Run the database seeds.
@@ -19,6 +21,11 @@ class ProjectSeeder extends Seeder
     {
         Project::factory()
             ->count(25)
-            ->create();
+            ->create()
+            ->each(function ($project) {
+                $status = Status::inRandomOrder()
+                    ->first();
+                $project->status($status)->save();
+            });
     }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('statusables', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->smallInteger('status_id');
+            $table->smallInteger('status_id')->foreignId('status_id')->constrained();
             $table->morphs('statusable');
         });
     }
