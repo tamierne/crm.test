@@ -35,7 +35,7 @@ class TaskRepository extends MainRepository
     public function getAllItemsWithPaginate(): Paginator
     {
         return Task::with([
-            'user:id,name',
+                'user:id,name',
             ])
             ->simplePaginate('10');
     }
@@ -61,7 +61,7 @@ class TaskRepository extends MainRepository
         }
 
         return Task::onlyTrashed()->with([
-            'user:id,name',
+                'user:id,name',
             ])->simplePaginate(10)
             ->appends(request()->query());
     }
@@ -74,14 +74,14 @@ class TaskRepository extends MainRepository
     public function getAllTasksByStatusPaginated(string $status): Paginator
     {
         try {
-            $statusCheck = Status::where('name', $status)->first();
+            $statusCheck = Status::whereName($status)->first();
             throw_if(!$statusCheck, StatusNotFoundException::class);
         } catch (StatusNotFoundException $e) {
             dump($e->getMessage());
         }
 
         return Task::byStatus($status)->with([
-            'user:id,name',
+                'user:id,name',
             ])->simplePaginate(10)
             ->appends(request()->query());
     }

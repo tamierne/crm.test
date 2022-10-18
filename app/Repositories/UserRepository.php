@@ -42,9 +42,9 @@ class UserRepository extends MainRepository
     public function getItemById(int $id): User
     {
         return User::with([
-            'tasks:id,title,description,user_id,status_id',
-            'media',
-            'tasks.status:id,name',
+                'tasks:id,title,description,user_id,status_id',
+                'media',
+                'tasks.status:id,name',
             ])
             ->withTrashed()
             ->findOrFail($id);

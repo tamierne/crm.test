@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Events\Client\ClientUpdated;
 use App\Http\Requests\Admin\ClientCreateRequest;
 use App\Models\Client;
 use Illuminate\Database\Eloquent\Collection;
@@ -26,8 +25,8 @@ class ClientRepository extends MainRepository
     public function getAllItemsWithPaginate(): Paginator
     {
         return Client::with([
-            'projects:id,title,client_id',
-            'media',
+                'projects:id,title,client_id',
+                'media',
             ])
             ->withTrashed()
             ->simplePaginate('10');
@@ -39,7 +38,7 @@ class ClientRepository extends MainRepository
      */
     public function getItemById($id): Client
     {
-        return Client::withTrashed()->findOrFail($id, 'id');
+        return Client::withTrashed()->findOrFail($id);
     }
 
     /**

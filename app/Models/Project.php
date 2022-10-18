@@ -109,7 +109,7 @@ class Project extends BaseModel
 
     public function scopeByStatus($query, $status)
     {
-        return $query->whereHas('status', fn($query) => $query->where('name', $status));
+        return $query->whereHas('status', fn($query) => $query->whereName($status));
     }
 
     public function scopeActive($query)

@@ -55,11 +55,13 @@ class ProjectRepository extends MainRepository
      */
     public function getAllProjectsByStatusPaginated(string $status): Paginator
     {
-        $statusCheck = Status::where('name', $status)->first();
+        $statusCheck = Status::whereName($status)->first();
 
         throw_if(!$statusCheck, StatusNotFoundException::class);
 
-        return Project::byStatus($status)->simplePaginate(10)->appends(request()->query());
+        return Project::byStatus($status)
+            ->simplePaginate(10)
+            ->appends(request()->query());
     }
 
     /**
