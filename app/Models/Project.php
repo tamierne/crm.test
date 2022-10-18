@@ -94,11 +94,6 @@ class Project extends BaseModel
         return $this->belongsTo(Status::class);
     }
 
-//    public function status()
-//    {
-//        return $this->morphOne(Status::class, 'status', 'status_id');
-//    }
-
     /**
      * @return HasMany|Collection|Task
      */

@@ -95,11 +95,6 @@ class Task extends Model
         return $this->belongsTo(Status::class);
     }
 
-//    public function statusable()
-//    {
-//        return $this->morphTo('statusable');
-//    }
-
     public function scopeByStatus($query, $status)
     {
         return $query->whereHas('status', fn($query) => $query->where('name', $status));

@@ -68,8 +68,4 @@ class ParserTask extends BaseModel
         }
     }
 
-//    public function statusable()
-//    {
-//        return $this->morphOne(Status::class, 'statusable');
-//    }
 }
